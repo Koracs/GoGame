@@ -12,7 +12,8 @@ public class GoBoardController {
         this.model = model;
     }
 
-    public void mouseClicked(MouseEvent e){
-        System.out.println("controller clicked");
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("controller clicked at X: " + e.getX() + " Y: " + e.getY());
+
     }
 }

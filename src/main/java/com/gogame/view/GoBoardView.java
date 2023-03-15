@@ -6,6 +6,7 @@ import com.gogame.controller.*;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -20,18 +21,23 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class GoBoardView extends Application {
+public class GoBoardView {
 
     private GoBoardAdapter adapter;
+    private Scene scene;
 
     private final int BOARD_SIZE = 19;
     private final int TILE_SIZE = 50;
 
     public GoBoardView(){
-        launch();
+        scene = createScene();
     }
-    @Override
-    public void start(Stage stage) throws IOException {
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    private Scene createScene(){
         Group root = new Group();
 
         Rectangle background = new Rectangle(TILE_SIZE, TILE_SIZE, (BOARD_SIZE - 1) * TILE_SIZE, (BOARD_SIZE - 1) * TILE_SIZE);
@@ -68,10 +74,8 @@ public class GoBoardView extends Application {
         // Set the scene
         Scene scene = new Scene(root, (BOARD_SIZE + 2) * TILE_SIZE, (BOARD_SIZE + 2) * TILE_SIZE);
         scene.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
-        stage.setTitle("Go Game Gruppe 5");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
+
+        return scene;
     }
 
     public void setActionListener(GoBoardController controller) {

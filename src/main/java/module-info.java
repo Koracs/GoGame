@@ -4,6 +4,5 @@ module com.gogame {
 
 
     opens com.gogame to javafx.fxml;
-    exports com.gogame.view;
-    opens com.gogame.view to javafx.fxml;
+    exports com.gogame;
 }
