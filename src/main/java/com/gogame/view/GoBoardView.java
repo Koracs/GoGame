@@ -23,21 +23,22 @@ import java.io.IOException;
 
 public class GoBoardView {
 
-    private GoBoardAdapter adapter;
-    private Scene scene;
+    private GoBoardController controller;
 
-    private final int BOARD_SIZE = 19;
-    private final int TILE_SIZE = 50;
 
+    private Group view;
+
+    private int BOARD_SIZE = 19;
+    private int TILE_SIZE = 50;
     public GoBoardView(){
-        scene = createScene();
+        view = createView();
     }
 
-    public Scene getScene() {
-        return scene;
+    public Group getView() {
+        return view;
     }
 
-    private Scene createScene(){
+    private Group createView() {
         Group root = new Group();
 
         Rectangle background = new Rectangle(TILE_SIZE, TILE_SIZE, (BOARD_SIZE - 1) * TILE_SIZE, (BOARD_SIZE - 1) * TILE_SIZE);
@@ -68,17 +69,22 @@ public class GoBoardView {
             }
         }
 
-        EventHandler<MouseEvent> clickHandler = mouseEvent -> adapter.handleMouseClickEvent(mouseEvent);
+        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
 
+        //todo let scene react to tile size changes
+        EventHandler<MouseEvent> tileSizeChanger = mouseEvent -> {
+            TILE_SIZE++;
+            System.out.println(TILE_SIZE);
+        };
 
-        // Set the scene
-        Scene scene = new Scene(root, (BOARD_SIZE + 2) * TILE_SIZE, (BOARD_SIZE + 2) * TILE_SIZE);
-        scene.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
+        root.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
+        root.addEventHandler(MouseEvent.MOUSE_CLICKED,tileSizeChanger);
 
-        return scene;
+        return root;
     }
 
     public void setActionListener(GoBoardController controller) {
-        this.adapter = new GoBoardAdapter(controller, this);
+        this.controller = controller;
     }
+
 }

@@ -5,7 +5,9 @@ import com.gogame.view.*;
 import com.gogame.controller.*;
 import com.gogame.model.*;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 
@@ -22,7 +24,7 @@ public class Main extends Application {
         view.setActionListener(controller);
 
         stage.setTitle("Go Game");
-        stage.setScene(view.getScene());
+        stage.setScene(new Scene(view.getView()));
         stage.show();
     }
 
