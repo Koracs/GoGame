@@ -21,40 +21,45 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class GoBoardView {
+public class GoBoardView extends Parent {
 
     private GoBoardController controller;
 
+    private int BOARD_SIZE;
+    private double TILE_SIZE;
 
-    private Group view;
-
-    private int BOARD_SIZE = 19;
-    private int TILE_SIZE = 50;
-    public GoBoardView(){
-        view = createView();
+    public void setScale(double scale){
+        this.TILE_SIZE = scale/(BOARD_SIZE+1);
     }
 
-    public Group getView() {
-        return view;
+    public double getScale(){
+        return this.TILE_SIZE;
     }
 
-    private Group createView() {
-        Group root = new Group();
 
-        Rectangle background = new Rectangle(TILE_SIZE, TILE_SIZE, (BOARD_SIZE - 1) * TILE_SIZE, (BOARD_SIZE - 1) * TILE_SIZE);
+    public GoBoardView(int size){
+        this.BOARD_SIZE = size;
+        draw();
+    }
+
+
+    public void draw() {
+
+        //draw background rectangle
+        Rectangle background = new Rectangle(0, 0, (BOARD_SIZE + 1) * TILE_SIZE, (BOARD_SIZE + 1) * TILE_SIZE);
         background.setFill(Color.valueOf("#DDBB6D"));
-        root.getChildren().add(background);
+        getChildren().add(background);
 
         // Add horizontal lines to the board
         for (int i = 1; i <= BOARD_SIZE; i++) {
             Line line = new Line(TILE_SIZE, TILE_SIZE * i, TILE_SIZE * BOARD_SIZE, TILE_SIZE * i);
-            root.getChildren().add(line);
+            getChildren().add(line);
         }
 
         // Add vertical lines to the board
         for (int i = 1; i <= BOARD_SIZE; i++) {
             Line line = new Line(TILE_SIZE * i, TILE_SIZE, TILE_SIZE * i, TILE_SIZE * BOARD_SIZE);
-            root.getChildren().add(line);
+            getChildren().add(line);
         }
 
         // Add dots to the board
@@ -65,23 +70,15 @@ public class GoBoardView {
                 dot.setFill(Color.BLACK);
                 dot.setCenterX((j + 1) * TILE_SIZE);
                 dot.setCenterY((i + 1) * TILE_SIZE);
-                root.getChildren().add(dot);
+                getChildren().add(dot);
             }
         }
 
         EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
 
-        //todo let scene react to tile size changes
-        EventHandler<MouseEvent> tileSizeChanger = mouseEvent -> {
-            TILE_SIZE++;
-            System.out.println(TILE_SIZE);
-        };
-
-        root.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
-        root.addEventHandler(MouseEvent.MOUSE_CLICKED,tileSizeChanger);
-
-        return root;
+        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
     }
+
 
     public void setActionListener(GoBoardController controller) {
         this.controller = controller;
