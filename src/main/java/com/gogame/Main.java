@@ -37,8 +37,7 @@ public class Main extends Application {
         board.setActionListener(controller);
 
         stage.setTitle("Go Game");
-        BorderPane pane = new BorderPane();
-        pane.setCenter(board);
+        BorderPane pane = new BorderPane(board);
         FlowPane buttonPane = new FlowPane();
         pane.setBottom(buttonPane);
 
@@ -63,16 +62,15 @@ public class Main extends Application {
             resize(pane.getWidth(), newVal.doubleValue());
         });
 
-
-
-        stage.setScene(new Scene(pane,Screen.getPrimary().getBounds().getWidth()/2,Screen.getPrimary().getBounds().getHeight()/2));
+        stage.setScene(new Scene(pane,500,600));
+        board.draw();
         stage.show();
     }
 
     public void resize(double width, double height) {
         board.setScale(Math.min(width, height));
         //System.out.println("Scale:" + board.getScale());
-        board.draw();
+        //board.draw(); //todo board draws multiple time at start
     }
 
     public static void main(String[] args) {

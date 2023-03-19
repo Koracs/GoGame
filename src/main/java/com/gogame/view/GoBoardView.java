@@ -39,12 +39,23 @@ public class GoBoardView extends Parent {
 
     public GoBoardView(int size){
         this.BOARD_SIZE = size;
-        draw();
     }
 
 
     public void draw() {
 
+        drawBoard();
+        drawCoordinates();
+        drawStones();
+
+        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
+
+        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
+    }
+
+
+
+    private void drawBoard() {
         //draw background rectangle
         Rectangle background = new Rectangle(0, 0, (BOARD_SIZE + 1) * TILE_SIZE, (BOARD_SIZE + 1) * TILE_SIZE);
         background.setFill(Color.valueOf("#DDBB6D"));
@@ -73,10 +84,14 @@ public class GoBoardView extends Parent {
                 getChildren().add(dot);
             }
         }
+    }
 
-        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
+    private void drawCoordinates() {
+        //todo
+    }
 
-        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
+    private void drawStones() {
+        //todo
     }
 
 
