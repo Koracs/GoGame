@@ -1,5 +1,5 @@
 package com.gogame.model;
 
 public enum Stone {
-    BLACK, WHITE, NONE
+    BLACK, WHITE, NONE, PRESET
 }

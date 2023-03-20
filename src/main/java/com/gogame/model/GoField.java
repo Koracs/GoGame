@@ -26,5 +26,8 @@ public class GoField {
         this.stone = Stone.NONE;
     }
 
-
+    @Override
+    public String toString() {
+        return stone + " ";
+    }
 }

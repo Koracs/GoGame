@@ -37,6 +37,7 @@ public class Main extends Application {
         model.registerView(board);
         controller.setModel(model);
         board.setActionListener(controller);
+        board.setModel(model);
 
         stage.setTitle("Go Game");
         pane = new BorderPane();
@@ -46,7 +47,7 @@ public class Main extends Application {
 
 
         Button resetButton = new Button("Reset");
-        resetButton.setOnMouseClicked(e -> System.out.println("Reset"));
+        resetButton.setOnMouseClicked(e -> controller.resetModel());
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> System.out.println("Pass"));
 

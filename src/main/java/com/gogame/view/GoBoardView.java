@@ -3,6 +3,9 @@ package com.gogame.view;
 import com.gogame.adapter.*;
 import com.gogame.controller.*;
 
+import com.gogame.model.GoBoardModel;
+import com.gogame.model.GoField;
+import com.gogame.model.Stone;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -19,9 +22,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class GoBoardView extends Parent {
 
@@ -29,6 +29,7 @@ public class GoBoardView extends Parent {
 
     private int BOARD_SIZE;
     private double TILE_SIZE;
+    private GoBoardModel model;
 
     public void setScale(double scale){
         this.TILE_SIZE = scale/(BOARD_SIZE+1);
@@ -76,9 +77,6 @@ public class GoBoardView extends Parent {
             getChildren().add(line);
         }
 
-        //draw Borders
-
-
         // Add dots to the board
         int[] dotPositions = new int[]{3, 9, 15};
         for (int i : dotPositions) {
@@ -94,11 +92,12 @@ public class GoBoardView extends Parent {
 
     private void drawCoordinates() {
         Group coordinates = new Group();
+        //horizontal coordinates
         for (int i = 1; i <= BOARD_SIZE; i++) {
             drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),0);
             drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),(BOARD_SIZE*TILE_SIZE));
         }
-
+        //vertical coordinates
         for (int i = 1; i <= BOARD_SIZE; i++) {
             drawCoordinate(coordinates,BOARD_SIZE+1-i,0,(i * TILE_SIZE)-(TILE_SIZE/2));
             drawCoordinate(coordinates,BOARD_SIZE+1-i,(BOARD_SIZE*TILE_SIZE),(i * TILE_SIZE)-(TILE_SIZE/2));
@@ -128,12 +127,31 @@ public class GoBoardView extends Parent {
     }
 
     private void drawStones() {
-        //todo
+        GoField[][] fields = model.getFields();
+        for (int x = 1; x < fields.length; x++) {
+            for (int y = 1; y < fields[x].length; y++) {
+                if(fields[x][y].getStone() != Stone.NONE) {
+                    Circle stone = new Circle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE/4);
+                    if(fields[x][y].getStone() == Stone.BLACK) {
+                        stone.setFill(Color.BLACK);
+                    } else {
+                        stone.setFill(Color.WHITE);
+                        stone.setStroke(Color.WHITE);
+                    }
+                    getChildren().add(stone);
+                }
+            }
+        }
     }
 
 
     public void setActionListener(GoBoardController controller) {
         this.controller = controller;
+        controller.setView(this);
+    }
+
+    public void setModel(GoBoardModel model){
+        this.model = model;
     }
 
 }
