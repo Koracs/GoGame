@@ -39,18 +39,16 @@ public class GoBoardView extends Parent {
 
     public GoBoardView(int size){
         this.BOARD_SIZE = size;
+        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
+
+        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
     }
 
 
     public void draw() {
-
         drawBoard();
         drawCoordinates();
         drawStones();
-
-        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
-
-        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
     }
 
 

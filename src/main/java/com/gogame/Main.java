@@ -22,6 +22,8 @@ public class Main extends Application {
     private GoBoardController controller;
     private GoBoardModel model;
 
+    private BorderPane pane;
+
     private int size = 19;
 
 
@@ -37,7 +39,7 @@ public class Main extends Application {
         board.setActionListener(controller);
 
         stage.setTitle("Go Game");
-        BorderPane pane = new BorderPane(board);
+        pane = new BorderPane(board);
         FlowPane buttonPane = new FlowPane();
         pane.setBottom(buttonPane);
 
@@ -70,7 +72,7 @@ public class Main extends Application {
     public void resize(double width, double height) {
         board.setScale(Math.min(width, height));
         //System.out.println("Scale:" + board.getScale());
-        //board.draw(); //todo board draws multiple time at start
+        board.draw();
     }
 
     public static void main(String[] args) {
