@@ -39,7 +39,8 @@ public class Main extends Application {
         board.setActionListener(controller);
 
         stage.setTitle("Go Game");
-        pane = new BorderPane(board);
+        pane = new BorderPane();
+        pane.setCenter(board);
         FlowPane buttonPane = new FlowPane();
         pane.setBottom(buttonPane);
 
@@ -65,7 +66,6 @@ public class Main extends Application {
         });
 
         stage.setScene(new Scene(pane,500,600));
-        board.draw();
         stage.show();
     }
 

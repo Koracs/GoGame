@@ -12,10 +12,11 @@ public class GoBoardModel {
 
     public GoBoardModel(int size){
         this.size = size;
-        //initModel();
+        initModel();
     }
 
     private void initModel() {
+        fields = new GoField[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 fields[i][j] = new GoField();

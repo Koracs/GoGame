@@ -5,11 +5,13 @@ import com.gogame.controller.*;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -46,6 +48,7 @@ public class GoBoardView extends Parent {
 
 
     public void draw() {
+        getChildren().clear();
         drawBoard();
         drawCoordinates();
         drawStones();
@@ -85,7 +88,28 @@ public class GoBoardView extends Parent {
     }
 
     private void drawCoordinates() {
-        //todo
+        Group coordinates = new Group();
+        for (int i = 1; i <= BOARD_SIZE; i++) {
+            drawCoordinate(coordinates,i,0);
+            drawCoordinate(coordinates,i,(int)(BOARD_SIZE*TILE_SIZE));
+
+        }
+        getChildren().add(coordinates);
+    }
+
+    private void drawCoordinate(Group parent, int x, int y){
+        StackPane coordinate = new StackPane();
+        coordinate.setAlignment(Pos.CENTER);
+        coordinate.setTranslateX((x * TILE_SIZE)-(TILE_SIZE/2));
+        coordinate.setTranslateY(y);
+        coordinate.setMinWidth(TILE_SIZE);
+        //coordinate.setBorder(new Border(new BorderStroke(Color.BLACK,
+        //         BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
+        Text text = new Text(String.valueOf(x));
+        text.setFont(Font.font(TILE_SIZE / 2.0));
+        coordinate.getChildren().add(text);
+        parent.getChildren().add(coordinate);
     }
 
     private void drawStones() {
