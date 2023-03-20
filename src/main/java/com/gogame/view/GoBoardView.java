@@ -65,14 +65,19 @@ public class GoBoardView extends Parent {
         // Add horizontal lines to the board
         for (int i = 1; i <= BOARD_SIZE; i++) {
             Line line = new Line(TILE_SIZE, TILE_SIZE * i, TILE_SIZE * BOARD_SIZE, TILE_SIZE * i);
+            if(i == 1 || i == BOARD_SIZE) line.setStrokeWidth(3);
             getChildren().add(line);
         }
 
         // Add vertical lines to the board
         for (int i = 1; i <= BOARD_SIZE; i++) {
             Line line = new Line(TILE_SIZE * i, TILE_SIZE, TILE_SIZE * i, TILE_SIZE * BOARD_SIZE);
+            if(i == 1 || i == BOARD_SIZE) line.setStrokeWidth(3);
             getChildren().add(line);
         }
+
+        //draw Borders
+
 
         // Add dots to the board
         int[] dotPositions = new int[]{3, 9, 15};
@@ -90,23 +95,33 @@ public class GoBoardView extends Parent {
     private void drawCoordinates() {
         Group coordinates = new Group();
         for (int i = 1; i <= BOARD_SIZE; i++) {
-            drawCoordinate(coordinates,i,0);
-            drawCoordinate(coordinates,i,(int)(BOARD_SIZE*TILE_SIZE));
-
+            drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),0);
+            drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),(BOARD_SIZE*TILE_SIZE));
         }
+
+        for (int i = 1; i <= BOARD_SIZE; i++) {
+            drawCoordinate(coordinates,BOARD_SIZE+1-i,0,(i * TILE_SIZE)-(TILE_SIZE/2));
+            drawCoordinate(coordinates,BOARD_SIZE+1-i,(BOARD_SIZE*TILE_SIZE),(i * TILE_SIZE)-(TILE_SIZE/2));
+        }
+
         getChildren().add(coordinates);
     }
 
-    private void drawCoordinate(Group parent, int x, int y){
+    private void drawCoordinate(Group parent,int value, double x, double y){
         StackPane coordinate = new StackPane();
         coordinate.setAlignment(Pos.CENTER);
-        coordinate.setTranslateX((x * TILE_SIZE)-(TILE_SIZE/2));
+        coordinate.setTranslateX(x);
         coordinate.setTranslateY(y);
         coordinate.setMinWidth(TILE_SIZE);
-        //coordinate.setBorder(new Border(new BorderStroke(Color.BLACK,
-        //         BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        coordinate.setMinHeight(TILE_SIZE);
+        //coordinate.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
-        Text text = new Text(String.valueOf(x));
+        Text text; //add Number or Character depending on position
+        if (y == 0 || y == (BOARD_SIZE * TILE_SIZE)) {
+            text = new Text(String.valueOf((char) (value + 64)));
+        } else {
+            text = new Text(String.valueOf(value));
+        }
         text.setFont(Font.font(TILE_SIZE / 2.0));
         coordinate.getChildren().add(text);
         parent.getChildren().add(coordinate);
