@@ -31,4 +31,8 @@ public class GoBoardController {
         model.reset();
         view.draw();
     }
+
+    public void passPlayer() {
+        model.pass();
+    }
 }

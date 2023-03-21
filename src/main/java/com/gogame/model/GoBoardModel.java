@@ -61,4 +61,8 @@ public class GoBoardModel {
     public void reset() {
         initModel();
     }
+
+    public void pass() {
+        switchPlayer();
+    }
 }

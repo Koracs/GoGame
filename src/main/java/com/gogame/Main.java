@@ -49,7 +49,7 @@ public class Main extends Application {
         Button resetButton = new Button("Reset");
         resetButton.setOnMouseClicked(e -> controller.resetModel());
         Button passButton = new Button("Pass");
-        passButton.setOnMouseClicked(e -> System.out.println("Pass"));
+        passButton.setOnMouseClicked(e -> controller.passPlayer());
 
         buttonPane.setPadding(new Insets(30,30,30,30));
         buttonPane.setHgap(10);
