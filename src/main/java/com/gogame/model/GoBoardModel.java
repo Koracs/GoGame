@@ -48,9 +48,14 @@ public class GoBoardModel {
 
     public void makeMove(int x, int y){
         fields[y][x].setStone(currentPlayer);
-
-        System.out.println("stone set");
+        switchPlayer();
+        //System.out.println("stone set");
         System.out.println(Arrays.deepToString(fields));
+    }
+
+    private void switchPlayer(){
+        if (currentPlayer == Stone.BLACK) currentPlayer = Stone.WHITE;
+        else if (currentPlayer == Stone.WHITE) currentPlayer = Stone.BLACK;
     }
 
     public void reset() {

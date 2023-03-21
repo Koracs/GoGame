@@ -130,9 +130,9 @@ public class GoBoardView extends Parent {
         GoField[][] fields = model.getFields();
         for (int x = 1; x < fields.length; x++) {
             for (int y = 1; y < fields[x].length; y++) {
-                if(fields[x][y].getStone() != Stone.NONE) {
+                if(fields[y][x].getStone() != Stone.NONE) {
                     Circle stone = new Circle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE/4);
-                    if(fields[x][y].getStone() == Stone.BLACK) {
+                    if(fields[y][x].getStone() == Stone.BLACK) {
                         stone.setFill(Color.BLACK);
                     } else {
                         stone.setFill(Color.WHITE);

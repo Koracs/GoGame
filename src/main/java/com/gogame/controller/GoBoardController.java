@@ -29,5 +29,6 @@ public class GoBoardController {
 
     public void resetModel(){
         model.reset();
+        view.draw();
     }
 }
