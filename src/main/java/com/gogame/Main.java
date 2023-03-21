@@ -65,7 +65,7 @@ public class Main extends Application {
         gameplayButtonPane.getChildren().add(resignButton);
 
         // Buttons to import/export games
-        // --------------------- vielleicht ändern auf menu bar ----------------------
+        // --------------------- vielleicht ändern auf menu bar ---------------------
         ToolBar toolbar = new ToolBar();
 
         Button importButton = new Button("Import game");
