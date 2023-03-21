@@ -33,6 +33,7 @@ public class GoBoardController {
     }
 
     public void passPlayer() {
+        System.out.println("Player " + model.getCurrentPlayer() + " passed!");
         model.pass();
     }
 

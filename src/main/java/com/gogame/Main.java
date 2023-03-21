@@ -78,8 +78,7 @@ public class Main extends Application {
 
 
         menuBar.getMenus().add(menu);
-        VBox vbox = new VBox(menuBar);
-        pane.setTop(vbox);
+        pane.setTop(menuBar);
 
         pane.widthProperty().addListener((obs, oldVal, newVal) -> {
             resize(newVal.doubleValue(), pane.getHeight());
