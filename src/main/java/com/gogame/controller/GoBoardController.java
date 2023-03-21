@@ -38,5 +38,6 @@ public class GoBoardController {
 
     public void resignCurrentPlayer() {
         System.out.println("Player " + model.getCurrentPlayer() + " resigned!");
+        this.resetModel();
     }
 }

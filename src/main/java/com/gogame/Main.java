@@ -8,11 +8,14 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -42,10 +45,10 @@ public class Main extends Application {
         stage.setTitle("Go Game");
         pane = new BorderPane();
         pane.setCenter(board);
-        FlowPane buttonPane = new FlowPane();
-        pane.setBottom(buttonPane);
+        FlowPane gameplayButtonPane = new FlowPane();
+        pane.setBottom(gameplayButtonPane);
 
-
+        // Buttons for gameplay
         Button resetButton = new Button("Reset");
         resetButton.setOnMouseClicked(e -> controller.resetModel());
         Button passButton = new Button("Pass");
@@ -53,14 +56,28 @@ public class Main extends Application {
         Button resignButton = new Button("Resign");
         resignButton.setOnMouseClicked(e -> controller.resignCurrentPlayer());
 
-        buttonPane.setPadding(new Insets(30,30,30,30));
-        buttonPane.setHgap(10);
-        buttonPane.setVgap(10);
-        buttonPane.setAlignment(Pos.CENTER);
-        buttonPane.getChildren().add(resetButton);
-        buttonPane.getChildren().add(passButton);
-        buttonPane.getChildren().add(resignButton);
+        gameplayButtonPane.setPadding(new Insets(30,30,30,30));
+        gameplayButtonPane.setHgap(10);
+        gameplayButtonPane.setVgap(10);
+        gameplayButtonPane.setAlignment(Pos.CENTER);
+        gameplayButtonPane.getChildren().add(resetButton);
+        gameplayButtonPane.getChildren().add(passButton);
+        gameplayButtonPane.getChildren().add(resignButton);
 
+        // Buttons to import/export games
+        // --------------------- vielleicht ändern auf menu bar ----------------------
+        ToolBar toolbar = new ToolBar();
+
+        Button importButton = new Button("Import game");
+        importButton.setOnMouseClicked(e -> System.out.println("Import game"));
+        Button exportButton = new Button("Export game");
+        exportButton.setOnMouseClicked(e -> System.out.println("Export game"));
+
+        toolbar.getItems().add(importButton);
+        toolbar.getItems().add(exportButton);
+
+        VBox vbox = new VBox(toolbar);
+        pane.setTop(vbox);
 
         pane.widthProperty().addListener((obs, oldVal, newVal) -> {
             resize(newVal.doubleValue(), pane.getHeight());
