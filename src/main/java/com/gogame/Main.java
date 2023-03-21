@@ -10,8 +10,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -66,17 +65,20 @@ public class Main extends Application {
 
         // Buttons to import/export games
         // --------------------- vielleicht ändern auf menu bar ---------------------
-        ToolBar toolbar = new ToolBar();
+        MenuBar menuBar = new MenuBar();
+        Menu menu = new Menu("Game");
 
-        Button importButton = new Button("Import game");
-        importButton.setOnMouseClicked(e -> System.out.println("Import game"));
-        Button exportButton = new Button("Export game");
-        exportButton.setOnMouseClicked(e -> System.out.println("Export game"));
+        MenuItem importButton = new MenuItem("Import game");
+        importButton.setOnAction(e -> System.out.println("Import game"));
+        MenuItem exportButton = new MenuItem("Export game");
+        exportButton.setOnAction(e -> System.out.println("Export game"));
 
-        toolbar.getItems().add(importButton);
-        toolbar.getItems().add(exportButton);
+        menu.getItems().add(importButton);
+        menu.getItems().add(exportButton);
 
-        VBox vbox = new VBox(toolbar);
+
+        menuBar.getMenus().add(menu);
+        VBox vbox = new VBox(menuBar);
         pane.setTop(vbox);
 
         pane.widthProperty().addListener((obs, oldVal, newVal) -> {
