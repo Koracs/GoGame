@@ -31,16 +31,16 @@ public class GoBoardView extends Parent {
     private double TILE_SIZE;
     private GoBoardModel model;
 
-    public void setScale(double scale){
-        this.TILE_SIZE = scale/(BOARD_SIZE+1);
+    public void setScale(double scale) {
+        this.TILE_SIZE = scale / (BOARD_SIZE + 1);
     }
 
-    public double getScale(){
+    public double getScale() {
         return this.TILE_SIZE;
     }
 
 
-    public GoBoardView(int size){
+    public GoBoardView(int size) {
         this.BOARD_SIZE = size;
         EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
 
@@ -56,7 +56,6 @@ public class GoBoardView extends Parent {
     }
 
 
-
     private void drawBoard() {
         //draw background rectangle
         Rectangle background = new Rectangle(0, 0, (BOARD_SIZE + 1) * TILE_SIZE, (BOARD_SIZE + 1) * TILE_SIZE);
@@ -66,27 +65,15 @@ public class GoBoardView extends Parent {
         // Add horizontal lines to the board
         for (int i = 1; i <= BOARD_SIZE; i++) {
             Line line = new Line(TILE_SIZE, TILE_SIZE * i, TILE_SIZE * BOARD_SIZE, TILE_SIZE * i);
-            if(i == 1 || i == BOARD_SIZE) line.setStrokeWidth(3);
+            if (i == 1 || i == BOARD_SIZE) line.setStrokeWidth(3);
             getChildren().add(line);
         }
 
         // Add vertical lines to the board
         for (int i = 1; i <= BOARD_SIZE; i++) {
             Line line = new Line(TILE_SIZE * i, TILE_SIZE, TILE_SIZE * i, TILE_SIZE * BOARD_SIZE);
-            if(i == 1 || i == BOARD_SIZE) line.setStrokeWidth(3);
+            if (i == 1 || i == BOARD_SIZE) line.setStrokeWidth(3);
             getChildren().add(line);
-        }
-
-        // Add dots to the board
-        int[] dotPositions = new int[]{3, 9, 15};
-        for (int i : dotPositions) {
-            for (int j : dotPositions) {
-                Circle dot = new Circle(TILE_SIZE / 8.0);
-                dot.setFill(Color.BLACK);
-                dot.setCenterX((j + 1) * TILE_SIZE);
-                dot.setCenterY((i + 1) * TILE_SIZE);
-                getChildren().add(dot);
-            }
         }
     }
 
@@ -94,19 +81,19 @@ public class GoBoardView extends Parent {
         Group coordinates = new Group();
         //horizontal coordinates
         for (int i = 1; i <= BOARD_SIZE; i++) {
-            drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),0);
-            drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),(BOARD_SIZE*TILE_SIZE));
+            drawCoordinate(coordinates, i, (i * TILE_SIZE) - (TILE_SIZE / 2), 0);
+            drawCoordinate(coordinates, i, (i * TILE_SIZE) - (TILE_SIZE / 2), (BOARD_SIZE * TILE_SIZE));
         }
         //vertical coordinates
         for (int i = 1; i <= BOARD_SIZE; i++) {
-            drawCoordinate(coordinates,BOARD_SIZE+1-i,0,(i * TILE_SIZE)-(TILE_SIZE/2));
-            drawCoordinate(coordinates,BOARD_SIZE+1-i,(BOARD_SIZE*TILE_SIZE),(i * TILE_SIZE)-(TILE_SIZE/2));
+            drawCoordinate(coordinates, BOARD_SIZE + 1 - i, 0, (i * TILE_SIZE) - (TILE_SIZE / 2));
+            drawCoordinate(coordinates, BOARD_SIZE + 1 - i, (BOARD_SIZE * TILE_SIZE), (i * TILE_SIZE) - (TILE_SIZE / 2));
         }
 
         getChildren().add(coordinates);
     }
 
-    private void drawCoordinate(Group parent,int value, double x, double y){
+    private void drawCoordinate(Group parent, int value, double x, double y) {
         StackPane coordinate = new StackPane();
         coordinate.setAlignment(Pos.CENTER);
         coordinate.setTranslateX(x);
@@ -128,16 +115,12 @@ public class GoBoardView extends Parent {
 
     private void drawStones() {
         GoField[][] fields = model.getFields();
-        for (int x = 1; x < fields.length; x++) {
-            for (int y = 1; y < fields[x].length; y++) {
-                if(fields[y][x].getStone() != Stone.NONE) {
-                    Circle stone = new Circle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE/4);
-                    if(fields[y][x].getStone() == Stone.BLACK) {
-                        stone.setFill(Color.BLACK);
-                    } else {
-                        stone.setFill(Color.WHITE);
-                        stone.setStroke(Color.WHITE);
-                    }
+        for (int y = 0; y < fields.length; y++) {
+            for (int x = 0; x < fields[y].length; x++) {
+                if (fields[y][x].getStone() != Stone.NONE) {
+                    Circle stone = StoneView.createStone((x + 1) * TILE_SIZE,
+                            (y + 1) * TILE_SIZE, fields[y][x].getStone(), TILE_SIZE);
+
                     getChildren().add(stone);
                 }
             }
@@ -150,7 +133,7 @@ public class GoBoardView extends Parent {
         controller.setView(this);
     }
 
-    public void setModel(GoBoardModel model){
+    public void setModel(GoBoardModel model) {
         this.model = model;
     }
 
