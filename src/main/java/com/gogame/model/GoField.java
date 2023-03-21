@@ -18,6 +18,13 @@ public class GoField {
         return stone;
     }
 
+    public boolean isEmpty() {
+        if(this.stone == Stone.NONE) {
+            return true;
+        }
+        return false;
+    }
+
     public void setStone(Stone stone) {
         this.stone = stone;
     }

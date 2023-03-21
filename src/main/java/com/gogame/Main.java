@@ -50,6 +50,8 @@ public class Main extends Application {
         resetButton.setOnMouseClicked(e -> controller.resetModel());
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> controller.passPlayer());
+        Button resignButton = new Button("Resign");
+        resignButton.setOnMouseClicked(e -> controller.resignCurrentPlayer());
 
         buttonPane.setPadding(new Insets(30,30,30,30));
         buttonPane.setHgap(10);
@@ -57,6 +59,7 @@ public class Main extends Application {
         buttonPane.setAlignment(Pos.CENTER);
         buttonPane.getChildren().add(resetButton);
         buttonPane.getChildren().add(passButton);
+        buttonPane.getChildren().add(resignButton);
 
 
         pane.widthProperty().addListener((obs, oldVal, newVal) -> {

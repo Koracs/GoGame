@@ -20,6 +20,12 @@ public class GoBoardModel {
         initModel();
     }
 
+    public Stone getCurrentPlayer() {
+        return this.currentPlayer;
+    }
+
+
+
     private void initModel() {
         fields = new GoField[size][size];
         for (int i = 0; i < size; i++) {
@@ -47,10 +53,12 @@ public class GoBoardModel {
     }
 
     public void makeMove(int x, int y){
-        fields[y][x].setStone(currentPlayer);
-        switchPlayer();
-        //System.out.println("stone set");
-        System.out.println(Arrays.deepToString(fields));
+        if(fields[y][x].isEmpty()) {
+            fields[y][x].setStone(currentPlayer);
+            switchPlayer();
+            //System.out.println("stone set");
+            System.out.println(Arrays.deepToString(fields));
+        }
     }
 
     private void switchPlayer(){

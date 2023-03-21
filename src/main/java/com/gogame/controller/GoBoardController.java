@@ -35,4 +35,8 @@ public class GoBoardController {
     public void passPlayer() {
         model.pass();
     }
+
+    public void resignCurrentPlayer() {
+        System.out.println("Player " + model.getCurrentPlayer() + " resigned!");
+    }
 }
