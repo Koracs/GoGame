@@ -41,4 +41,8 @@ public class GoBoardController {
         System.out.println("Player " + model.getCurrentPlayer() + " resigned!");
         this.resetModel();
     }
+
+    public void openImportFile() {
+
+    }
 }

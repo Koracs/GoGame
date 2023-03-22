@@ -69,7 +69,7 @@ public class Main extends Application {
         Menu menu = new Menu("Game");
 
         MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> System.out.println("Import game"));
+        importButton.setOnAction(e -> controller.openImportFile());
         MenuItem exportButton = new MenuItem("Export game");
         exportButton.setOnAction(e -> System.out.println("Export game"));
 
