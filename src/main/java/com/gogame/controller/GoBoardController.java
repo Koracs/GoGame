@@ -6,10 +6,18 @@ import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 
 public class GoBoardController {
-
+    //region Fields
+    // MVC variables
     private GoBoardModel model;
     private GoBoardView view;
+    //endregion
 
+    // Constructor
+    public GoBoardController() {
+
+    }
+
+    //region Getter/Setter
     public void setModel(GoBoardModel model) {
         this.model = model;
     }
@@ -17,7 +25,9 @@ public class GoBoardController {
     public void setView(GoBoardView view) {
         this.view = view;
     }
+    //endregion
 
+    //region Methods
     public void mouseClicked(MouseEvent e) {
         //System.out.println("controller clicked at X: " + e.getX() + " Y: " + e.getY() + " TileSize: " + view.getScale());
         int x = (int) ((e.getX()) / view.getScale());
@@ -45,4 +55,5 @@ public class GoBoardController {
     public void openImportFile() {
 
     }
+    //endregion
 }

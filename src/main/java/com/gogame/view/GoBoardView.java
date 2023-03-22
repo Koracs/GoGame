@@ -8,11 +8,12 @@ import com.gogame.model.GoField;
 import com.gogame.model.Stone;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -24,13 +25,36 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class GoBoardView extends Parent {
+    //region Fields
+    // Pane of this class
+    private BorderPane pane;
 
+    // MVC variables
     private GoBoardController controller;
-
-    private int BOARD_SIZE;
-    private double TILE_SIZE;
     private GoBoardModel model;
 
+    // Auxiliary variables
+    private int BOARD_SIZE;
+    private double TILE_SIZE;
+    //endregion
+
+    // Constructor
+    public GoBoardView(int size){
+        this.BOARD_SIZE = size;
+        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
+        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
+
+        // -------------------- init ---------------------
+        controller = new GoBoardController();
+        model = new GoBoardModel(size);
+        model.registerView(this);
+        controller.setModel(model);
+        this.setActionListener(controller);
+        this.setModel(model);
+        createBoard();
+    }
+
+    //region Getter/Setter
     public void setScale(double scale){
         this.TILE_SIZE = scale/(BOARD_SIZE+1);
     }
@@ -39,14 +63,72 @@ public class GoBoardView extends Parent {
         return this.TILE_SIZE;
     }
 
-
-    public GoBoardView(int size){
-        this.BOARD_SIZE = size;
-        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
-
-        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
+    public BorderPane getPane() {
+        return this.pane;
     }
 
+    public void setActionListener(GoBoardController controller) {
+        this.controller = controller;
+        controller.setView(this);
+    }
+
+    public void setModel(GoBoardModel model){
+        this.model = model;
+    }
+    //endregion
+
+    //region Methods
+    public void createBoard() {
+        pane = new BorderPane();
+        pane.setCenter(this);
+        FlowPane gameplayButtonPane = new FlowPane();
+        pane.setBottom(gameplayButtonPane);
+
+        // Buttons for gameplay
+        Button resetButton = new Button("Reset");
+        resetButton.setOnMouseClicked(e -> controller.resetModel());
+        Button passButton = new Button("Pass");
+        passButton.setOnMouseClicked(e -> controller.passPlayer());
+        Button resignButton = new Button("Resign");
+        resignButton.setOnMouseClicked(e -> controller.resignCurrentPlayer());
+
+        gameplayButtonPane.setPadding(new Insets(30,30,30,30));
+        gameplayButtonPane.setHgap(10);
+        gameplayButtonPane.setVgap(10);
+        gameplayButtonPane.setAlignment(Pos.CENTER);
+        gameplayButtonPane.getChildren().add(resetButton);
+        gameplayButtonPane.getChildren().add(passButton);
+        gameplayButtonPane.getChildren().add(resignButton);
+
+        // Buttons to import/export games
+        // --------------------- vielleicht ändern auf menu bar ---------------------
+        MenuBar menuBar = new MenuBar();
+        Menu menu = new Menu("Game");
+
+        MenuItem importButton = new MenuItem("Import game");
+        importButton.setOnAction(e -> controller.openImportFile());
+        MenuItem exportButton = new MenuItem("Export game");
+        exportButton.setOnAction(e -> System.out.println("Export game"));
+
+        menu.getItems().add(importButton);
+        menu.getItems().add(exportButton);
+
+
+        menuBar.getMenus().add(menu);
+        pane.setTop(menuBar);
+
+        pane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            resize(newVal.doubleValue(), pane.getHeight());
+        });
+        pane.heightProperty().addListener((obs, oldVal, newVal) -> {
+            resize(pane.getWidth(), newVal.doubleValue());
+        });
+    }
+
+    public void resize(double width, double height) {
+        this.setScale(Math.min(width, height));
+        this.draw();
+    }
 
     public void draw() {
         getChildren().clear();
@@ -54,8 +136,6 @@ public class GoBoardView extends Parent {
         drawCoordinates();
         drawStones();
     }
-
-
 
     private void drawBoard() {
         //draw background rectangle
@@ -143,15 +223,5 @@ public class GoBoardView extends Parent {
             }
         }
     }
-
-
-    public void setActionListener(GoBoardController controller) {
-        this.controller = controller;
-        controller.setView(this);
-    }
-
-    public void setModel(GoBoardModel model){
-        this.model = model;
-    }
-
+    //endregion
 }

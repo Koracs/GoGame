@@ -6,33 +6,27 @@ import javafx.scene.Parent;
 import java.util.Arrays;
 
 public class GoBoardModel {
+    //region Fields
+    // MVC variables
     private GoBoardView view;
+
+    // Model variables
     private int size;
     private Stone currentPlayer;
-
     private GoField[][] fields;
 
+    //endregion
 
-
+    // Constructor
     public GoBoardModel(int size){
         this.size = size;
         currentPlayer = Stone.BLACK;
         initModel();
     }
 
+    //region Getter/Setter
     public Stone getCurrentPlayer() {
         return this.currentPlayer;
-    }
-
-
-
-    private void initModel() {
-        fields = new GoField[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                fields[i][j] = new GoField();
-            }
-        }
     }
 
     public int getSize() {
@@ -45,6 +39,17 @@ public class GoBoardModel {
 
     public GoField[][] getFields() {
         return fields;
+    }
+    //endregion
+
+    //region Methods
+    private void initModel() {
+        fields = new GoField[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                fields[i][j] = new GoField();
+            }
+        }
     }
 
 
@@ -73,4 +78,5 @@ public class GoBoardModel {
     public void pass() {
         switchPlayer();
     }
+    //endregion
 }
