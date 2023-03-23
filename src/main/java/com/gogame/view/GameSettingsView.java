@@ -2,14 +2,10 @@ package com.gogame.view;
 
 import com.gogame.controller.GameSettingsController;
 import com.gogame.model.GameSettingsModel;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
 public class GameSettingsView {
     //region Fields

@@ -2,9 +2,7 @@ package com.gogame.controller;
 
 import com.gogame.model.*;
 import com.gogame.view.GoBoardView;
-import com.gogame.view.StartScreenView;
 import com.gogame.view.WinScreenView;
-import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;

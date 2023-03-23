@@ -1,7 +1,6 @@
 package com.gogame.model;
 
 import com.gogame.view.*;
-import javafx.scene.Parent;
 
 import java.util.Arrays;
 
@@ -42,7 +41,7 @@ public class GoBoardModel {
         return fields;
     }
 
-    public void registerView(GoBoardView view) {
+    public void setView(GoBoardView view) {
         this.view = view;
     }
     //endregion

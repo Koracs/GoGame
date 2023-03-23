@@ -22,7 +22,7 @@ public class WinScreenModel {
         return winner;
     }
 
-    public void registerView(WinScreenView view) {
+    public void setView(WinScreenView view) {
         this.view = view;
     }
     //endregion

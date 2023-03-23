@@ -46,12 +46,13 @@ public class GameSettingsModel {
     public void setKomi(double komi) {
         this.komi = komi;
     }
+
+    public void setView(GameSettingsView view) {
+        this.view = view;
+    }
     //endregion
 
     //region Methods
-    public void registerView(GameSettingsView view) {
-        this.view = view;
-    }
 
     //endregion
 }
