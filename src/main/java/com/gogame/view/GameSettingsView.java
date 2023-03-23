@@ -3,9 +3,11 @@ package com.gogame.view;
 import com.gogame.controller.GameSettingsController;
 import com.gogame.model.GameSettingsModel;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -18,9 +20,10 @@ public class GameSettingsView {
     private GameSettingsController controller;
     private GameSettingsModel model;
 
-    // Auxiliary variables
-
-
+    // Constants
+    private final String SIZE_9 = "9x9";
+    private final String SIZE_13 = "13x13";
+    private final String SIZE_19 = "19x19";
     //endregion
 
     // Constructor
@@ -50,12 +53,43 @@ public class GameSettingsView {
     //region Methods
     private void drawScene() {
         pane = new BorderPane();
+        VBox vBox = new VBox();
+        vBox.setSpacing(10);
+        pane.setCenter(vBox);
+
+        // Set field size
+        ToggleGroup boardSizeButtonGroup = new ToggleGroup();
+
+        RadioButton size_nine = new RadioButton(SIZE_9);
+        size_nine.setToggleGroup(boardSizeButtonGroup);
+        RadioButton size_thirteen = new RadioButton(SIZE_13);
+        size_thirteen.setToggleGroup(boardSizeButtonGroup);
+        RadioButton size_nineteen = new RadioButton(SIZE_19);
+        size_nineteen.setToggleGroup(boardSizeButtonGroup);
+        size_nineteen.setSelected(true);
+
+        HBox hBox = new HBox(size_nine, size_thirteen, size_nineteen);
+        hBox.setSpacing(10);
+        vBox.getChildren().add(hBox);
+
+        // Activate komi and set it
+        CheckBox komiCheckBox = new CheckBox("Activate komi");
+        TextField komiSetting = new TextField();
+        VBox vBoxKomi = new VBox(komiCheckBox, komiSetting);
+        vBoxKomi.setSpacing(10);
+        vBox.getChildren().add(vBoxKomi);
+
+        // Activate handicap and set it
+        CheckBox handicapCheckBox = new CheckBox("Activate handicap");
+        TextField handicapSetting = new TextField();
+        VBox vBoxHandicap = new VBox(handicapCheckBox, handicapSetting);
+        vBoxHandicap.setSpacing(10);
+        vBox.getChildren().add(vBoxHandicap);
 
         // Start game button
         Button startGame = new Button("Start Game");
         startGame.setOnMouseClicked(e -> controller.changeSceneToGameScene());
-
-        pane.setCenter(startGame);
+        pane.setBottom(startGame);
     }
     //endregion
 

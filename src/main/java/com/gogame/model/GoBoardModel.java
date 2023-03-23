@@ -66,7 +66,7 @@ public class GoBoardModel {
         }
     }
 
-    private void switchPlayer(){
+    public void switchPlayer(){
         if (currentPlayer == Stone.BLACK) currentPlayer = Stone.WHITE;
         else if (currentPlayer == Stone.WHITE) currentPlayer = Stone.BLACK;
     }

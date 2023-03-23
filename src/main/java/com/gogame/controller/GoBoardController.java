@@ -54,6 +54,8 @@ public class GoBoardController {
     }
 
     public void changeSceneToWinScreen() {
+        // Switch player to get the winner
+        model.switchPlayer();
         WinScreenView nextView = new WinScreenView(model.getCurrentPlayer().toString());
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage) {
