@@ -1,39 +1,38 @@
 package com.gogame.controller;
 
-import com.gogame.model.GameSettingsModel;
-import com.gogame.model.GoBoardModel;
-import com.gogame.view.GameSettingsView;
-import com.gogame.view.GoBoardView;
+import com.gogame.model.WinScreenModel;
+import com.gogame.view.StartScreenView;
+import com.gogame.view.WinScreenView;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class GameSettingsController {
+public class WinScreenController {
     //region Fields
     // MVC variables
-    private GameSettingsModel model;
-    private GameSettingsView view;
+    private WinScreenModel model;
+    private WinScreenView view;
     //endregion
 
     // Constructor
-    public GameSettingsController(GameSettingsModel model, GameSettingsView view) {
+    public WinScreenController(WinScreenModel model, WinScreenView view) {
         this.model = model;
         this.view = view;
     }
 
     //region Getter/Setter
-    public void setModel(GameSettingsModel model) {
+    public void setModel(WinScreenModel model) {
         this.model = model;
     }
 
-    public void setView(GameSettingsView view) {
+    public void setView(WinScreenView view) {
         this.view = view;
     }
     //endregion
 
     //region Methods
-    public void changeSceneToGameScene() {
-        GoBoardView nextView = new GoBoardView(this.model.getBoardSize());
+    public void changeSceneToStartScreen() {
+        StartScreenView nextView = new StartScreenView();
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage) {
             Stage s = (Stage) w;

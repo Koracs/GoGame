@@ -18,7 +18,8 @@ public class GoBoardModel {
     //endregion
 
     // Constructor
-    public GoBoardModel(int size){
+    public GoBoardModel(GoBoardView view, int size){
+        this.view = view;
         this.size = size;
         currentPlayer = Stone.BLACK;
         initModel();
@@ -40,6 +41,10 @@ public class GoBoardModel {
     public GoField[][] getFields() {
         return fields;
     }
+
+    public void registerView(GoBoardView view) {
+        this.view = view;
+    }
     //endregion
 
     //region Methods
@@ -50,11 +55,6 @@ public class GoBoardModel {
                 fields[i][j] = new GoField();
             }
         }
-    }
-
-
-    public void registerView(GoBoardView view) {
-        this.view = view;
     }
 
     public void makeMove(int x, int y){

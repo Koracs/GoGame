@@ -15,7 +15,8 @@ public class GameSettingsModel {
     //endregion
 
     // Constructor - set all settings to default value
-    public GameSettingsModel() {
+    public GameSettingsModel(GameSettingsView view) {
+        this.view = view;
         this.boardSize = 19;
         this.komi = 0.5;
         this.handicap = 0;

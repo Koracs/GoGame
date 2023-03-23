@@ -25,13 +25,11 @@ public class GameSettingsView {
 
     // Constructor
     public GameSettingsView() {
-        controller = new GameSettingsController();
-        model = new GameSettingsModel();
-        model.registerView(this);
-        controller.setModel(model);
-        this.setActionListener(controller);
+        model = new GameSettingsModel(this);
+        controller = new GameSettingsController(model, this);
+        this.setController(controller);
         this.setModel(model);
-        drawGUI();
+        drawScene();
     }
 
     //region Getter/Setter
@@ -43,30 +41,21 @@ public class GameSettingsView {
         this.model = model;
     }
 
-    public void setActionListener(GameSettingsController controller) {
+    public void setController(GameSettingsController controller) {
         this.controller = controller;
         controller.setView(this);
     }
     //endregion
 
     //region Methods
-    private void drawGUI() {
+    private void drawScene() {
         pane = new BorderPane();
 
         // Start game button
         Button startGame = new Button("Start Game");
-        startGame.setOnMouseClicked(e -> {
-            GoBoardView view = new GoBoardView(this.model.getBoardSize());
-            Window w = pane.getScene().getWindow();
-            if(w instanceof Stage) {
-                Stage s = (Stage) w;
-                System.out.println("Change scene");
-                s.setScene(new Scene(view.getPane(),500,600));
-            }
-        });
+        startGame.setOnMouseClicked(e -> controller.changeSceneToGameScene());
 
-        FlowPane pa = new FlowPane(startGame);
-        pane.setCenter(pa);
+        pane.setCenter(startGame);
     }
     //endregion
 

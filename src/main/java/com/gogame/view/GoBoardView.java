@@ -23,6 +23,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class GoBoardView extends Parent {
     //region Fields
@@ -34,29 +36,24 @@ public class GoBoardView extends Parent {
     private GoBoardModel model;
 
     // Auxiliary variables
-    private int BOARD_SIZE;
     private double TILE_SIZE;
     //endregion
 
     // Constructor
     public GoBoardView(int size){
-        this.BOARD_SIZE = size;
         EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
         addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
 
         // -------------------- init ---------------------
-        controller = new GoBoardController();
-        model = new GoBoardModel(size);
-        model.registerView(this);
-        controller.setModel(model);
+        model = new GoBoardModel(this, size);
+        controller = new GoBoardController(model, this);
         this.setActionListener(controller);
-        this.setModel(model);
-        createBoard();
+        drawScene();
     }
 
     //region Getter/Setter
     public void setScale(double scale){
-        this.TILE_SIZE = scale/(BOARD_SIZE+1);
+        this.TILE_SIZE = scale/(model.getSize()+1);
     }
 
     public double getScale(){
@@ -78,7 +75,7 @@ public class GoBoardView extends Parent {
     //endregion
 
     //region Methods
-    public void createBoard() {
+    private void drawScene() {
         pane = new BorderPane();
         pane.setCenter(this);
         FlowPane gameplayButtonPane = new FlowPane();
@@ -90,7 +87,7 @@ public class GoBoardView extends Parent {
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> controller.passPlayer());
         Button resignButton = new Button("Resign");
-        resignButton.setOnMouseClicked(e -> controller.resignCurrentPlayer());
+        resignButton.setOnMouseClicked(e -> controller.changeSceneToWinScreen());
 
         gameplayButtonPane.setPadding(new Insets(30,30,30,30));
         gameplayButtonPane.setHgap(10);
@@ -139,21 +136,21 @@ public class GoBoardView extends Parent {
 
     private void drawBoard() {
         //draw background rectangle
-        Rectangle background = new Rectangle(0, 0, (BOARD_SIZE + 1) * TILE_SIZE, (BOARD_SIZE + 1) * TILE_SIZE);
+        Rectangle background = new Rectangle(0, 0, (model.getSize() + 1) * TILE_SIZE, (model.getSize() + 1) * TILE_SIZE);
         background.setFill(Color.valueOf("#DDBB6D"));
         getChildren().add(background);
 
         // Add horizontal lines to the board
-        for (int i = 1; i <= BOARD_SIZE; i++) {
-            Line line = new Line(TILE_SIZE, TILE_SIZE * i, TILE_SIZE * BOARD_SIZE, TILE_SIZE * i);
-            if(i == 1 || i == BOARD_SIZE) line.setStrokeWidth(3);
+        for (int i = 1; i <= model.getSize(); i++) {
+            Line line = new Line(TILE_SIZE, TILE_SIZE * i, TILE_SIZE * model.getSize(), TILE_SIZE * i);
+            if(i == 1 || i == model.getSize()) line.setStrokeWidth(3);
             getChildren().add(line);
         }
 
         // Add vertical lines to the board
-        for (int i = 1; i <= BOARD_SIZE; i++) {
-            Line line = new Line(TILE_SIZE * i, TILE_SIZE, TILE_SIZE * i, TILE_SIZE * BOARD_SIZE);
-            if(i == 1 || i == BOARD_SIZE) line.setStrokeWidth(3);
+        for (int i = 1; i <= model.getSize(); i++) {
+            Line line = new Line(TILE_SIZE * i, TILE_SIZE, TILE_SIZE * i, TILE_SIZE * model.getSize());
+            if(i == 1 || i == model.getSize()) line.setStrokeWidth(3);
             getChildren().add(line);
         }
 
@@ -173,14 +170,14 @@ public class GoBoardView extends Parent {
     private void drawCoordinates() {
         Group coordinates = new Group();
         //horizontal coordinates
-        for (int i = 1; i <= BOARD_SIZE; i++) {
+        for (int i = 1; i <= model.getSize(); i++) {
             drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),0);
-            drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),(BOARD_SIZE*TILE_SIZE));
+            drawCoordinate(coordinates,i,(i * TILE_SIZE)-(TILE_SIZE/2),(model.getSize()*TILE_SIZE));
         }
         //vertical coordinates
-        for (int i = 1; i <= BOARD_SIZE; i++) {
-            drawCoordinate(coordinates,BOARD_SIZE+1-i,0,(i * TILE_SIZE)-(TILE_SIZE/2));
-            drawCoordinate(coordinates,BOARD_SIZE+1-i,(BOARD_SIZE*TILE_SIZE),(i * TILE_SIZE)-(TILE_SIZE/2));
+        for (int i = 1; i <= model.getSize(); i++) {
+            drawCoordinate(coordinates,model.getSize()+1-i,0,(i * TILE_SIZE)-(TILE_SIZE/2));
+            drawCoordinate(coordinates,model.getSize()+1-i,(model.getSize()*TILE_SIZE),(i * TILE_SIZE)-(TILE_SIZE/2));
         }
 
         getChildren().add(coordinates);
@@ -196,7 +193,7 @@ public class GoBoardView extends Parent {
         //coordinate.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
         Text text; //add Number or Character depending on position
-        if (y == 0 || y == (BOARD_SIZE * TILE_SIZE)) {
+        if (y == 0 || y == (model.getSize() * TILE_SIZE)) {
             text = new Text(String.valueOf((char) (value + 64)));
         } else {
             text = new Text(String.valueOf(value));

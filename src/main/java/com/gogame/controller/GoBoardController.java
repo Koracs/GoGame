@@ -2,8 +2,13 @@ package com.gogame.controller;
 
 import com.gogame.model.*;
 import com.gogame.view.GoBoardView;
+import com.gogame.view.StartScreenView;
+import com.gogame.view.WinScreenView;
 import javafx.event.ActionEvent;
+import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class GoBoardController {
     //region Fields
@@ -13,8 +18,9 @@ public class GoBoardController {
     //endregion
 
     // Constructor
-    public GoBoardController() {
-
+    public GoBoardController(GoBoardModel model, GoBoardView view) {
+        this.model = model;
+        this.view = view;
     }
 
     //region Getter/Setter
@@ -47,9 +53,13 @@ public class GoBoardController {
         model.pass();
     }
 
-    public void resignCurrentPlayer() {
-        System.out.println("Player " + model.getCurrentPlayer() + " resigned!");
-        this.resetModel();
+    public void changeSceneToWinScreen() {
+        WinScreenView nextView = new WinScreenView(model.getCurrentPlayer().toString());
+        Window w = view.getPane().getScene().getWindow();
+        if(w instanceof Stage) {
+            Stage s = (Stage) w;
+            s.setScene(new Scene(nextView.getPane(),500,600));
+        }
     }
 
     public void openImportFile() {

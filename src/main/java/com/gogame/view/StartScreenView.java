@@ -13,10 +13,14 @@ public class StartScreenView extends Parent {
     //region Fields
     // Pane of this class
     private BorderPane pane;
+
+    // MVC variables
+    private StartscreenController controller;
     //endregion
 
     // Constructor
     public StartScreenView() {
+        this.controller = new StartscreenController(this);
         createScreen();
     }
 
@@ -32,15 +36,7 @@ public class StartScreenView extends Parent {
 
         // Create buttons for selecting game mode
         Button startGame = new Button("Start game");
-        startGame.setOnMouseClicked(e -> {
-            GameSettingsView view = new GameSettingsView();
-            Window w = pane.getScene().getWindow();
-            if(w instanceof Stage) {
-                Stage s = (Stage) w;
-                System.out.println("Change scene");
-                s.setScene(new Scene(view.getPane(),500,600));
-            }
-        });
+        startGame.setOnMouseClicked(e -> controller.changeSceneToGameSettingsScreen());
 
         Button tutorial = new Button("Tutorial");
         tutorial.setOnMouseClicked(e -> System.out.println("Tutorial button clicked!"));
