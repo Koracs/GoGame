@@ -58,11 +58,14 @@ public class GameSettingsView {
 
         RadioButton size_nine = new RadioButton(SIZE_9);
         size_nine.setToggleGroup(boardSizeButtonGroup);
+        size_nine.setOnMouseClicked(e -> model.setBoardSize(9));
         RadioButton size_thirteen = new RadioButton(SIZE_13);
         size_thirteen.setToggleGroup(boardSizeButtonGroup);
+        size_thirteen.setOnMouseClicked(e -> model.setBoardSize(13));
         RadioButton size_nineteen = new RadioButton(SIZE_19);
         size_nineteen.setToggleGroup(boardSizeButtonGroup);
         size_nineteen.setSelected(true);
+        size_nineteen.setOnMouseClicked(e -> model.setBoardSize(19));
 
         HBox hBox = new HBox(size_nine, size_thirteen, size_nineteen);
         hBox.setSpacing(10);

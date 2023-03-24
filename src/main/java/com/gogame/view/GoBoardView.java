@@ -1,19 +1,17 @@
 package com.gogame.view;
 
-import com.gogame.adapter.*;
 import com.gogame.controller.*;
 
+import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.GoField;
 import com.gogame.model.Stone;
-import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -24,71 +22,70 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
-public class GoBoardView extends Parent {
+public class GoBoardView extends Parent { //todo interface for views? (registerView())
     //region Fields
     // Pane of this class
     private BorderPane pane;
 
     private GoBoardController controller;
-    private int boardSize;
+    private final int boardSize;
     private double tileSize;
     private GoBoardModel model;
 
-        // -------------------- init ---------------------
-        model = new GoBoardModel(this, size);
-        controller = new GoBoardController(model, this);
-        this.setActionListener(controller);
+    private TextArea gameState;
+
+    public GoBoardView(int size) {
+        this.boardSize = size;
+        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
+        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
+
+        model = new GoBoardModel(size);
+        controller = new GoBoardController(model,this);
+        gameState = new TextArea();
+        model.addGameListener(new GameListener() {
+            @Override
+            public void moveCompleted(GameEvent event) {
+                draw();
+            }
+
+            @Override
+            public void resetGame(GameEvent event) {
+                draw();
+            }
+        });
+
         drawScene();
+
+
+        model.addGameListener(new GameListener() {
+            @Override
+            public void moveCompleted(GameEvent event) {
+                gameState.setText(event.getX() + " " + event.getY() +": "+event.getState().toString());
+            }
+            @Override
+            public void resetGame(GameEvent event) {
+                gameState.setText(event.getState().toString());
+            }
+        });
     }
 
     //region Getter/Setter
-    public void setScale(double scale){
-        this.TILE_SIZE = scale/(model.getSize()+1);
-    }
-
-    public double getScale(){
-        return this.TILE_SIZE;
-    }
 
     public BorderPane getPane() {
         return this.pane;
     }
 
-    public void setActionListener(GoBoardController controller) {
-        this.controller = controller;
-        controller.setView(this);
-    }
-
     public void setModel(GoBoardModel model){
         this.model = model;
     }
-    //endregion
 
-    //region Methods
     private void drawScene() {
         pane = new BorderPane();
         pane.setCenter(this);
         FlowPane gameplayButtonPane = new FlowPane();
         pane.setBottom(gameplayButtonPane);
-
-    public void registerView(GoBoardModel model){
-        this.model = model;
-
-        model.addGameListener(new GameListener() {
-            @Override
-            public void moveCompleted() {
-                draw();
-            }
-
-            @Override
-            public void resetGame() {
-                draw();
-            }
-        });
-    }
+        //pane.setLeft(gameState);
 
         // Buttons for gameplay
         Button resetButton = new Button("Reset");
@@ -215,13 +212,6 @@ public class GoBoardView extends Parent {
             }
         }
     }
-
-
-    public void setActionListener(GoBoardController controller) {
-        this.controller = controller;
-        controller.setView(this);
-    }
-
 
     public void setScale(double scale) {
         this.tileSize = scale / (boardSize + 1);

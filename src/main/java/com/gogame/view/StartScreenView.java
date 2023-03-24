@@ -1,6 +1,6 @@
 package com.gogame.view;
 
-import com.gogame.controller.StartscreenController;
+import com.gogame.controller.StartScreenController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -15,12 +15,12 @@ public class StartScreenView extends Parent {
     private BorderPane pane;
 
     // MVC variables
-    private StartscreenController controller;
+    private StartScreenController controller;
     //endregion
 
     // Constructor
     public StartScreenView() {
-        this.controller = new StartscreenController(this);
+        this.controller = new StartScreenController(this);
         createScreen();
     }
 
@@ -38,7 +38,7 @@ public class StartScreenView extends Parent {
         Button startGame = new Button("Start game");
         startGame.setOnMouseClicked(e -> controller.changeSceneToGameSettingsScreen());
 
-        Button tutorial = new Button("Tutorial");
+        Button tutorial = new Button("Tutorial"); //todo which requirment mentions a tutorial?
         tutorial.setOnMouseClicked(e -> System.out.println("Tutorial button clicked!"));
 
         FlowPane pa = new FlowPane(startGame,tutorial);

@@ -1,6 +1,8 @@
 package com.gogame.model;
 
+import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
+import com.gogame.listener.GameState;
 import com.gogame.view.*;
 import javafx.scene.Parent;
 
@@ -11,11 +13,11 @@ import java.util.List;
 public class GoBoardModel {
     //region Fields
     // MVC variables
-    private GoBoardView view;
 
     // Model variables
     private int size;
-    private Stone currentPlayer;
+    private Stone currentPlayer; //todo curremtplayer and gameState both needed?
+    private GameState gameState;
 
     private GoField[][] fields;
 
@@ -80,40 +82,43 @@ public class GoBoardModel {
     }
 
 
-    public void registerView(GoBoardView view) {
-        this.view = view;
-    }
-
     public void makeMove(int x, int y) {
         if (fields[y][x].isEmpty()) {
             fields[y][x].setStone(currentPlayer);
             switchPlayer();
-            //System.out.println(Arrays.deepToString(fields));
+
             for (GameListener listener : listeners) {
-                listener.moveCompleted();
+                listener.moveCompleted(new GameEvent(this, gameState, x, y));
             }
         }
     }
 
-    private void switchPlayer() {
-        if (currentPlayer == Stone.BLACK) currentPlayer = Stone.WHITE;
-        else if (currentPlayer == Stone.WHITE) currentPlayer = Stone.BLACK;
+    public void switchPlayer() {
+        if (currentPlayer == Stone.BLACK) {
+            currentPlayer = Stone.WHITE;
+            gameState = GameState.WHITE_TURN;
+        } else if (currentPlayer == Stone.WHITE) {
+            currentPlayer = Stone.BLACK;
+            gameState = GameState.BLACK_TURN;
+        }
     }
 
     public void reset() {
+        gameState = GameState.RESET;
         initModel();
         initHandicapFields();
 
         for (GameListener listener : listeners) {
-            listener.resetGame();
+            listener.resetGame(new GameEvent(this, gameState));
         }
     }
 
     public void pass() {
+        gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_PASSED : GameState.WHITE_PASSED;
         switchPlayer();
     }
 
-    public void printModel(){
+    public void printModel() {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 System.out.print(fields[y][x].toString());
