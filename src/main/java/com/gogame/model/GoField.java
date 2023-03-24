@@ -1,10 +1,7 @@
 package com.gogame.model;
 
 public class GoField {
-
-
     private Stone stone;
-    //todo add field for name? A3, C5,...
 
 
     public GoField(){
@@ -19,10 +16,7 @@ public class GoField {
     }
 
     public boolean isEmpty() {
-        if(this.stone == Stone.NONE) {
-            return true;
-        }
-        return false;
+        return this.stone == Stone.NONE||this.stone == Stone.PRESET;
     }
 
     public void setStone(Stone stone) {

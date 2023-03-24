@@ -1,8 +1,12 @@
 package com.gogame.model;
 
+import com.gogame.listener.GameListener;
 import com.gogame.view.*;
+import javafx.scene.Parent;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GoBoardModel {
     //region Fields
@@ -12,21 +16,55 @@ public class GoBoardModel {
     // Model variables
     private int size;
     private Stone currentPlayer;
+
     private GoField[][] fields;
 
-    //endregion
+    private final List<GameListener> listeners;
 
-    // Constructor
-    public GoBoardModel(GoBoardView view, int size){
-        this.view = view;
+
+    public GoBoardModel(int size) {
         this.size = size;
         currentPlayer = Stone.BLACK;
+        listeners = new LinkedList<>();
+
         initModel();
+        initHandicapFields();
+    }
+
+    private void initHandicapFields() {
+        int[] handicapFields = new int[0];
+        switch (size) {
+            case 19 -> {
+                handicapFields = new int[]{3, 9, 15};
+            }
+            case 13 -> {
+                handicapFields = new int[]{3, 6, 9};
+            }
+            case 9 -> {
+                handicapFields = new int[]{2, 6};
+                fields[4][4].setStone(Stone.PRESET);
+            }
+        }
+        for (int i : handicapFields) {
+            for (int j : handicapFields) {
+                fields[i][j].setStone(Stone.PRESET);
+            }
+        }
     }
 
     //region Getter/Setter
     public Stone getCurrentPlayer() {
         return this.currentPlayer;
+    }
+
+
+    private void initModel() {
+        fields = new GoField[size][size];
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                fields[y][x] = new GoField();
+            }
+        }
     }
 
     public int getSize() {
@@ -41,41 +79,54 @@ public class GoBoardModel {
         return fields;
     }
 
-    public void setView(GoBoardView view) {
+
+    public void registerView(GoBoardView view) {
         this.view = view;
     }
-    //endregion
 
-    //region Methods
-    private void initModel() {
-        fields = new GoField[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                fields[i][j] = new GoField();
+    public void makeMove(int x, int y) {
+        if (fields[y][x].isEmpty()) {
+            fields[y][x].setStone(currentPlayer);
+            switchPlayer();
+            //System.out.println(Arrays.deepToString(fields));
+            for (GameListener listener : listeners) {
+                listener.moveCompleted();
             }
         }
     }
 
-    public void makeMove(int x, int y){
-        if(fields[y][x].isEmpty()) {
-            fields[y][x].setStone(currentPlayer);
-            switchPlayer();
-            //System.out.println("stone set");
-            System.out.println(Arrays.deepToString(fields));
-        }
-    }
-
-    public void switchPlayer(){
+    private void switchPlayer() {
         if (currentPlayer == Stone.BLACK) currentPlayer = Stone.WHITE;
         else if (currentPlayer == Stone.WHITE) currentPlayer = Stone.BLACK;
     }
 
     public void reset() {
         initModel();
+        initHandicapFields();
+
+        for (GameListener listener : listeners) {
+            listener.resetGame();
+        }
     }
 
     public void pass() {
         switchPlayer();
     }
-    //endregion
+
+    public void printModel(){
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                System.out.print(fields[y][x].toString());
+            }
+            System.out.println();
+        }
+    }
+
+    public void addGameListener(GameListener l) {
+        listeners.add(l);
+    }
+
+    public void removeGameListener(GameListener l) {
+        listeners.remove(l);
+    }
 }
