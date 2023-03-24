@@ -36,10 +36,9 @@ public class Main extends Application {
         controller = new GoBoardController();
         model = new GoBoardModel(size);
 
-        model.registerView(board);
-        controller.setModel(model);
+        controller.setModel(model); //todo rework MVC connections
         board.setActionListener(controller);
-        board.setModel(model);
+        board.registerView(model);
 
         stage.setTitle("Go Game");
         pane = new BorderPane();

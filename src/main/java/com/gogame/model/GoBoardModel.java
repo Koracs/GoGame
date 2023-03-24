@@ -1,20 +1,26 @@
 package com.gogame.model;
 
+import com.gogame.listener.GameListener;
 import com.gogame.view.*;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GoBoardModel {
     private GoBoardView view;
     private int size;
     private Stone currentPlayer;
-
     private GoField[][] fields;
+
+    private final List<GameListener> listeners;
 
 
     public GoBoardModel(int size) {
         this.size = size;
         currentPlayer = Stone.BLACK;
+        listeners = new LinkedList<>();
+
         initModel();
         initHandicapFields();
     }
@@ -76,7 +82,9 @@ public class GoBoardModel {
             fields[y][x].setStone(currentPlayer);
             switchPlayer();
             //System.out.println(Arrays.deepToString(fields));
-            printModel();
+            for (GameListener listener : listeners) {
+                listener.moveCompleted();
+            }
         }
 
     }
@@ -86,8 +94,13 @@ public class GoBoardModel {
         else if (currentPlayer == Stone.WHITE) currentPlayer = Stone.BLACK;
     }
 
-    public void reset() { //todo handicap stones get reset aswell
+    public void reset() {
         initModel();
+        initHandicapFields();
+
+        for (GameListener listener : listeners) {
+            listener.resetGame();
+        }
     }
 
     public void pass() {
@@ -101,5 +114,13 @@ public class GoBoardModel {
             }
             System.out.println();
         }
+    }
+
+    public void addGameListener(GameListener l) {
+        listeners.add(l);
+    }
+
+    public void removeGameListener(GameListener l) {
+        listeners.remove(l);
     }
 }

@@ -25,12 +25,10 @@ public class GoBoardController {
 
         System.out.println(x + " " + y);
         model.makeMove(x,y);
-        view.draw();
     }
 
     public void resetModel(){
         model.reset();
-        view.draw();
     }
 
     public void passPlayer() {
