@@ -12,6 +12,8 @@ public class GameSettingsModel {
     private int boardSize;
     private int handicap;
     private double komi;
+    private boolean komiActive;
+    private boolean handicapActive;
     //endregion
 
     // Constructor - set all settings to default value
@@ -20,6 +22,8 @@ public class GameSettingsModel {
         this.boardSize = 19;
         this.komi = 0.5;
         this.handicap = 0;
+        this.komiActive = false;
+        this.handicapActive = false;
     }
 
     //region Getter/Setter
@@ -50,6 +54,23 @@ public class GameSettingsModel {
     public void setView(GameSettingsView view) {
         this.view = view;
     }
+
+    public boolean isKomiActive() {
+        return komiActive;
+    }
+
+    public void changeKomiActive() {
+        this.komiActive = !this.komiActive;
+    }
+
+    public boolean isHandicapActive() {
+        return handicapActive;
+    }
+
+    public void changeHandicapActive() {
+        this.handicapActive = !this.handicapActive;
+    }
+
     //endregion
 
     //region Methods
