@@ -58,10 +58,10 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         drawScene();
 
 
-        model.addGameListener(new GameListener() {
+        model.addGameListener(new GameListener() { //todo outsource into own class
             @Override
             public void moveCompleted(GameEvent event) {
-                gameState.setText(event.getX() + " " + event.getY() +": "+event.getState().toString());
+                gameState.setText(event.getRow() + " " + event.getCol() +": "+event.getState().toString());
             }
             @Override
             public void resetGame(GameEvent event) {
@@ -148,14 +148,14 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         background.setFill(Color.valueOf("#DDBB6D"));
         getChildren().add(background);
 
-        // Add horizontal lines to the board
+        //Add horizontal lines to the board
         for (int i = 1; i <= boardSize; i++) {
             Line line = new Line(tileSize, tileSize * i, tileSize * boardSize, tileSize * i);
             if (i == 1 || i == boardSize) line.setStrokeWidth(3);
             getChildren().add(line);
         }
 
-        // Add vertical lines to the board
+        //Add vertical lines to the board
         for (int i = 1; i <= boardSize; i++) {
             Line line = new Line(tileSize * i, tileSize, tileSize * i, tileSize * boardSize);
             if (i == 1 || i == boardSize) line.setStrokeWidth(3);
@@ -179,6 +179,7 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         getChildren().add(coordinates);
     }
 
+
     private void drawCoordinate(Group parent, int value, double x, double y) {
         StackPane coordinate = new StackPane();
         coordinate.setAlignment(Pos.CENTER);
@@ -201,16 +202,30 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
 
     private void drawStones() {
         GoField[][] fields = model.getFields();
-        for (int y = 0; y < fields.length; y++) {
-            for (int x = 0; x < fields[y].length; x++) {
-                if (fields[y][x].getStone() != Stone.NONE) {
-                    Circle stone = StoneView.createStone((x + 1) * tileSize,
-                            (y + 1) * tileSize, fields[y][x].getStone(), tileSize);
+        for (int row = 0; row < fields.length; row++) {
+            for (int col = 0; col < fields[row].length; col++) {
+                if (fields[row][col].getStone() != Stone.NONE) {
+                    Circle stone = createStone((col + 1) * tileSize,
+                            (row + 1) * tileSize, fields[row][col].getStone(), tileSize);
 
                     getChildren().add(stone);
                 }
             }
         }
+    }
+
+    private Circle createStone(double centerX, double centerY, Stone stone, double tileSize){
+        double radius = switch (stone) {
+            case BLACK, WHITE -> tileSize / 4;
+            case PRESET -> tileSize / 8;
+            default -> 0;
+        };
+
+        Circle circle = new Circle(centerX,centerY,radius);
+        circle.setFill(stone.getColor());
+        //circle.setStroke(Color.BLACK);
+
+        return circle;
     }
 
     public void setScale(double scale) {

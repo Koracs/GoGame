@@ -4,7 +4,7 @@ import java.util.EventListener;
 
 public interface GameListener extends EventListener {
 
-    void moveCompleted(GameEvent event); //todo use extension of EventObject like Soft2 ConnectFour?
+    void moveCompleted(GameEvent event);
 
     void resetGame(GameEvent event);
 }

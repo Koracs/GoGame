@@ -11,7 +11,6 @@ public enum GameState {
     WHITE_PASSED("White player passed."),
     WHITE_WON("White player won!"),
     DRAW("Draw!"),
-
     RESET("Game was reset.");
 
     private final String message;

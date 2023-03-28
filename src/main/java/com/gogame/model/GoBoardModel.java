@@ -16,13 +16,13 @@ public class GoBoardModel {
 
     // Model variables
     private int size;
-    private Stone currentPlayer; //todo curremtplayer and gameState both needed?
+    private Stone currentPlayer; //todo currentplayer and gameState both needed?
     private GameState gameState;
 
     private GoField[][] fields;
 
     private final List<GameListener> listeners;
-
+    //endregion
 
     public GoBoardModel(int size) {
         this.size = size;
@@ -36,20 +36,16 @@ public class GoBoardModel {
     private void initHandicapFields() {
         int[] handicapFields = new int[0];
         switch (size) {
-            case 19 -> {
-                handicapFields = new int[]{3, 9, 15};
-            }
-            case 13 -> {
-                handicapFields = new int[]{3, 6, 9};
-            }
+            case 19 -> handicapFields = new int[]{3, 9, 15};
+            case 13 -> handicapFields = new int[]{3, 6, 9};
             case 9 -> {
                 handicapFields = new int[]{2, 6};
                 fields[4][4].setStone(Stone.PRESET);
             }
         }
-        for (int i : handicapFields) {
-            for (int j : handicapFields) {
-                fields[i][j].setStone(Stone.PRESET);
+        for (int row : handicapFields) {
+            for (int col : handicapFields) {
+                fields[row][col].setStone(Stone.PRESET);
             }
         }
     }
@@ -62,9 +58,9 @@ public class GoBoardModel {
 
     private void initModel() {
         fields = new GoField[size][size];
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                fields[y][x] = new GoField();
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                fields[row][col] = new GoField();
             }
         }
     }
@@ -82,13 +78,13 @@ public class GoBoardModel {
     }
 
 
-    public void makeMove(int x, int y) {
-        if (fields[y][x].isEmpty()) {
-            fields[y][x].setStone(currentPlayer);
+    public void makeMove(int row, int col) {
+        if (fields[row][col].isEmpty()) {
+            fields[row][col].setStone(currentPlayer);
             switchPlayer();
 
             for (GameListener listener : listeners) {
-                listener.moveCompleted(new GameEvent(this, gameState, x, y));
+                listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
         }
     }
@@ -119,9 +115,9 @@ public class GoBoardModel {
     }
 
     public void printModel() {
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                System.out.print(fields[y][x].toString());
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                System.out.print(fields[row][col].toString());
             }
             System.out.println();
         }

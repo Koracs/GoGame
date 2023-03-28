@@ -1,6 +1,7 @@
 package com.gogame.view;
 
 import com.gogame.controller.StartScreenController;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -58,6 +59,7 @@ public class StartScreenView extends Parent {
         tutorial.setOnMouseClicked(e -> System.out.println("Tutorial button clicked!"));
 
         FlowPane pa = new FlowPane(startGame,tutorial);
+        pa.setAlignment(Pos.CENTER);
         pane.setCenter(pa);
     }
     //endregion

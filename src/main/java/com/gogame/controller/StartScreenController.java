@@ -12,10 +12,12 @@ public class StartScreenController {
     private StartScreenView view;
     //endregion
 
-    // Constructor
+    //region Constructor
     public StartScreenController(StartScreenView view) {
         this.view = view;
     }
+
+    //endregion
 
     //region Getter/Setter
     public void setView(StartScreenView view) {
@@ -28,9 +30,9 @@ public class StartScreenController {
     public void changeSceneToGameSettingsScreen() {
         GameSettingsView nextView = new GameSettingsView();
         Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage) {
+        if (w instanceof Stage) {
             Stage s = (Stage) w;
-            s.setScene(new Scene(nextView.getPane(),500,600));
+            s.setScene(new Scene(nextView.getPane(), 500, 600));
         }
     }
     //endregion

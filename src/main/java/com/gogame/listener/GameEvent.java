@@ -8,8 +8,8 @@ public class GameEvent extends EventObject {
 
     private GameState state;
 
-    private int x;
-    private int y;
+    private int row;
+    private int col;
 
 
     public GameEvent(GoBoardModel source, GameState state){ //todo add game interface?
@@ -17,18 +17,18 @@ public class GameEvent extends EventObject {
         this.state = state;
     }
 
-    public GameEvent(GoBoardModel source, GameState state, int x, int y){
+    public GameEvent(GoBoardModel source, GameState state, int row, int col){
         this(source,state);
-        this.x = x;
-        this.y = y;
+        this.row = row;
+        this.col = col;
     }
 
-    public int getY() {
-        return y;
+    public int getRow() {
+        return row;
     }
 
-    public int getX() {
-        return x;
+    public int getCol() {
+        return col;
     }
 
     public GameState getState() {
