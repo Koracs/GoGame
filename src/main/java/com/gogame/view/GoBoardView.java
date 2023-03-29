@@ -61,7 +61,8 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         model.addGameListener(new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
-                gameState.setText(event.getX() + " " + event.getY() +": "+event.getState().toString());
+                gameState.setText(event.getX() + " " + event.getY() + ": " + event.getState().toString());
+                model.storeData( event.getX() + ";" + event.getY() + "\n");
             }
             @Override
             public void resetGame(GameEvent event) {
@@ -103,15 +104,14 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         gameplayButtonPane.getChildren().add(passButton);
         gameplayButtonPane.getChildren().add(resignButton);
 
-        // Buttons to import/export games
-        // --------------------- vielleicht ändern auf menu bar ---------------------
+        // Menubar
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Game");
 
         MenuItem importButton = new MenuItem("Import game");
         importButton.setOnAction(e -> controller.openImportFile());
         MenuItem exportButton = new MenuItem("Export game");
-        exportButton.setOnAction(e -> System.out.println("Export game"));
+        exportButton.setOnAction(e -> controller.exportFile());
 
         menu.getItems().add(importButton);
         menu.getItems().add(exportButton);

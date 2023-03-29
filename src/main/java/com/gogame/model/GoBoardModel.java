@@ -6,6 +6,8 @@ import com.gogame.listener.GameState;
 import com.gogame.view.*;
 import javafx.scene.Parent;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,16 +18,21 @@ public class GoBoardModel {
 
     // Model variables
     private int size;
+    private int handicap;
+    private double komi;
     private Stone currentPlayer; //todo curremtplayer and gameState both needed?
     private GameState gameState;
 
     private GoField[][] fields;
 
     private final List<GameListener> listeners;
+    private StringBuilder gameDataStorage;
 
 
     public GoBoardModel(int size) {
         this.size = size;
+        this.handicap = 0;
+        this.komi = 0.5;
         currentPlayer = Stone.BLACK;
         listeners = new LinkedList<>();
 
@@ -67,6 +74,7 @@ public class GoBoardModel {
                 fields[y][x] = new GoField();
             }
         }
+        this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
     }
 
     public int getSize() {
@@ -81,7 +89,13 @@ public class GoBoardModel {
         return fields;
     }
 
+    public String getGameDataStorage() {
+        return gameDataStorage.toString();
+    }
 
+    //endregion
+
+    //region Methods
     public void makeMove(int x, int y) {
         if (fields[y][x].isEmpty()) {
             fields[y][x].setStone(currentPlayer);
@@ -115,6 +129,7 @@ public class GoBoardModel {
 
     public void pass() {
         gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_PASSED : GameState.WHITE_PASSED;
+        gameDataStorage.append(gameState.toString() + "\n");
         switchPlayer();
     }
 
@@ -127,6 +142,10 @@ public class GoBoardModel {
         }
     }
 
+    public void storeData(String s) {
+        this.gameDataStorage.append(s );
+    }
+
     public void addGameListener(GameListener l) {
         listeners.add(l);
     }
@@ -134,4 +153,6 @@ public class GoBoardModel {
     public void removeGameListener(GameListener l) {
         listeners.remove(l);
     }
+
+    //endregion
 }
