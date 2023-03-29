@@ -35,8 +35,7 @@ public class GameSettingsController {
     public void changeSceneToGameScene() {
         GoBoardView nextView = new GoBoardView(this.model.getBoardSize());
         Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage) {
-            Stage s = (Stage) w;
+        if(w instanceof Stage s) {
             s.setScene(new Scene(nextView.getPane(),500,600));
         }
     }
