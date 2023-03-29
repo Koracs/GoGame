@@ -34,6 +34,8 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
     private GoBoardModel model;
 
     private TextArea gameState;
+    private Button forwardButton;
+    private Button backButton;
 
     public GoBoardView(int size) {
         this.boardSize = size;
@@ -120,6 +122,18 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         menuBar.getMenus().add(menu);
         pane.setTop(menuBar);
 
+        // Add forward and back buttons (only enabled when file imported)
+        forwardButton = new Button("Forward");
+        forwardButton.setOnMouseClicked(e -> System.out.println("Forward"));
+        forwardButton.setDisable(true);
+        forwardButton.setVisible(false);
+        backButton = new Button("Back");
+        backButton.setOnMouseClicked(e -> System.out.println("Back"));
+        backButton.setDisable(true);
+        backButton.setVisible(false);
+        gameplayButtonPane.getChildren().add(forwardButton);
+        gameplayButtonPane.getChildren().add(backButton);
+
         pane.widthProperty().addListener((obs, oldVal, newVal) -> {
             resize(newVal.doubleValue(), pane.getHeight());
         });
@@ -140,7 +154,19 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         drawStones();
     }
 
+    public void enableGameControlButtons() {
+        forwardButton.setDisable(false);
+        forwardButton.setVisible(true);
+        backButton.setDisable(false);
+        backButton.setVisible(true);
+    }
 
+    public void disableGameControlButtons() {
+        forwardButton.setDisable(true);
+        forwardButton.setVisible(false);
+        backButton.setDisable(true);
+        backButton.setVisible(false);
+    }
 
     private void drawBoard() {
         //draw background rectangle

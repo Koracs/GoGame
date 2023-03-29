@@ -64,8 +64,7 @@ public class GoBoardController {
         model.switchPlayer();
         WinScreenView nextView = new WinScreenView(model.getCurrentPlayer().toString());
         Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage) {
-            Stage s = (Stage) w;
+        if(w instanceof Stage s) {
             s.setScene(new Scene(nextView.getPane(),500,600));
         }
     }
@@ -82,7 +81,8 @@ public class GoBoardController {
             // Read metadata
             if(line != null) {
                 resetModel();
-                //todo Repaint view ---------------- needs to be implemented
+                //todo Repaint view ---------------- needs to be implemented with possible different size
+                view.enableGameControlButtons();
                 view.draw();
                 line = reader.readLine();
             }
@@ -109,7 +109,7 @@ public class GoBoardController {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
         try {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_YYYY");
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yyyy");
             LocalDateTime now = LocalDateTime.now();
             FileWriter fileWriter = new FileWriter(selectedDirectory.getAbsolutePath() + "\\" + FILENAME + dtf.format(now) + ".txt");
             fileWriter.write(model.getGameDataStorage());
