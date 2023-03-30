@@ -56,17 +56,7 @@ public class GoBoardController {
         model.pass();
     }
 
-    public void changeSceneToWinScreen() {
-        // Switch player to get the winner
-        model.switchPlayer();
-        WinScreenView nextView = new WinScreenView(model.getCurrentPlayer().toString());
-        Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage s) {
-            s.setScene(new Scene(nextView.getPane(),500,600));
-        }
-    }
-
-    public void openImportFile() {
+    /*public void openImportFile() {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extensionFilter);
@@ -115,6 +105,6 @@ public class GoBoardController {
             throw new RuntimeException(e);
         }
 
-    }
+    }*/
     //endregion
 }
