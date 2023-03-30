@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class WinScreenView extends Parent {
+public class WinScreenView extends View {
     //region Fields
     // Set style of button
     private final String STYLE = "-fx-background-color:\n" +
@@ -42,6 +42,7 @@ public class WinScreenView extends Parent {
     }
 
     //region Getter/Setter
+    @Override
     public BorderPane getPane() {
         return pane;
     }
@@ -57,7 +58,8 @@ public class WinScreenView extends Parent {
 
 
     //region Methods
-    private void drawScene() {
+    @Override
+    protected void drawScene() {
         pane = new BorderPane();
 
         Text winText = new Text("Player " + model.getWinner() + " wins!");

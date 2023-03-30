@@ -3,6 +3,9 @@ package com.gogame.model;
 import com.gogame.view.GameSettingsView;
 import com.gogame.view.GoBoardView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameSettingsModel {
     //region Fields
     // MVC variables
@@ -10,6 +13,7 @@ public class GameSettingsModel {
 
     // Model variables
     private int boardSize;
+    int[] sizes;
     private int handicap;
     private double komi;
     private boolean komiActive;
@@ -24,6 +28,7 @@ public class GameSettingsModel {
         this.handicap = 0;
         this.komiActive = false;
         this.handicapActive = false;
+        sizes = new int[]{9,13,19};
     }
 
     //region Getter/Setter
@@ -69,6 +74,10 @@ public class GameSettingsModel {
 
     public void changeHandicapActive() {
         this.handicapActive = !this.handicapActive;
+    }
+
+    public int[] getSizes() {
+        return sizes;
     }
 
     //endregion

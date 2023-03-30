@@ -3,7 +3,7 @@ package com.gogame.controller;
 import com.gogame.model.GameSettingsModel;
 import com.gogame.model.GoBoardModel;
 import com.gogame.view.GameSettingsView;
-import com.gogame.view.GoBoardView;
+import com.gogame.view.GameScreenView;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -33,7 +33,8 @@ public class GameSettingsController {
 
     //region Methods
     public void changeSceneToGameScene() {
-        GoBoardView nextView = new GoBoardView(this.model.getBoardSize());
+        GoBoardModel goBoardModel = new GoBoardModel(model.getBoardSize());
+        GameScreenView nextView = new GameScreenView(goBoardModel);
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage) {
             Stage s = (Stage) w;

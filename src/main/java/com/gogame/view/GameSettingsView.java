@@ -9,21 +9,23 @@ import javafx.scene.layout.VBox;
 
 import java.util.regex.Pattern;
 
-public class GameSettingsView {
+public class GameSettingsView extends View {
     //region Fields
     // Set style of button
-    private final String STYLE = "-fx-background-color:\n" +
-            "            linear-gradient(#ffd65b, #e68400),\n" +
-            "            linear-gradient(#ffef84, #f2ba44),\n" +
-            "            linear-gradient(#ffea6a, #efaa22),\n" +
-            "            linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),\n" +
-            "            linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));\n" +
-            "    -fx-background-radius: 30;\n" +
-            "    -fx-background-insets: 0,1,2,3,0;\n" +
-            "    -fx-text-fill: #654b00;\n" +
-            "    -fx-font-weight: bold;\n" +
-            "    -fx-font-size: 14px;\n" +
-            "    -fx-padding: 10 20 10 20;";
+    private final String STYLE = """
+            -fx-background-color:
+                        linear-gradient(#ffd65b, #e68400),
+                        linear-gradient(#ffef84, #f2ba44),
+                        linear-gradient(#ffea6a, #efaa22),
+                        linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),
+                        linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));
+                -fx-background-radius: 30;
+                -fx-background-insets: 0,1,2,3,0;
+                -fx-text-fill: #654b00;
+                -fx-font-weight: bold;
+                -fx-font-size: 14px;
+                -fx-padding: 10 20 10 20;
+            """;
 
     // Pane of this class
     private BorderPane pane;
@@ -32,13 +34,9 @@ public class GameSettingsView {
     private GameSettingsController controller;
     private GameSettingsModel model;
 
-    // Constants
-    private final String SIZE_9 = "9x9";
-    private final String SIZE_13 = "13x13";
-    private final String SIZE_19 = "19x19";
     //endregion
 
-    // Constructor
+    //region Constructor
     public GameSettingsView() {
         model = new GameSettingsModel(this);
         controller = new GameSettingsController(model, this);
@@ -46,8 +44,10 @@ public class GameSettingsView {
         this.setModel(model);
         drawScene();
     }
+    //endregion
 
     //region Getter/Setter
+    @Override
     public BorderPane getPane() {
         return this.pane;
     }
@@ -63,7 +63,8 @@ public class GameSettingsView {
     //endregion
 
     //region Methods
-    private void drawScene() {
+    @Override
+    protected void drawScene() {
         pane = new BorderPane();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
@@ -71,19 +72,16 @@ public class GameSettingsView {
 
         // Set field size
         ToggleGroup boardSizeButtonGroup = new ToggleGroup();
+        HBox hBox = new HBox();
 
-        RadioButton size_nine = new RadioButton(SIZE_9);
-        size_nine.setToggleGroup(boardSizeButtonGroup);
-        size_nine.setOnMouseClicked(e -> model.setBoardSize(9));
-        RadioButton size_thirteen = new RadioButton(SIZE_13);
-        size_thirteen.setToggleGroup(boardSizeButtonGroup);
-        size_thirteen.setOnMouseClicked(e -> model.setBoardSize(13));
-        RadioButton size_nineteen = new RadioButton(SIZE_19);
-        size_nineteen.setToggleGroup(boardSizeButtonGroup);
-        size_nineteen.setSelected(true);
-        size_nineteen.setOnMouseClicked(e -> model.setBoardSize(19));
+        for (int i : model.getSizes()) {
+            RadioButton button = new RadioButton(i + "x" + i);
+            button.setToggleGroup(boardSizeButtonGroup);
+            button.setOnMouseClicked(e -> model.setBoardSize(i));
+            hBox.getChildren().add(button);
+            button.setSelected(i == model.getBoardSize());
+        }
 
-        HBox hBox = new HBox(size_nine, size_thirteen, size_nineteen);
         hBox.setSpacing(10);
         vBox.getChildren().add(hBox);
 
@@ -94,9 +92,9 @@ public class GameSettingsView {
             model.changeKomiActive();
             komiSetting.setDisable(!komiSetting.isDisabled());
         });
-        komiSetting.setDisable(true);
+        komiSetting.setDisable(!model.isKomiActive());
         komiSetting.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(Pattern.matches("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$", newValue)) {
+            if (Pattern.matches("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$", newValue)) { //todo only set value on "start game"?
                 model.setKomi(Double.parseDouble(newValue));
             }
         });
@@ -111,9 +109,9 @@ public class GameSettingsView {
             model.changeHandicapActive();
             handicapSetting.setDisable(!handicapSetting.isDisabled());
         });
-        handicapSetting.setDisable(true);
-        handicapSetting.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(Pattern.matches("/^\\d+$/", newValue)) {
+        handicapSetting.setDisable(!model.isHandicapActive());
+        handicapSetting.textProperty().addListener((observable, oldValue, newValue) -> { //todo only set value on "start game"?
+            if (Pattern.matches("/^\\d+$/", newValue)) {
                 model.setHandicap(Integer.parseInt(newValue));
             }
         });

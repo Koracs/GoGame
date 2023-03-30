@@ -49,19 +49,5 @@ public class GoBoardController {
         model.pass();
     }
 
-    public void changeSceneToWinScreen() {
-        // Switch player to get the winner
-        model.switchPlayer();
-        WinScreenView nextView = new WinScreenView(model.getCurrentPlayer().toString());
-        Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage) {
-            Stage s = (Stage) w;
-            s.setScene(new Scene(nextView.getPane(),500,600));
-        }
-    }
-
-    public void openImportFile() {
-
-    }
     //endregion
 }

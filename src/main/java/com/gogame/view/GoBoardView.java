@@ -33,16 +33,13 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
     private double tileSize;
     private GoBoardModel model;
 
-    private TextArea gameState;
 
-    public GoBoardView(int size) {
-        this.boardSize = size;
+    public GoBoardView(GoBoardModel model) {
+        this.boardSize = model.getSize();
+        this.model = model;
+        controller = new GoBoardController(model, this);
         EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
         addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
-
-        model = new GoBoardModel(size);
-        controller = new GoBoardController(model,this);
-        gameState = new TextArea();
         model.addGameListener(new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
@@ -55,82 +52,7 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
             }
         });
 
-        drawScene();
-
-
-        model.addGameListener(new GameListener() { //todo outsource into own class
-            @Override
-            public void moveCompleted(GameEvent event) {
-                gameState.setText(event.getRow() + " " + event.getCol() +": "+event.getState().toString());
-            }
-            @Override
-            public void resetGame(GameEvent event) {
-                gameState.setText(event.getState().toString());
-            }
-        });
-    }
-
-    //region Getter/Setter
-
-    public BorderPane getPane() {
-        return this.pane;
-    }
-
-    public void setModel(GoBoardModel model){
-        this.model = model;
-    }
-
-    private void drawScene() {
-        pane = new BorderPane();
-        pane.setCenter(this);
-        FlowPane gameplayButtonPane = new FlowPane();
-        pane.setBottom(gameplayButtonPane);
-        //pane.setLeft(gameState);
-
-        // Buttons for gameplay
-        Button resetButton = new Button("Reset");
-        resetButton.setOnMouseClicked(e -> controller.resetModel());
-        Button passButton = new Button("Pass");
-        passButton.setOnMouseClicked(e -> controller.passPlayer());
-        Button resignButton = new Button("Resign");
-        resignButton.setOnMouseClicked(e -> controller.changeSceneToWinScreen());
-
-        gameplayButtonPane.setPadding(new Insets(30,30,30,30));
-        gameplayButtonPane.setHgap(10);
-        gameplayButtonPane.setVgap(10);
-        gameplayButtonPane.setAlignment(Pos.CENTER);
-        gameplayButtonPane.getChildren().add(resetButton);
-        gameplayButtonPane.getChildren().add(passButton);
-        gameplayButtonPane.getChildren().add(resignButton);
-
-        // Buttons to import/export games
-        // --------------------- vielleicht ändern auf menu bar ---------------------
-        MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Game");
-
-        MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> controller.openImportFile());
-        MenuItem exportButton = new MenuItem("Export game");
-        exportButton.setOnAction(e -> System.out.println("Export game"));
-
-        menu.getItems().add(importButton);
-        menu.getItems().add(exportButton);
-
-
-        menuBar.getMenus().add(menu);
-        pane.setTop(menuBar);
-
-        pane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            resize(newVal.doubleValue(), pane.getHeight());
-        });
-        pane.heightProperty().addListener((obs, oldVal, newVal) -> {
-            resize(pane.getWidth(), newVal.doubleValue());
-        });
-    }
-
-    public void resize(double width, double height) {
-        this.setScale(Math.min(width, height));
-        this.draw();
+        draw();
     }
 
     public void draw() {
@@ -139,7 +61,6 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         drawCoordinates();
         drawStones();
     }
-
 
 
     private void drawBoard() {
@@ -214,14 +135,14 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         }
     }
 
-    private Circle createStone(double centerX, double centerY, Stone stone, double tileSize){
+    private Circle createStone(double centerX, double centerY, Stone stone, double tileSize) {
         double radius = switch (stone) {
             case BLACK, WHITE -> tileSize / 4;
             case PRESET -> tileSize / 8;
             default -> 0;
         };
 
-        Circle circle = new Circle(centerX,centerY,radius);
+        Circle circle = new Circle(centerX, centerY, radius);
         circle.setFill(stone.getColor());
         //circle.setStroke(Color.BLACK);
 
@@ -234,6 +155,10 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
 
     public double getScale() {
         return this.tileSize;
+    }
+
+    public GoBoardController getController() {
+        return controller;
     }
 
 }
