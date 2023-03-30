@@ -26,8 +26,6 @@ import javafx.scene.text.Text;
 public class GoBoardView extends Parent { //todo interface for views? (registerView())
     //region Fields
     // Pane of this class
-    private BorderPane pane;
-
     private GoBoardController controller;
     private final int boardSize;
     private double tileSize;
@@ -38,8 +36,7 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         this.boardSize = model.getSize();
         this.model = model;
         controller = new GoBoardController(model, this);
-        EventHandler<MouseEvent> clickHandler = mouseEvent -> controller.mouseClicked(mouseEvent);
-        addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
+
         model.addGameListener(new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
@@ -51,6 +48,7 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
                 draw();
             }
         });
+
 
         draw();
     }

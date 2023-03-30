@@ -36,7 +36,6 @@ public class GoBoardController {
         int row = (int)Math.round((e.getY()) / view.getScale()-1);
         int col = (int)Math.round((e.getX()) / view.getScale()-1);
 
-        System.out.println(row + " " + col);
         model.makeMove(row,col);
     }
 
@@ -45,7 +44,6 @@ public class GoBoardController {
     }
 
     public void passPlayer() {
-        System.out.println("Player " + model.getCurrentPlayer() + " passed!");
         model.pass();
     }
 

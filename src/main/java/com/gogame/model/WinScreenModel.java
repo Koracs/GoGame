@@ -1,6 +1,7 @@
 package com.gogame.model;
 
 import com.gogame.view.WinScreenView;
+@Deprecated
 
 public class WinScreenModel {
     //region Fields

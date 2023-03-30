@@ -5,7 +5,7 @@ import com.gogame.view.GoBoardView;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Deprecated
 public class GameSettingsModel {
     //region Fields
     // MVC variables

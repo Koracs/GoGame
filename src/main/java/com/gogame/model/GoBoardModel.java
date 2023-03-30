@@ -10,13 +10,17 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+
 public class GoBoardModel {
     //region Fields
     // MVC variables
 
     // Model variables
-    private int size;
-    private Stone currentPlayer; //todo currentplayer and gameState both needed?
+    private static final int[] sizes = new int[]{9,13,19};
+    private final double komi;
+    private final int handicap;
+    private final int size;
+    private Stone currentPlayer;
     private GameState gameState;
 
     private GoField[][] fields;
@@ -24,10 +28,13 @@ public class GoBoardModel {
     private final List<GameListener> listeners;
     //endregion
 
-    public GoBoardModel(int size) {
+    public GoBoardModel(int size,double komi, int handicap) {
         this.size = size;
+        this.komi = komi;
+        this.handicap = handicap;
         currentPlayer = Stone.BLACK;
         listeners = new LinkedList<>();
+        gameState = GameState.GAME_START;
 
         initModel();
         initHandicapFields();
@@ -51,6 +58,11 @@ public class GoBoardModel {
     }
 
     //region Getter/Setter
+
+    public static int[] getSizes() {
+        return sizes;
+    }
+
     public Stone getCurrentPlayer() {
         return this.currentPlayer;
     }
@@ -69,14 +81,13 @@ public class GoBoardModel {
         return size;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
-
     public GoField[][] getFields() {
         return fields;
     }
 
+    public GameState getGameState() {
+        return gameState;
+    }
 
     public void makeMove(int row, int col) {
         if (fields[row][col].isEmpty()) {

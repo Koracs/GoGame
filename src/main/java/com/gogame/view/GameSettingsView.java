@@ -1,7 +1,7 @@
 package com.gogame.view;
 
 import com.gogame.controller.GameSettingsController;
-import com.gogame.model.GameSettingsModel;
+import com.gogame.model.GoBoardModel;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -27,21 +27,16 @@ public class GameSettingsView extends View {
                 -fx-padding: 10 20 10 20;
             """;
 
-    // Pane of this class
     private BorderPane pane;
 
-    // MVC variables
-    private GameSettingsController controller;
-    private GameSettingsModel model;
+    private final GameSettingsController controller;
 
     //endregion
 
     //region Constructor
     public GameSettingsView() {
-        model = new GameSettingsModel(this);
-        controller = new GameSettingsController(model, this);
-        this.setController(controller);
-        this.setModel(model);
+        controller = new GameSettingsController(this);
+
         drawScene();
     }
     //endregion
@@ -52,14 +47,6 @@ public class GameSettingsView extends View {
         return this.pane;
     }
 
-    public void setModel(GameSettingsModel model) {
-        this.model = model;
-    }
-
-    public void setController(GameSettingsController controller) {
-        this.controller = controller;
-        controller.setView(this);
-    }
     //endregion
 
     //region Methods
@@ -74,12 +61,12 @@ public class GameSettingsView extends View {
         ToggleGroup boardSizeButtonGroup = new ToggleGroup();
         HBox hBox = new HBox();
 
-        for (int i : model.getSizes()) {
+        for (int i : GoBoardModel.getSizes()) {
             RadioButton button = new RadioButton(i + "x" + i);
             button.setToggleGroup(boardSizeButtonGroup);
-            button.setOnMouseClicked(e -> model.setBoardSize(i));
+            button.setOnMouseClicked(e -> controller.setBoardSize(i));
             hBox.getChildren().add(button);
-            button.setSelected(i == model.getBoardSize());
+            button.setSelected(i == controller.getBoardSize());
         }
 
         hBox.setSpacing(10);
@@ -87,15 +74,15 @@ public class GameSettingsView extends View {
 
         // Activate komi and set it
         CheckBox komiCheckBox = new CheckBox("Activate komi");
-        TextField komiSetting = new TextField("0.5");
+        TextField komiSetting = new TextField(String.valueOf(controller.getKomi()));
         komiCheckBox.selectedProperty().addListener(e -> {
-            model.changeKomiActive();
+            controller.changeKomiActive();
             komiSetting.setDisable(!komiSetting.isDisabled());
         });
-        komiSetting.setDisable(!model.isKomiActive());
+        komiSetting.setDisable(!controller.isKomiActive());
         komiSetting.textProperty().addListener((observable, oldValue, newValue) -> {
             if (Pattern.matches("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$", newValue)) { //todo only set value on "start game"?
-                model.setKomi(Double.parseDouble(newValue));
+                controller.setKomi(Double.parseDouble(newValue));
             }
         });
         VBox vBoxKomi = new VBox(komiCheckBox, komiSetting);
@@ -104,15 +91,15 @@ public class GameSettingsView extends View {
 
         // Activate handicap and set it
         CheckBox handicapCheckBox = new CheckBox("Activate handicap");
-        TextField handicapSetting = new TextField("0");
+        TextField handicapSetting = new TextField(String.valueOf(controller.getHandicap()));
         handicapCheckBox.selectedProperty().addListener(e -> {
-            model.changeHandicapActive();
+            controller.changeHandicapActive();
             handicapSetting.setDisable(!handicapSetting.isDisabled());
         });
-        handicapSetting.setDisable(!model.isHandicapActive());
+        handicapSetting.setDisable(!controller.isHandicapActive());
         handicapSetting.textProperty().addListener((observable, oldValue, newValue) -> { //todo only set value on "start game"?
             if (Pattern.matches("/^\\d+$/", newValue)) {
-                model.setHandicap(Integer.parseInt(newValue));
+                controller.setHandicap(Integer.parseInt(newValue));
             }
         });
         VBox vBoxHandicap = new VBox(handicapCheckBox, handicapSetting);

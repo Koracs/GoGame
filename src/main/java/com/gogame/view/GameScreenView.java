@@ -5,32 +5,38 @@ import com.gogame.controller.GoBoardController;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
 public class GameScreenView extends View {
-    private GoBoardModel model;
-    private GameScreenController sceneController;
-    private GoBoardController goBoardController;
-    private GoBoardView goBoard;
+    private final GoBoardModel model;
+    private final GameScreenController sceneController;
+    private final GoBoardController goBoardController;
+    private final GoBoardView goBoard;
 
     private BorderPane pane;
 
-    private TextField gameState;
+    private final TextField gameState;
 
     public GameScreenView(GoBoardModel model) {
+        sceneController = new GameScreenController(this);
+
         this.model = model;
         goBoard = new GoBoardView(model);
         goBoardController = goBoard.getController();
-        sceneController = new GameScreenController(this);
         gameState = new TextField();
 
-        drawScene();
+        //add eventHandler to allow gameplay interaction
+        EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
+        goBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
 
+        drawScene();
         model.addGameListener(new GameListener() { //todo outsource into own class
             @Override
             public void moveCompleted(GameEvent event) {
@@ -53,7 +59,6 @@ public class GameScreenView extends View {
         vBox.getChildren().add(gameplayButtonPane);
         vBox.getChildren().add(gameState);
         pane.setBottom(vBox);
-        //pane.setLeft(gameState);
 
         // Buttons for gameplay
         Button resetButton = new Button("Reset");
@@ -61,7 +66,7 @@ public class GameScreenView extends View {
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
         Button resignButton = new Button("Resign");
-        resignButton.setOnMouseClicked(e -> sceneController.changeSceneToWinScreen());
+        resignButton.setOnMouseClicked(e -> sceneController.changeSceneToWinScreen(model.getGameState()));
 
         gameplayButtonPane.setPadding(new Insets(30, 30, 30, 30));
         gameplayButtonPane.setHgap(10);
