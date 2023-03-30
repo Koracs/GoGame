@@ -30,9 +30,8 @@ public class StartScreenController {
     public void changeSceneToGameSettingsScreen() {
         GameSettingsView nextView = new GameSettingsView();
         Window w = view.getPane().getScene().getWindow();
-        if (w instanceof Stage) {
-            Stage s = (Stage) w;
-            s.setScene(new Scene(nextView.getPane(), 500, 600));
+        if(w instanceof Stage s) {
+            s.setScene(new Scene(nextView.getPane(),500,600));
         }
     }
     //endregion

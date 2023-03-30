@@ -6,10 +6,11 @@ import com.gogame.listener.GameState;
 import com.gogame.view.*;
 import javafx.scene.Parent;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 
 public class GoBoardModel {
     //region Fields
@@ -27,6 +28,7 @@ public class GoBoardModel {
 
     private final List<GameListener> listeners;
     //endregion
+    private StringBuilder gameDataStorage;
 
     public GoBoardModel(int size,double komi, int handicap) {
         this.size = size;
@@ -75,6 +77,7 @@ public class GoBoardModel {
                 fields[row][col] = new GoField();
             }
         }
+        this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
     }
 
     public int getSize() {
@@ -87,6 +90,9 @@ public class GoBoardModel {
 
     public GameState getGameState() {
         return gameState;
+    }
+    public String getGameDataStorage() {
+        return gameDataStorage.toString();
     }
 
     public void makeMove(int row, int col) {
@@ -122,6 +128,7 @@ public class GoBoardModel {
 
     public void pass() {
         gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_PASSED : GameState.WHITE_PASSED;
+        gameDataStorage.append(gameState.toString() + "\n");
         switchPlayer();
     }
 
@@ -134,6 +141,10 @@ public class GoBoardModel {
         }
     }
 
+    public void storeData(String s) {
+        this.gameDataStorage.append(s );
+    }
+
     public void addGameListener(GameListener l) {
         listeners.add(l);
     }
@@ -141,4 +152,6 @@ public class GoBoardModel {
     public void removeGameListener(GameListener l) {
         listeners.remove(l);
     }
+
+    //endregion
 }
