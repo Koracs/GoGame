@@ -96,12 +96,17 @@ public class GameSettingsView extends View {
             controller.changeHandicapActive();
             handicapSetting.setDisable(!handicapSetting.isDisabled());
         });
+
+        //todo if value is not correct for size of game, show error and force user to place correct Handicap
         handicapSetting.setDisable(!controller.isHandicapActive());
         handicapSetting.textProperty().addListener((observable, oldValue, newValue) -> { //todo only set value on "start game"?
-            if (Pattern.matches("/^\\d+$/", newValue)) {
+            if (!newValue.matches("[0-9]") || newValue.length() > 1){
+                handicapSetting.setText(String.valueOf(controller.getHandicap()));
+            } else {
                 controller.setHandicap(Integer.parseInt(newValue));
             }
         });
+
         VBox vBoxHandicap = new VBox(handicapCheckBox, handicapSetting);
         vBoxHandicap.setSpacing(10);
         vBox.getChildren().add(vBoxHandicap);

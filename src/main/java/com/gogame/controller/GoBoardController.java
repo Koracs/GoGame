@@ -1,18 +1,10 @@
 package com.gogame.controller;
 
+import com.gogame.listener.GameState;
 import com.gogame.model.*;
 import com.gogame.view.GoBoardView;
-import com.gogame.view.WinScreenView;
-import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import javafx.scene.input.MouseEvent;
 
 public class GoBoardController {
     //region Fields
@@ -45,7 +37,11 @@ public class GoBoardController {
         int row = (int)Math.round((e.getY()) / view.getScale()-1);
         int col = (int)Math.round((e.getX()) / view.getScale()-1);
 
-        model.makeMove(row,col);
+        if (model.getGameState() == GameState.PLACE_HANDICAP){
+            model.makeHandicapMove(row, col);
+        } else {
+            model.makeMove(row,col);
+        }
     }
 
     public void resetModel(){
@@ -55,6 +51,7 @@ public class GoBoardController {
     public void passPlayer() {
         model.pass();
     }
+
 
     /*public void openImportFile() {
         FileChooser fileChooser = new FileChooser();

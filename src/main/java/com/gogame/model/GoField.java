@@ -19,6 +19,10 @@ public class GoField {
         return this.stone == Stone.NONE||this.stone == Stone.PRESET;
     }
 
+    public boolean isPreset() {
+        return this.stone == Stone.PRESET;
+    }
+
     public void setStone(Stone stone) {
         this.stone = stone;
     }

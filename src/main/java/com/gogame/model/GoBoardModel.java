@@ -3,24 +3,21 @@ package com.gogame.model;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
-import com.gogame.view.*;
-import javafx.scene.Parent;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GoBoardModel {
+public class
+GoBoardModel {
     //region Fields
     // MVC variables
 
     // Model variables
-    private static final int[] sizes = new int[]{9,13,19};
+    private static final int[] sizes = new int[]{9, 13, 19};
     private final double komi;
     private final int handicap;
     private final int size;
+    private int handicapCount;
     private Stone currentPlayer;
     private GameState gameState;
 
@@ -30,7 +27,7 @@ public class GoBoardModel {
     //endregion
     private StringBuilder gameDataStorage;
 
-    public GoBoardModel(int size,double komi, int handicap) {
+    public GoBoardModel(int size, double komi, int handicap) {
         this.size = size;
         this.komi = komi;
         this.handicap = handicap;
@@ -40,6 +37,8 @@ public class GoBoardModel {
 
         initModel();
         initHandicapFields();
+
+        if (handicap != 0) handicapMode();
     }
 
     private void initHandicapFields() {
@@ -80,6 +79,12 @@ public class GoBoardModel {
         this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
     }
 
+    private void handicapMode() {
+        gameState = GameState.PLACE_HANDICAP;
+        currentPlayer = Stone.BLACK;
+        handicapCount = handicap;
+    }
+
     public int getSize() {
         return size;
     }
@@ -91,6 +96,7 @@ public class GoBoardModel {
     public GameState getGameState() {
         return gameState;
     }
+
     public String getGameDataStorage() {
         return gameDataStorage.toString();
     }
@@ -103,6 +109,24 @@ public class GoBoardModel {
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
+        }
+    }
+
+    public void makeHandicapMove(int row, int col) {
+        if (handicapCount == 0) {
+            gameState = GameState.WHITE_TURN;
+            currentPlayer = Stone.WHITE;
+
+            return;
+        }
+
+        if (fields[row][col].isPreset()) {
+            fields[row][col].setStone(currentPlayer);
+
+            for (GameListener listener : listeners) {
+                listener.moveCompleted(new GameEvent(this, gameState, row, col));
+            }
+            handicapCount -= 1;
         }
     }
 
@@ -132,6 +156,7 @@ public class GoBoardModel {
         switchPlayer();
     }
 
+
     public void printModel() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -142,7 +167,7 @@ public class GoBoardModel {
     }
 
     public void storeData(String s) {
-        this.gameDataStorage.append(s );
+        this.gameDataStorage.append(s);
     }
 
     public void addGameListener(GameListener l) {

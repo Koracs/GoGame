@@ -4,16 +4,15 @@ import com.gogame.controller.*;
 
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
+import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.GoField;
 import com.gogame.model.Stone;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
+
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -48,7 +47,6 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
                 draw();
             }
         });
-
 
         draw();
     }
