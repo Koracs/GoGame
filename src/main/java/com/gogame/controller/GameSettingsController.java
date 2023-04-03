@@ -22,7 +22,7 @@ public class GameSettingsController {
         this.view = view;
         this.boardSize = 19;
         this.komi = 0.5;
-        this.handicap = 0;
+        this.handicap = 4;
         this.komiActive = false;
         this.handicapActive = false;
     }
@@ -73,9 +73,14 @@ public class GameSettingsController {
     //endregion
 
     //region Methods
+
+    private GoBoardModel initGoBoardModel(){
+        return new GoBoardModel(boardSize,
+                komiActive ? komi : 0,
+                handicapActive ? handicap : 0);
+    }
     public void changeSceneToGameScene() {
-        GoBoardModel goBoardModel = new GoBoardModel(boardSize,komi,handicap);
-        GameScreenView nextView = new GameScreenView(goBoardModel);
+        GameScreenView nextView = new GameScreenView(initGoBoardModel());
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage) {
             Stage s = (Stage) w;

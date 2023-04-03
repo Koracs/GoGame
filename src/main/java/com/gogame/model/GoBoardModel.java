@@ -7,8 +7,7 @@ import com.gogame.listener.GameState;
 import java.util.LinkedList;
 import java.util.List;
 
-public class
-GoBoardModel {
+public class GoBoardModel {
     //region Fields
     // MVC variables
 
@@ -37,8 +36,6 @@ GoBoardModel {
 
         initModel();
         initHandicapFields();
-
-        if (handicap != 0) handicapMode();
     }
 
     private void initHandicapFields() {
@@ -55,6 +52,10 @@ GoBoardModel {
             for (int col : handicapFields) {
                 fields[row][col].setStone(Stone.PRESET);
             }
+        }
+        if(handicap > 0) {
+            gameState = GameState.PLACE_HANDICAP;
+            handicapCount = handicap;
         }
     }
 
@@ -79,12 +80,6 @@ GoBoardModel {
         this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
     }
 
-    private void handicapMode() {
-        gameState = GameState.PLACE_HANDICAP;
-        currentPlayer = Stone.BLACK;
-        handicapCount = handicap;
-    }
-
     public int getSize() {
         return size;
     }
@@ -102,6 +97,11 @@ GoBoardModel {
     }
 
     public void makeMove(int row, int col) {
+        if (gameState == GameState.PLACE_HANDICAP){
+            makeHandicapMove(row, col);
+            return;
+        }
+
         if (fields[row][col].isEmpty()) {
             fields[row][col].setStone(currentPlayer);
             switchPlayer();
@@ -113,20 +113,15 @@ GoBoardModel {
     }
 
     public void makeHandicapMove(int row, int col) {
-        if (handicapCount == 0) {
-            gameState = GameState.WHITE_TURN;
-            currentPlayer = Stone.WHITE;
-
-            return;
-        }
-
         if (fields[row][col].isPreset()) {
             fields[row][col].setStone(currentPlayer);
+            handicapCount -= 1;
 
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
-            handicapCount -= 1;
+
+            if (handicapCount == 0) switchPlayer();
         }
     }
 

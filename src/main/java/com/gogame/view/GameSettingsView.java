@@ -81,7 +81,7 @@ public class GameSettingsView extends View {
         });
         komiSetting.setDisable(!controller.isKomiActive());
         komiSetting.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (Pattern.matches("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$", newValue)) { //todo only set value on "start game"?
+            if (Pattern.matches("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$", newValue)) {
                 controller.setKomi(Double.parseDouble(newValue));
             }
         });
@@ -99,7 +99,7 @@ public class GameSettingsView extends View {
 
         //todo if value is not correct for size of game, show error and force user to place correct Handicap
         handicapSetting.setDisable(!controller.isHandicapActive());
-        handicapSetting.textProperty().addListener((observable, oldValue, newValue) -> { //todo only set value on "start game"?
+        handicapSetting.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("[0-9]") || newValue.length() > 1){
                 handicapSetting.setText(String.valueOf(controller.getHandicap()));
             } else {

@@ -34,17 +34,14 @@ public class GoBoardController {
 
     //region Methods
     public void mouseClicked(MouseEvent e) {
-        int row = (int)Math.round((e.getY()) / view.getScale()-1);
-        int col = (int)Math.round((e.getX()) / view.getScale()-1);
+        int row = (int) Math.round((e.getY()) / view.getScale() - 1);
+        int col = (int) Math.round((e.getX()) / view.getScale() - 1);
 
-        if (model.getGameState() == GameState.PLACE_HANDICAP){
-            model.makeHandicapMove(row, col);
-        } else {
-            model.makeMove(row,col);
-        }
+        model.makeMove(row, col);
+
     }
 
-    public void resetModel(){
+    public void resetModel() {
         model.reset();
     }
 
