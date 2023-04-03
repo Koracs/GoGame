@@ -4,6 +4,7 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class GoBoardModel {
                 fields[row][col].setStone(Stone.PRESET);
             }
         }
-        if(handicap > 0) {
+        if (handicap > 0) {
             gameState = GameState.PLACE_HANDICAP;
             handicapCount = handicap;
         }
@@ -97,7 +98,7 @@ public class GoBoardModel {
     }
 
     public void makeMove(int row, int col) {
-        if (gameState == GameState.PLACE_HANDICAP){
+        if (gameState == GameState.PLACE_HANDICAP) {
             makeHandicapMove(row, col);
             return;
         }
@@ -109,10 +110,12 @@ public class GoBoardModel {
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
+
+            removeAllCaptured();
         }
     }
 
-    public void makeHandicapMove(int row, int col) {
+    private void makeHandicapMove(int row, int col) {
         if (fields[row][col].isPreset()) {
             fields[row][col].setStone(currentPlayer);
             handicapCount -= 1;
@@ -124,6 +127,47 @@ public class GoBoardModel {
             if (handicapCount == 0) switchPlayer();
         }
     }
+
+    private boolean isCaptured(int row, int col) { //todo implement recursive method
+        if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
+            return false;
+        }
+        ArrayList<GoField> neighbours = getNeighbourFields(row, col);
+
+        boolean captured = true;
+        for (GoField neighbour : neighbours) {
+            if (neighbour.isEmpty() || neighbour.getStone().equals(fields[row][col].getStone())) {
+                //System.out.println("Neighbour: " + neighbour.getStone());
+                captured = false;
+                break;
+            }
+        }
+
+        return captured;
+    }
+
+    private ArrayList<GoField> getNeighbourFields(int row, int col) {
+        if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
+            return null;
+        }
+        ArrayList<GoField> neighbours = new ArrayList<>();
+
+        if (row > 0) neighbours.add(fields[row - 1][col]); //top
+        if (col < fields.length - 1) neighbours.add(fields[row][col + 1]); //right
+        if (row < fields.length - 1) neighbours.add(fields[row + 1][col]); //bottom
+        if (col > 0) neighbours.add(fields[row][col - 1]); //left
+
+        return neighbours;
+    }
+
+    private void removeAllCaptured(){
+        for (int row = 0; row < fields.length; row++) {
+            for (int col = 0; col < fields.length; col++) {
+                if(isCaptured(row,col)) fields[row][col].setStone(Stone.NONE);
+            }
+        }
+    }
+
 
     public void switchPlayer() {
         if (currentPlayer == Stone.BLACK) {
@@ -155,7 +199,12 @@ public class GoBoardModel {
     public void printModel() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                System.out.print(fields[row][col].toString());
+                switch (fields[row][col].getStone()) {
+                    case BLACK -> System.out.print("\033[1;30m" + "B " + "\033[0m");
+                    case WHITE -> System.out.print("\033[1;33m" + "W " + "\033[0m");
+                    case PRESET -> System.out.print("\033[0;35m" + "P " + "\033[0m");
+                    case NONE -> System.out.print("\033[0;32m" + "N " + "\033[0m");
+                }
             }
             System.out.println();
         }

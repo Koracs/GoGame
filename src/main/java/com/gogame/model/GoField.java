@@ -23,10 +23,16 @@ public class GoField {
         return this.stone == Stone.PRESET;
     }
 
+    public boolean isOtherColor(Stone otherStone){
+        if(this.stone == Stone.NONE || this.stone == Stone.PRESET
+           || otherStone == Stone.NONE || otherStone == Stone.PRESET) return false;
+
+        return !this.stone.equals(otherStone);
+    }
+
     public void setStone(Stone stone) {
         this.stone = stone;
     }
-
     public void removeStone(){
         this.stone = Stone.NONE;
     }
