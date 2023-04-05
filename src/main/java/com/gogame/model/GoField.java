@@ -30,6 +30,10 @@ public class GoField {
         return !this.stone.equals(otherStone);
     }
 
+    public boolean isNoEnemy(Stone otherStone){
+        return this.isEmpty() || stone == otherStone;
+    }
+
     public void setStone(Stone stone) {
         this.stone = stone;
     }

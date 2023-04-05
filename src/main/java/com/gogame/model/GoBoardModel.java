@@ -107,11 +107,11 @@ public class GoBoardModel {
             fields[row][col].setStone(currentPlayer);
             switchPlayer();
 
+            removeAllCaptured();
+
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
-
-            removeAllCaptured();
         }
     }
 
@@ -128,42 +128,48 @@ public class GoBoardModel {
         }
     }
 
+    private List<GoField> neighbours;
+
     private boolean isCaptured(int row, int col) { //todo implement recursive method
-        if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
+        neighbours = new ArrayList<>();
+
+        return isCapturedRec(row, col, fields[row][col].getStone());
+    }
+
+    private boolean isCapturedRec(int row, int col, Stone currentColor) {
+        if (col < 0 || col >= fields.length || row < 0 || row >= fields.length ) {
             return false;
         }
-        ArrayList<GoField> neighbours = getNeighbourFields(row, col);
+
+        GoField top = (row > 0 && fields[row - 1][col].isNoEnemy(currentColor)) ?
+                fields[row - 1][col] : null;
+        GoField right = (col < fields.length - 1 && fields[row][col + 1].isNoEnemy(currentColor)) ?
+                fields[row][col + 1] : null;
+        GoField bottom = (row < fields.length - 1 && fields[row + 1][col].isNoEnemy(currentColor)) ?
+                fields[row + 1][col] : null;
+        GoField left = (col > 0 && fields[row][col - 1].isNoEnemy(currentColor)) ?
+                fields[row][col - 1] : null;
 
         boolean captured = true;
         for (GoField neighbour : neighbours) {
-            if (neighbour.isEmpty() || neighbour.getStone().equals(fields[row][col].getStone())) {
-                //System.out.println("Neighbour: " + neighbour.getStone());
-                captured = false;
-                break;
+            if (neighbour.isNoEnemy(fields[row][col].getStone())) {
+                return false;
+            }
+        }
+
+        for (GoField neighbour : neighbours) {
+            if (neighbour.getStone().equals(currentColor)) {
+                return false;
             }
         }
 
         return captured;
     }
 
-    private ArrayList<GoField> getNeighbourFields(int row, int col) {
-        if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
-            return null;
-        }
-        ArrayList<GoField> neighbours = new ArrayList<>();
-
-        if (row > 0) neighbours.add(fields[row - 1][col]); //top
-        if (col < fields.length - 1) neighbours.add(fields[row][col + 1]); //right
-        if (row < fields.length - 1) neighbours.add(fields[row + 1][col]); //bottom
-        if (col > 0) neighbours.add(fields[row][col - 1]); //left
-
-        return neighbours;
-    }
-
-    private void removeAllCaptured(){
+    private void removeAllCaptured() {
         for (int row = 0; row < fields.length; row++) {
             for (int col = 0; col < fields.length; col++) {
-                if(isCaptured(row,col)) fields[row][col].setStone(Stone.NONE);
+                if (isCaptured(row, col)) fields[row][col].setStone(Stone.NONE);
             }
         }
     }
