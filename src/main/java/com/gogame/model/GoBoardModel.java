@@ -75,7 +75,7 @@ public class GoBoardModel {
         fields = new GoField[size][size];
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                fields[row][col] = new GoField();
+                fields[row][col] = new GoField(row, col);
             }
         }
         this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
@@ -107,7 +107,7 @@ public class GoBoardModel {
             fields[row][col].setStone(currentPlayer);
             switchPlayer();
 
-            removeAllCaptured();
+            checkCapture(row, col);
 
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
@@ -130,48 +130,77 @@ public class GoBoardModel {
 
     private List<GoField> neighbours;
 
-    private boolean isCaptured(int row, int col) { //todo implement recursive method
+    /**
+     * Check field or surrounding fields are captured
+     * @param row
+     * @param col
+     */
+    private void checkCapture(int row, int col) { //todo implement scoring
         neighbours = new ArrayList<>();
 
-        return isCapturedRec(row, col, fields[row][col].getStone());
+        //center
+        findNeighboursOfSameColor(row, col, fields[row][col].getStone());
+        if (!chainContainsLiberties()) {
+            neighbours.forEach(GoField::removeStone);
+        }
+        neighbours.clear();
+        //top
+        findNeighboursOfSameColor(row-1, col, fields[row-1][col].getStone());
+        if (!chainContainsLiberties()) {
+            neighbours.forEach(GoField::removeStone);
+        }
+        neighbours.clear();
+        //right
+        findNeighboursOfSameColor(row, col+1, fields[row][col+1].getStone());
+        if (!chainContainsLiberties()) {
+            neighbours.forEach(GoField::removeStone);
+        }
+        neighbours.clear();
+        //bottom
+        findNeighboursOfSameColor(row+1, col, fields[row+1][col].getStone());
+        if (!chainContainsLiberties()) {
+            neighbours.forEach(GoField::removeStone);
+        }
+        neighbours.clear();
+        //left
+        findNeighboursOfSameColor(row, col-1, fields[row][col-1].getStone());
+        if (!chainContainsLiberties()) {
+            neighbours.forEach(GoField::removeStone);
+        }
+        neighbours.clear();
     }
 
-    private boolean isCapturedRec(int row, int col, Stone currentColor) {
-        if (col < 0 || col >= fields.length || row < 0 || row >= fields.length ) {
-            return false;
+    private void findNeighboursOfSameColor(int row, int col, Stone currentColor) {
+        if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
+            return;
         }
+        if (neighbours.contains(fields[row][col])) return;
 
-        GoField top = (row > 0 && fields[row - 1][col].isNoEnemy(currentColor)) ?
-                fields[row - 1][col] : null;
-        GoField right = (col < fields.length - 1 && fields[row][col + 1].isNoEnemy(currentColor)) ?
-                fields[row][col + 1] : null;
-        GoField bottom = (row < fields.length - 1 && fields[row + 1][col].isNoEnemy(currentColor)) ?
-                fields[row + 1][col] : null;
-        GoField left = (col > 0 && fields[row][col - 1].isNoEnemy(currentColor)) ?
-                fields[row][col - 1] : null;
+        if (fields[row][col].getStone().equals(currentColor)) neighbours.add(fields[row][col]);
+        else return;
 
-        boolean captured = true;
-        for (GoField neighbour : neighbours) {
-            if (neighbour.isNoEnemy(fields[row][col].getStone())) {
-                return false;
-            }
-        }
-
-        for (GoField neighbour : neighbours) {
-            if (neighbour.getStone().equals(currentColor)) {
-                return false;
-            }
-        }
-
-        return captured;
+        //top
+        if (row > 0) findNeighboursOfSameColor(row - 1, col, currentColor);
+        //right
+        if (col < fields.length - 1) findNeighboursOfSameColor(row, col + 1, currentColor);
+        //bottom
+        if (row < fields.length - 1) findNeighboursOfSameColor(row + 1, col, currentColor);
+        //left
+        if (col > 0) findNeighboursOfSameColor(row, col - 1, currentColor);
     }
 
-    private void removeAllCaptured() {
-        for (int row = 0; row < fields.length; row++) {
-            for (int col = 0; col < fields.length; col++) {
-                if (isCaptured(row, col)) fields[row][col].setStone(Stone.NONE);
-            }
+    private boolean chainContainsLiberties() {
+        for (GoField field : neighbours) {
+            int row = field.getRow();
+            int col = field.getCol();
+
+            if (row > 0 && fields[row - 1][col].isEmpty()) return true; //top
+            if (col < fields.length - 1 && fields[row][col + 1].isEmpty()) return true; //right
+            if (row < fields.length - 1 && fields[row + 1][col].isEmpty()) return true; //bottom
+            if (col > 0 && fields[row][col - 1].isEmpty()) return true; //left
         }
+
+        return false;
     }
 
 

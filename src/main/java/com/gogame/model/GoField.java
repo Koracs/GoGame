@@ -1,15 +1,30 @@
 package com.gogame.model;
 
 public class GoField {
+    private final int row;
+    private final int col;
     private Stone stone;
 
 
-    public GoField(){
+    public GoField(int row, int col){
+        this.row = row;
+        this.col = col;
         this.stone = Stone.NONE;
     }
-    public GoField(Stone stone){
+    public GoField(int row, int col,Stone stone){
+        this.row = row;
+        this.col = col;
         this.stone = stone;
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
 
     public Stone getStone() {
         return stone;
