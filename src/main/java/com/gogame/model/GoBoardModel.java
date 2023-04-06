@@ -145,29 +145,37 @@ public class GoBoardModel {
         }
         neighbours.clear();
         //top
-        findNeighboursOfSameColor(row-1, col, fields[row-1][col].getStone());
-        if (!chainContainsLiberties()) {
-            neighbours.forEach(GoField::removeStone);
+        if (row > 0) {
+            findNeighboursOfSameColor(row - 1, col, fields[row - 1][col].getStone());
+            if (!chainContainsLiberties()) {
+                neighbours.forEach(GoField::removeStone);
+            }
+            neighbours.clear();
         }
-        neighbours.clear();
         //right
-        findNeighboursOfSameColor(row, col+1, fields[row][col+1].getStone());
-        if (!chainContainsLiberties()) {
-            neighbours.forEach(GoField::removeStone);
+        if (col < fields.length - 1) {
+            findNeighboursOfSameColor(row, col + 1, fields[row][col + 1].getStone());
+            if (!chainContainsLiberties()) {
+                neighbours.forEach(GoField::removeStone);
+            }
+            neighbours.clear();
         }
-        neighbours.clear();
         //bottom
-        findNeighboursOfSameColor(row+1, col, fields[row+1][col].getStone());
-        if (!chainContainsLiberties()) {
-            neighbours.forEach(GoField::removeStone);
+        if (row < fields.length - 1) {
+            findNeighboursOfSameColor(row + 1, col, fields[row + 1][col].getStone());
+            if (!chainContainsLiberties()) {
+                neighbours.forEach(GoField::removeStone);
+            }
+            neighbours.clear();
         }
-        neighbours.clear();
         //left
-        findNeighboursOfSameColor(row, col-1, fields[row][col-1].getStone());
-        if (!chainContainsLiberties()) {
-            neighbours.forEach(GoField::removeStone);
+        if (col > 0) {
+            findNeighboursOfSameColor(row, col - 1, fields[row][col - 1].getStone());
+            if (!chainContainsLiberties()) {
+                neighbours.forEach(GoField::removeStone);
+            }
+            neighbours.clear();
         }
-        neighbours.clear();
     }
 
     private void findNeighboursOfSameColor(int row, int col, Stone currentColor) {
