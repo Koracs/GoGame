@@ -128,57 +128,64 @@ public class GoBoardModel {
         }
     }
 
-    private List<GoField> neighbours;
-
     /**
-     * Check field or surrounding fields are captured
-     * @param row
-     * @param col
+     * Check field or surrounding fields are captured.
+     *
+     * @param row Row of the board
+     * @param col Column of the board
      */
     private void checkCapture(int row, int col) { //todo implement scoring
-        neighbours = new ArrayList<>();
+        List<GoField> neighbours = new ArrayList<>();
 
         //center
-        findNeighboursOfSameColor(row, col, fields[row][col].getStone());
-        if (!chainContainsLiberties()) {
+        findNeighboursOfSameColor(row, col, neighbours, fields[row][col].getStone());
+        if (!chainContainsLiberties(neighbours)) {
             neighbours.forEach(GoField::removeStone);
         }
         neighbours.clear();
         //top
         if (row > 0) {
-            findNeighboursOfSameColor(row - 1, col, fields[row - 1][col].getStone());
-            if (!chainContainsLiberties()) {
+            findNeighboursOfSameColor(row - 1, col, neighbours, fields[row - 1][col].getStone());
+            if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
             }
             neighbours.clear();
         }
         //right
         if (col < fields.length - 1) {
-            findNeighboursOfSameColor(row, col + 1, fields[row][col + 1].getStone());
-            if (!chainContainsLiberties()) {
+            findNeighboursOfSameColor(row, col + 1, neighbours, fields[row][col + 1].getStone());
+            if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
             }
             neighbours.clear();
         }
         //bottom
         if (row < fields.length - 1) {
-            findNeighboursOfSameColor(row + 1, col, fields[row + 1][col].getStone());
-            if (!chainContainsLiberties()) {
+            findNeighboursOfSameColor(row + 1, col, neighbours, fields[row + 1][col].getStone());
+            if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
             }
             neighbours.clear();
         }
         //left
         if (col > 0) {
-            findNeighboursOfSameColor(row, col - 1, fields[row][col - 1].getStone());
-            if (!chainContainsLiberties()) {
+            findNeighboursOfSameColor(row, col - 1, neighbours, fields[row][col - 1].getStone());
+            if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
             }
             neighbours.clear();
         }
     }
 
-    private void findNeighboursOfSameColor(int row, int col, Stone currentColor) {
+    /**
+     * Find neighbours of current stone position with the same color. Recursive function
+     *
+     * @param row          Row of the board
+     * @param col          Column of the board
+     * @param neighbours List of neighbouring GoFields
+     * @param currentColor Color of the current Stone
+     */
+    private void findNeighboursOfSameColor(int row, int col, List<GoField> neighbours, Stone currentColor) {
         if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
             return;
         }
@@ -188,17 +195,22 @@ public class GoBoardModel {
         else return;
 
         //top
-        if (row > 0) findNeighboursOfSameColor(row - 1, col, currentColor);
+        if (row > 0) findNeighboursOfSameColor(row - 1, col, neighbours, currentColor);
         //right
-        if (col < fields.length - 1) findNeighboursOfSameColor(row, col + 1, currentColor);
+        if (col < fields.length - 1) findNeighboursOfSameColor(row, col + 1, neighbours, currentColor);
         //bottom
-        if (row < fields.length - 1) findNeighboursOfSameColor(row + 1, col, currentColor);
+        if (row < fields.length - 1) findNeighboursOfSameColor(row + 1, col, neighbours, currentColor);
         //left
-        if (col > 0) findNeighboursOfSameColor(row, col - 1, currentColor);
+        if (col > 0) findNeighboursOfSameColor(row, col - 1, neighbours, currentColor);
     }
 
-    private boolean chainContainsLiberties() {
-        for (GoField field : neighbours) {
+    /**
+     * Check if a given chain contains liberties. Used to determine if a Stone or chain of stones is captured.
+     * @param chain List of GoFields in a chain
+     * @return True if the chain contains liberties, false if it is captured
+     */
+    private boolean chainContainsLiberties(List<GoField> chain) {
+        for (GoField field : chain) {
             int row = field.getRow();
             int col = field.getCol();
 
