@@ -4,6 +4,7 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class GoBoardModel {
                 fields[row][col].setStone(Stone.PRESET);
             }
         }
-        if(handicap > 0) {
+        if (handicap > 0) {
             gameState = GameState.PLACE_HANDICAP;
             handicapCount = handicap;
         }
@@ -74,7 +75,7 @@ public class GoBoardModel {
         fields = new GoField[size][size];
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                fields[row][col] = new GoField();
+                fields[row][col] = new GoField(row, col);
             }
         }
         this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
@@ -113,7 +114,7 @@ public class GoBoardModel {
     }
 
     public void makeMove(int row, int col) {
-        if (gameState == GameState.PLACE_HANDICAP){
+        if (gameState == GameState.PLACE_HANDICAP) {
             makeHandicapMove(row, col);
             return;
         }
@@ -122,13 +123,15 @@ public class GoBoardModel {
             fields[row][col].setStone(currentPlayer);
             switchPlayer();
 
+            checkCapture(row, col);
+
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
         }
     }
 
-    public void makeHandicapMove(int row, int col) {
+    private void makeHandicapMove(int row, int col) {
         if (fields[row][col].isPreset()) {
             fields[row][col].setStone(currentPlayer);
             handicapCount -= 1;
@@ -140,6 +143,102 @@ public class GoBoardModel {
             if (handicapCount == 0) switchPlayer();
         }
     }
+
+    /**
+     * Check field or surrounding fields are captured.
+     *
+     * @param row Row of the board
+     * @param col Column of the board
+     */
+    private void checkCapture(int row, int col) { //todo implement scoring
+        List<GoField> neighbours = new ArrayList<>();
+
+        //center
+        findNeighboursOfSameColor(row, col, neighbours, fields[row][col].getStone());
+        if (!chainContainsLiberties(neighbours)) {
+            neighbours.forEach(GoField::removeStone);
+        }
+        neighbours.clear();
+        //top
+        if (row > 0) {
+            findNeighboursOfSameColor(row - 1, col, neighbours, fields[row - 1][col].getStone());
+            if (!chainContainsLiberties(neighbours)) {
+                neighbours.forEach(GoField::removeStone);
+            }
+            neighbours.clear();
+        }
+        //right
+        if (col < fields.length - 1) {
+            findNeighboursOfSameColor(row, col + 1, neighbours, fields[row][col + 1].getStone());
+            if (!chainContainsLiberties(neighbours)) {
+                neighbours.forEach(GoField::removeStone);
+            }
+            neighbours.clear();
+        }
+        //bottom
+        if (row < fields.length - 1) {
+            findNeighboursOfSameColor(row + 1, col, neighbours, fields[row + 1][col].getStone());
+            if (!chainContainsLiberties(neighbours)) {
+                neighbours.forEach(GoField::removeStone);
+            }
+            neighbours.clear();
+        }
+        //left
+        if (col > 0) {
+            findNeighboursOfSameColor(row, col - 1, neighbours, fields[row][col - 1].getStone());
+            if (!chainContainsLiberties(neighbours)) {
+                neighbours.forEach(GoField::removeStone);
+            }
+            neighbours.clear();
+        }
+    }
+
+    /**
+     * Find neighbours of current stone position with the same color. Recursive function
+     *
+     * @param row          Row of the board
+     * @param col          Column of the board
+     * @param neighbours List of neighbouring GoFields
+     * @param currentColor Color of the current Stone
+     */
+    private void findNeighboursOfSameColor(int row, int col, List<GoField> neighbours, Stone currentColor) {
+        if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
+            return;
+        }
+        if (neighbours.contains(fields[row][col])) return;
+
+        if (fields[row][col].getStone().equals(currentColor)) neighbours.add(fields[row][col]);
+        else return;
+
+        //top
+        if (row > 0) findNeighboursOfSameColor(row - 1, col, neighbours, currentColor);
+        //right
+        if (col < fields.length - 1) findNeighboursOfSameColor(row, col + 1, neighbours, currentColor);
+        //bottom
+        if (row < fields.length - 1) findNeighboursOfSameColor(row + 1, col, neighbours, currentColor);
+        //left
+        if (col > 0) findNeighboursOfSameColor(row, col - 1, neighbours, currentColor);
+    }
+
+    /**
+     * Check if a given chain contains liberties. Used to determine if a Stone or chain of stones is captured.
+     * @param chain List of GoFields in a chain
+     * @return True if the chain contains liberties, false if it is captured
+     */
+    private boolean chainContainsLiberties(List<GoField> chain) {
+        for (GoField field : chain) {
+            int row = field.getRow();
+            int col = field.getCol();
+
+            if (row > 0 && fields[row - 1][col].isEmpty()) return true; //top
+            if (col < fields.length - 1 && fields[row][col + 1].isEmpty()) return true; //right
+            if (row < fields.length - 1 && fields[row + 1][col].isEmpty()) return true; //bottom
+            if (col > 0 && fields[row][col - 1].isEmpty()) return true; //left
+        }
+
+        return false;
+    }
+
 
     public void switchPlayer() {
         if (currentPlayer == Stone.BLACK) {
@@ -171,7 +270,12 @@ public class GoBoardModel {
     public void printModel() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                System.out.print(fields[row][col].toString());
+                switch (fields[row][col].getStone()) {
+                    case BLACK -> System.out.print("\033[1;30m" + "B " + "\033[0m");
+                    case WHITE -> System.out.print("\033[1;33m" + "W " + "\033[0m");
+                    case PRESET -> System.out.print("\033[0;35m" + "P " + "\033[0m");
+                    case NONE -> System.out.print("\033[0;32m" + "N " + "\033[0m");
+                }
             }
             System.out.println();
         }
