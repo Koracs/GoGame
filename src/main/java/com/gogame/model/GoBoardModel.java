@@ -13,9 +13,9 @@ public class GoBoardModel {
 
     // Model variables
     private static final int[] sizes = new int[]{9, 13, 19};
-    private final double komi;
-    private final int handicap;
-    private final int size;
+    private double komi;
+    private int handicap;
+    private int size;
     private int handicapCount;
     private Stone currentPlayer;
     private GameState gameState;
@@ -78,6 +78,22 @@ public class GoBoardModel {
             }
         }
         this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
+    }
+
+    public void setGameDataStorage(StringBuilder sb) {
+        this.gameDataStorage = sb;
+    }
+
+    public void setKomi(double komi) {
+        this.komi = komi;
+    }
+
+    public void setHandicap(int handicap) {
+        this.handicap = handicap;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public int getSize() {

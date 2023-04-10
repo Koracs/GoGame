@@ -1,10 +1,8 @@
 package com.gogame.view;
 
-import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
 import com.gogame.controller.TutorialController;
 import com.gogame.model.GoBoardModel;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
 public class TutorialView extends View{
@@ -18,7 +16,7 @@ public class TutorialView extends View{
 
 
     public TutorialView(GoBoardModel model) {
-        sceneController = new TutorialController(this);
+        sceneController = new TutorialController(this, model);
         goBoard = new GoBoardView(model);
         goBoardController = goBoard.getController();
 
