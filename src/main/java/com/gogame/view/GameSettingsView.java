@@ -67,45 +67,51 @@ public class GameSettingsView extends View {
             button.setOnMouseClicked(e -> controller.setBoardSize(i));
             hBox.getChildren().add(button);
             button.setSelected(i == controller.getBoardSize());
-        }
+            }
 
         hBox.setSpacing(10);
         vBox.getChildren().add(hBox);
 
+        //
         // Activate komi and set it
         CheckBox komiCheckBox = new CheckBox("Activate komi");
-        TextField komiSetting = new TextField(String.valueOf(controller.getKomi()));
+        Spinner<Double> komiSetting = new Spinner<>();
+
+        SpinnerValueFactory<Double> valueFactoryKomi = new SpinnerValueFactory.DoubleSpinnerValueFactory(0,7.5,controller.getKomi(),0.5);
+        komiSetting.setValueFactory(valueFactoryKomi);
+
         komiCheckBox.selectedProperty().addListener(e -> {
             controller.changeKomiActive();
             komiSetting.setDisable(!komiSetting.isDisabled());
         });
         komiSetting.setDisable(!controller.isKomiActive());
-        komiSetting.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (Pattern.matches("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$", newValue)) {
-                controller.setKomi(Double.parseDouble(newValue));
-            }
+
+        komiSetting.valueProperty().addListener((observable, oldValue, newValue) -> {
+            controller.setKomi(komiSetting.getValue());
         });
         VBox vBoxKomi = new VBox(komiCheckBox, komiSetting);
         vBoxKomi.setSpacing(10);
         vBox.getChildren().add(vBoxKomi);
 
+
+        // TODO: change max to 6 when small board is chosen.
         // Activate handicap and set it
         CheckBox handicapCheckBox = new CheckBox("Activate handicap");
-        TextField handicapSetting = new TextField(String.valueOf(controller.getHandicap()));
+        Spinner<Integer> handicapSetting = new Spinner<>();
+
+        SpinnerValueFactory<Integer> valueFactoryHandicap = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 9, controller.getHandicap());
+        handicapSetting.setValueFactory(valueFactoryHandicap);
+
         handicapCheckBox.selectedProperty().addListener(e -> {
             controller.changeHandicapActive();
             handicapSetting.setDisable(!handicapSetting.isDisabled());
         });
-
-        //todo if value is not correct for size of game, show error and force user to place correct Handicap
         handicapSetting.setDisable(!controller.isHandicapActive());
-        handicapSetting.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("[0-9]") || newValue.length() > 1){
-                handicapSetting.setText(String.valueOf(controller.getHandicap()));
-            } else {
-                controller.setHandicap(Integer.parseInt(newValue));
-            }
+
+        handicapSetting.valueProperty().addListener((observable, oldValue, newValue) -> {
+            controller.setHandicap(handicapSetting.getValue());
         });
+
 
         VBox vBoxHandicap = new VBox(handicapCheckBox, handicapSetting);
         vBoxHandicap.setSpacing(10);

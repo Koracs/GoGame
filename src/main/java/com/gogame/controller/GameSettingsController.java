@@ -22,7 +22,7 @@ public class GameSettingsController {
         this.view = view;
         this.boardSize = 19;
         this.komi = 0.5;
-        this.handicap = 4;
+        this.handicap = 0;
         this.komiActive = false;
         this.handicapActive = false;
     }
