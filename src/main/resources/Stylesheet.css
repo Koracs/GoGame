@@ -1,0 +1,40 @@
+.root{
+    -fx-color1: #dbba6d;
+
+
+    /*-fx-base: -fx-color1; todo darkmode?*/
+}
+
+
+.button {
+    -fx-background-color: -fx-color1;
+    -fx-background-radius: 10;
+    /*-fx-text-fill: #654b00;*/
+    -fx-font-weight: bold;
+    -fx-font-size: 20 px;
+    -fx-padding: 8 10;
+}
+
+.label, .check-box, .radio-button {
+    -fx-font-size: 14 px;
+}
+
+.check-box .box{
+    -fx-background-color: -fx-color1;
+}
+
+.radio {
+    -fx-background-color: -fx-color1;
+}
+
+.spinner {
+    -fx-body-color: -fx-color1, -fx-color1;
+    -fx-border-color: -fx-color1;
+}
+
+.spinner:focused {
+    -fx-background-color: -fx-color1;
+}
+
+
+
