@@ -1,7 +1,7 @@
 package com.gogame.controller;
 
-import com.gogame.listener.GameState;
 import com.gogame.model.*;
+import com.gogame.listener.GameListener;
 import com.gogame.view.GoBoardView;
 
 import javafx.scene.input.MouseEvent;
@@ -11,9 +11,6 @@ public class GoBoardController {
     // MVC variables
     private GoBoardModel model;
     private GoBoardView view;
-
-    // Constants
-    private final String FILENAME = "gamedata_";
     //endregion
 
     // Constructor
@@ -30,6 +27,27 @@ public class GoBoardController {
     public void setView(GoBoardView view) {
         this.view = view;
     }
+
+    public int getSize() {
+        return model.getSize();
+    }
+
+    public int getHandicap() {
+        return model.getHandicap();
+    }
+
+    public double getKomi() {
+        return model.getKomi();
+    }
+
+    public GoBoardView getView() {
+        return view;
+    }
+
+    public GoBoardModel getModel() {
+        return model;
+    }
+
     //endregion
 
     //region Methods
@@ -41,6 +59,10 @@ public class GoBoardController {
 
     }
 
+    public void addGameListener(GameListener l) {
+        model.addGameListener(l);
+    }
+
     public void resetModel() {
         model.reset();
     }
@@ -49,56 +71,5 @@ public class GoBoardController {
         model.pass();
     }
 
-
-    /*public void openImportFile() {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extensionFilter);
-        File selectedFile = fileChooser.showOpenDialog(view.getScene().getWindow());
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
-            String line = reader.readLine();
-
-            // Read metadata
-            if(line != null) {
-                resetModel();
-                //todo Repaint view ---------------- needs to be implemented with possible different size
-                view.enableGameControlButtons();
-                view.draw();
-                line = reader.readLine();
-            }
-
-            //todo Check if the input file is in right format
-            while (line != null) {
-                String[] temp = line.split(";");
-                if(temp.length == 1) {
-                    passPlayer();
-                } else {
-                    model.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]));
-                }
-
-                line = reader.readLine();
-            }
-            reader.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void exportFile() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
-        try {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yyyy");
-            LocalDateTime now = LocalDateTime.now();
-            FileWriter fileWriter = new FileWriter(selectedDirectory.getAbsolutePath() + "\\" + FILENAME + dtf.format(now) + ".txt");
-            fileWriter.write(model.getGameDataStorage());
-            fileWriter.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }*/
     //endregion
 }

@@ -24,12 +24,12 @@ public class GoBoardModel {
     private int capturedByWhite;
     private int capturedByBlack;
 
-
     private GoField[][] fields;
 
+    //private StringBuilder gameDataStorage;
     private final List<GameListener> listeners;
     //endregion
-    private StringBuilder gameDataStorage;
+
 
     public GoBoardModel(int size, double komi, int handicap) {
         this.size = size;
@@ -70,10 +70,17 @@ public class GoBoardModel {
         return sizes;
     }
 
+    public int getHandicap() {
+        return handicap;
+    }
+
+    public double getKomi() {
+        return komi;
+    }
+
     public Stone getCurrentPlayer() {
         return this.currentPlayer;
     }
-
 
     private void initModel() {
         fields = new GoField[size][size];
@@ -82,11 +89,7 @@ public class GoBoardModel {
                 fields[row][col] = new GoField(row, col);
             }
         }
-        this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
-    }
-
-    public void setGameDataStorage(StringBuilder sb) {
-        this.gameDataStorage = sb;
+        //this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
     }
 
     public void setKomi(double komi) {
@@ -113,9 +116,6 @@ public class GoBoardModel {
         return gameState;
     }
 
-    public String getGameDataStorage() {
-        return gameDataStorage.toString();
-    }
 
     public int getCapturedByWhite() {
         return capturedByWhite;
@@ -212,7 +212,7 @@ public class GoBoardModel {
      *
      * @param row          Row of the board
      * @param col          Column of the board
-     * @param neighbours List of neighbouring GoFields
+     * @param neighbours   List of neighbouring GoFields
      * @param currentColor Color of the current Stone
      */
     private void findNeighboursOfSameColor(int row, int col, List<GoField> neighbours, Stone currentColor) {
@@ -236,6 +236,7 @@ public class GoBoardModel {
 
     /**
      * Check if a given chain contains liberties. Used to determine if a Stone or chain of stones is captured.
+     *
      * @param chain List of GoFields in a chain
      * @return True if the chain contains liberties, false if it is captured
      */
@@ -252,7 +253,6 @@ public class GoBoardModel {
 
         return false;
     }
-
 
     public void switchPlayer() {
         if (currentPlayer == Stone.BLACK) {
@@ -276,10 +276,12 @@ public class GoBoardModel {
 
     public void pass() {
         gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_PASSED : GameState.WHITE_PASSED;
-        gameDataStorage.append(gameState.toString() + "\n");
+
+        for (GameListener listener : listeners) {
+            listener.moveCompleted(new GameEvent(this, gameState));
+        }
         switchPlayer();
     }
-
 
     public void printModel() {
         for (int row = 0; row < size; row++) {
@@ -293,10 +295,6 @@ public class GoBoardModel {
             }
             System.out.println();
         }
-    }
-
-    public void storeData(String s) {
-        this.gameDataStorage.append(s);
     }
 
     public void addGameListener(GameListener l) {

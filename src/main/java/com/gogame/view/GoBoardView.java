@@ -4,14 +4,12 @@ import com.gogame.controller.*;
 
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
-import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.GoField;
 import com.gogame.model.Stone;
 
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -32,7 +30,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
 
     public GoBoardView(GoBoardModel model) {
-        this.boardSize = model.getSize();
+        this.boardSize = model.getSize(); //todo Get data over Controller
         this.model = model;
         controller = new GoBoardController(model, this);
 
@@ -154,7 +152,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
     }
 
     public void setScale() {
-        double scale = Math.min(getWidth(),getHeight());
+        double scale = Math.min(getWidth(), getHeight());
         this.tileSize = scale / (boardSize + 1);
     }
 
