@@ -28,7 +28,7 @@ public class GameScreenView extends View {
     private final TextField gameState;
 
     public GameScreenView(GoBoardModel model) {
-        sceneController = new GameScreenController(this);
+        sceneController = new GameScreenController(this, model);
 
         this.model = model;
         goBoard = new GoBoardView(model);
@@ -49,6 +49,18 @@ public class GameScreenView extends View {
             @Override
             public void resetGame(GameEvent event) {
                 gameState.setText(event.getState().toString());
+            }
+        });
+
+        model.addGameListener(new GameListener() {
+            @Override
+            public void moveCompleted(GameEvent event) {
+                model.storeData( event.getRow() + ";" + event.getCol() + "\n");
+            }
+
+            @Override
+            public void resetGame(GameEvent event) {
+
             }
         });
     }
@@ -101,14 +113,13 @@ public class GameScreenView extends View {
         captureStatus.setMaxWidth(120);
 
         // Buttons to import/export games
-        // --------------------- vielleicht ändern auf menu bar ---------------------
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Game");
 
         MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> sceneController.openImportFile());
+        importButton.setOnAction(e -> sceneController.importGameFile());
         MenuItem exportButton = new MenuItem("Export game");
-        exportButton.setOnAction(e -> System.out.println("Export game"));
+        exportButton.setOnAction(e -> sceneController.exportGameFile());
 
         menu.getItems().add(importButton);
         menu.getItems().add(exportButton);
