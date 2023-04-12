@@ -23,6 +23,7 @@ public class GoBoardModel {
 
     private int capturedByWhite;
     private int capturedByBlack;
+    private boolean prevPassed;
 
     private GoField[][] fields;
 
@@ -38,6 +39,7 @@ public class GoBoardModel {
         currentPlayer = Stone.BLACK;
         listeners = new LinkedList<>();
         gameState = GameState.GAME_START;
+        prevPassed = false;
 
         initModel();
         initHandicapFields();
@@ -128,6 +130,9 @@ public class GoBoardModel {
     //endregion
 
     public void makeMove(int row, int col) {
+        // Set passed to false
+        prevPassed = false;
+
         if (gameState == GameState.PLACE_HANDICAP) {
             makeHandicapMove(row, col);
             return;
@@ -135,13 +140,18 @@ public class GoBoardModel {
 
         if (fields[row][col].isEmpty()) {
             fields[row][col].setStone(currentPlayer);
-            switchPlayer();
 
             checkCapture(row, col);
+            switchPlayer();
 
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
+        }
+
+        if(isBoardFull()) {
+            // Game ends - game board is full
+            System.out.println("GoBardFull"); //todo implement switch to win screen
         }
     }
 
@@ -171,6 +181,7 @@ public class GoBoardModel {
         findNeighboursOfSameColor(row, col, neighbours, fields[row][col].getStone());
         if (!chainContainsLiberties(neighbours)) {
             neighbours.forEach(GoField::removeStone);
+            neighbours.forEach(s -> s.setCapStone(currentPlayer));
         }
         neighbours.clear();
         //top
@@ -178,6 +189,7 @@ public class GoBoardModel {
             findNeighboursOfSameColor(row - 1, col, neighbours, fields[row - 1][col].getStone());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
+                neighbours.forEach(s -> s.setCapStone(currentPlayer));
             }
             neighbours.clear();
         }
@@ -186,6 +198,7 @@ public class GoBoardModel {
             findNeighboursOfSameColor(row, col + 1, neighbours, fields[row][col + 1].getStone());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
+                neighbours.forEach(s -> s.setCapStone(currentPlayer));
             }
             neighbours.clear();
         }
@@ -194,6 +207,7 @@ public class GoBoardModel {
             findNeighboursOfSameColor(row + 1, col, neighbours, fields[row + 1][col].getStone());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
+                neighbours.forEach(s -> s.setCapStone(currentPlayer));
             }
             neighbours.clear();
         }
@@ -202,6 +216,7 @@ public class GoBoardModel {
             findNeighboursOfSameColor(row, col - 1, neighbours, fields[row][col - 1].getStone());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
+                neighbours.forEach(s -> s.setCapStone(currentPlayer));
             }
             neighbours.clear();
         }
@@ -275,12 +290,29 @@ public class GoBoardModel {
     }
 
     public void pass() {
+        if(prevPassed) {
+            // Player in previous round passed - game ends
+            System.out.println("Game ends"); //todo Switch to winscreen
+        }
+
         gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_PASSED : GameState.WHITE_PASSED;
 
         for (GameListener listener : listeners) {
             listener.playerPassed(new GameEvent(this, gameState));
         }
         switchPlayer();
+        prevPassed = true;
+    }
+
+    public boolean isBoardFull() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if(fields[row][col].isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void printModel() {

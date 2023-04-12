@@ -31,7 +31,7 @@ public class GoField {
     }
 
     public boolean isEmpty() {
-        return this.stone == Stone.NONE||this.stone == Stone.PRESET;
+        return this.stone == Stone.NONE||this.stone == Stone.PRESET || this.stone == Stone.CAP_BLACK || this.stone == Stone.CAP_WHITE;
     }
 
     public boolean isPreset() {
@@ -39,8 +39,8 @@ public class GoField {
     }
 
     public boolean isOtherColor(Stone otherStone){
-        if(this.stone == Stone.NONE || this.stone == Stone.PRESET
-           || otherStone == Stone.NONE || otherStone == Stone.PRESET) return false;
+        if(this.stone == Stone.NONE || this.stone == Stone.PRESET || this.stone == Stone.CAP_BLACK || this.stone == Stone.CAP_WHITE
+           || otherStone == Stone.NONE || otherStone == Stone.PRESET || otherStone == Stone.CAP_BLACK || otherStone == Stone.CAP_WHITE) return false;
 
         return !this.stone.equals(otherStone);
     }
@@ -54,6 +54,14 @@ public class GoField {
     }
     public void removeStone(){
         this.stone = Stone.NONE;
+    }
+
+    public void setCapStone(Stone stone) {
+        if(stone == Stone.BLACK) {
+            this.stone = Stone.CAP_BLACK;
+        } else if(stone == Stone.WHITE) {
+            this.stone = Stone.CAP_WHITE;
+        }
     }
 
     @Override
