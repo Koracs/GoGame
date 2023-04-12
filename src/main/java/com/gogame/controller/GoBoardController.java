@@ -1,7 +1,7 @@
 package com.gogame.controller;
 
-import com.gogame.listener.GameState;
 import com.gogame.model.*;
+import com.gogame.listener.GameListener;
 import com.gogame.view.GoBoardView;
 
 import javafx.scene.input.MouseEvent;
@@ -11,9 +11,6 @@ public class GoBoardController {
     // MVC variables
     private GoBoardModel model;
     private GoBoardView view;
-
-    // Constants
-    private final String FILENAME = "gamedata_";
     //endregion
 
     // Constructor
@@ -30,6 +27,27 @@ public class GoBoardController {
     public void setView(GoBoardView view) {
         this.view = view;
     }
+
+    public int getSize() {
+        return model.getSize();
+    }
+
+    public int getHandicap() {
+        return model.getHandicap();
+    }
+
+    public double getKomi() {
+        return model.getKomi();
+    }
+
+    public GoBoardView getView() {
+        return view;
+    }
+
+    public GoBoardModel getModel() {
+        return model;
+    }
+
     //endregion
 
     //region Methods
@@ -39,6 +57,10 @@ public class GoBoardController {
 
         model.makeMove(row, col);
 
+    }
+
+    public void addGameListener(GameListener l) {
+        model.addGameListener(l);
     }
 
     public void resetModel() {

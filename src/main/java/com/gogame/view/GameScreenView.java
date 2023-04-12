@@ -36,8 +36,7 @@ public class GameScreenView extends View {
         goBoardController = goBoardView.getController();
         gameState = new TextField();
 
-        saveGameController = new SaveGameController(model, );
-
+        saveGameController = new SaveGameController(this, goBoardController, gameScreenController);
 
         //add eventHandler to allow gameplay interaction
         EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
@@ -55,20 +54,6 @@ public class GameScreenView extends View {
                 gameState.setText(event.getState().toString());
             }
         });
-
-        /*model.addGameListener(new GameListener() {
-            @Override
-            public void moveCompleted(GameEvent event) {
-                model.storeData( event.getRow() + ";" + event.getCol() + "\n");
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-
-            }
-        });
-
-         */
     }
 
     @Override
@@ -93,7 +78,7 @@ public class GameScreenView extends View {
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
         Button resignButton = new Button("Resign");
-        resignButton.setOnMouseClicked(e -> gameScreenController.changeSceneToWinScreen(goBoardModel.getGameState()));
+        resignButton.setOnMouseClicked(e -> gameScreenController.changeSceneToWinScreen(goBoardModel.getGameState())); //todo get Data over Controller
 
         gameplayButtons.setPadding(new Insets(30));
         gameplayButtons.setHgap(10);
@@ -123,9 +108,9 @@ public class GameScreenView extends View {
         Menu menu = new Menu("Game");
 
         MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> gameScreenController.importGameFile());
+        importButton.setOnAction(e -> saveGameController.importGameFile());
         MenuItem exportButton = new MenuItem("Export game");
-        exportButton.setOnAction(e -> gameScreenController.exportGameFile());
+        exportButton.setOnAction(e -> saveGameController.exportGameFile());
 
         menu.getItems().add(importButton);
         menu.getItems().add(exportButton);
