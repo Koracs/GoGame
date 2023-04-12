@@ -21,6 +21,10 @@ public class GoBoardModel {
     private Stone currentPlayer;
     private GameState gameState;
 
+    private int capturedByWhite;
+    private int capturedByBlack;
+
+
     private GoField[][] fields;
 
     private final List<GameListener> listeners;
@@ -112,6 +116,16 @@ public class GoBoardModel {
     public String getGameDataStorage() {
         return gameDataStorage.toString();
     }
+
+    public int getCapturedByWhite() {
+        return capturedByWhite;
+    }
+
+    public int getCapturedByBlack() {
+        return capturedByBlack;
+    }
+
+    //endregion
 
     public void makeMove(int row, int col) {
         if (gameState == GameState.PLACE_HANDICAP) {

@@ -12,6 +12,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         StartScreenView startScreenView = new StartScreenView();
         Scene scene = new Scene(startScreenView.getPane(),500,600);
+        scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Go Game");
         stage.show();

@@ -26,7 +26,9 @@ public class WinScreenController {
         StartScreenView nextView = new StartScreenView();
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage s) {
-            s.setScene(new Scene(nextView.getPane(),500,600));
+            Scene scene = new Scene(nextView.getPane(), 500, 600);
+            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            s.setScene(scene);
         }
     }
     //endregion

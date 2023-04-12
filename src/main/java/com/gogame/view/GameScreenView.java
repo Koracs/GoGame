@@ -7,12 +7,15 @@ import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 public class GameScreenView extends View {
     private final GoBoardModel model;
@@ -66,11 +69,17 @@ public class GameScreenView extends View {
     protected void drawScene() {
         pane = new BorderPane();
         pane.setCenter(goBoard);
-        FlowPane gameplayButtonPane = new FlowPane();
-        VBox vBox = new VBox();
-        vBox.getChildren().add(gameplayButtonPane);
-        vBox.getChildren().add(gameState);
-        pane.setBottom(vBox);
+
+        VBox interactionField = new VBox();
+        FlowPane captureStatus = new FlowPane();
+        FlowPane gameplayButtons = new FlowPane(Orientation.VERTICAL);
+        interactionField.getChildren().add(captureStatus);
+        interactionField.getChildren().add(gameplayButtons);
+        pane.setLeft(interactionField);
+
+
+        pane.setBottom(gameState);
+
 
         // Buttons for gameplay
         Button resetButton = new Button("Reset");
@@ -80,13 +89,28 @@ public class GameScreenView extends View {
         Button resignButton = new Button("Resign");
         resignButton.setOnMouseClicked(e -> sceneController.changeSceneToWinScreen(model.getGameState()));
 
-        gameplayButtonPane.setPadding(new Insets(30, 30, 30, 30));
-        gameplayButtonPane.setHgap(10);
-        gameplayButtonPane.setVgap(10);
-        gameplayButtonPane.setAlignment(Pos.CENTER);
-        gameplayButtonPane.getChildren().add(resetButton);
-        gameplayButtonPane.getChildren().add(passButton);
-        gameplayButtonPane.getChildren().add(resignButton);
+        gameplayButtons.setPadding(new Insets(30));
+        gameplayButtons.setHgap(10);
+        gameplayButtons.setVgap(10);
+        gameplayButtons.setAlignment(Pos.CENTER);
+        gameplayButtons.getChildren().add(resetButton);
+        gameplayButtons.getChildren().add(passButton);
+        gameplayButtons.getChildren().add(resignButton);
+
+        //Buttons for capture status
+        Label labelWhite = new Label("Captured by White: ");
+        Text capturedByWhite = new Text("0");
+        Label labelBlack = new Label("Captured by Black: ");
+        Text capturedByBlack = new Text("0");
+
+        captureStatus.setPadding(new Insets(30));
+        captureStatus.setHgap(10);
+        captureStatus.setVgap(10);
+        captureStatus.getChildren().add(labelWhite);
+        captureStatus.getChildren().add(capturedByWhite);
+        captureStatus.getChildren().add(labelBlack);
+        captureStatus.getChildren().add(capturedByBlack);
+        captureStatus.setMaxWidth(120);
 
         // Buttons to import/export games
         MenuBar menuBar = new MenuBar();
@@ -102,18 +126,6 @@ public class GameScreenView extends View {
 
         menuBar.getMenus().add(menu);
         pane.setTop(menuBar);
-
-        pane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            resize(newVal.doubleValue(), pane.getHeight());
-        });
-        pane.heightProperty().addListener((obs, oldVal, newVal) -> {
-            resize(pane.getWidth(), newVal.doubleValue());
-        });
-    }
-
-    public void resize(double width, double height) {
-        goBoard.setScale(Math.min(width, height));
-        goBoard.draw();
     }
 
     @Override

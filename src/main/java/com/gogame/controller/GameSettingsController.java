@@ -84,7 +84,9 @@ public class GameSettingsController {
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage) {
             Stage s = (Stage) w;
-            s.setScene(new Scene(nextView.getPane(),500,650));
+            Scene scene = new Scene(nextView.getPane(), 800, 700);
+            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            s.setScene(scene);
         }
     }
     //endregion

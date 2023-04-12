@@ -22,10 +22,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class GoBoardView extends Parent { //todo interface for views? (registerView())
+public class GoBoardView extends Pane { //todo interface for views? (registerView())
     //region Fields
     // Pane of this class
-    private GoBoardController controller;
+    private final GoBoardController controller;
     private final int boardSize;
     private double tileSize;
     private GoBoardModel model;
@@ -35,6 +35,15 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
         this.boardSize = model.getSize();
         this.model = model;
         controller = new GoBoardController(model, this);
+
+        widthProperty().addListener(e -> {
+            setScale();
+            draw();
+        });
+        heightProperty().addListener(e -> {
+            setScale();
+            draw();
+        });
 
         model.addGameListener(new GameListener() {
             @Override
@@ -133,19 +142,19 @@ public class GoBoardView extends Parent { //todo interface for views? (registerV
 
     private Circle createStone(double centerX, double centerY, Stone stone, double tileSize) {
         double radius = switch (stone) {
-            case BLACK, WHITE -> tileSize / 4;
-            case PRESET -> tileSize / 8;
+            case BLACK, WHITE -> tileSize / 3;
+            case PRESET -> tileSize / 6;
             default -> 0;
         };
 
         Circle circle = new Circle(centerX, centerY, radius);
         circle.setFill(stone.getColor());
-        //circle.setStroke(Color.BLACK);
 
         return circle;
     }
 
-    public void setScale(double scale) {
+    public void setScale() {
+        double scale = Math.min(getWidth(),getHeight());
         this.tileSize = scale / (boardSize + 1);
     }
 

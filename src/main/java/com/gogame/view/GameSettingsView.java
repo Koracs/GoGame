@@ -2,8 +2,11 @@ package com.gogame.view;
 
 import com.gogame.controller.GameSettingsController;
 import com.gogame.model.GoBoardModel;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -11,22 +14,6 @@ import java.util.regex.Pattern;
 
 public class GameSettingsView extends View {
     //region Fields
-    // Set style of button
-    private final String STYLE = """
-            -fx-background-color:
-                        linear-gradient(#ffd65b, #e68400),
-                        linear-gradient(#ffef84, #f2ba44),
-                        linear-gradient(#ffea6a, #efaa22),
-                        linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),
-                        linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));
-                -fx-background-radius: 30;
-                -fx-background-insets: 0,1,2,3,0;
-                -fx-text-fill: #654b00;
-                -fx-font-weight: bold;
-                -fx-font-size: 14px;
-                -fx-padding: 10 20 10 20;
-            """;
-
     private BorderPane pane;
 
     private final GameSettingsController controller;
@@ -60,6 +47,7 @@ public class GameSettingsView extends View {
         // Set field size
         ToggleGroup boardSizeButtonGroup = new ToggleGroup();
         HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
 
         for (int i : GoBoardModel.getSizes()) {
             RadioButton button = new RadioButton(i + "x" + i);
@@ -69,8 +57,10 @@ public class GameSettingsView extends View {
             button.setSelected(i == controller.getBoardSize());
             }
 
-        hBox.setSpacing(10);
+        hBox.setSpacing(20);
+        hBox.setPadding(new Insets(10));
         vBox.getChildren().add(hBox);
+        vBox.setAlignment(Pos.CENTER);
 
         //
         // Activate komi and set it
@@ -91,6 +81,7 @@ public class GameSettingsView extends View {
         });
         VBox vBoxKomi = new VBox(komiCheckBox, komiSetting);
         vBoxKomi.setSpacing(10);
+        vBoxKomi.setAlignment(Pos.CENTER);
         vBox.getChildren().add(vBoxKomi);
 
 
@@ -115,13 +106,20 @@ public class GameSettingsView extends View {
 
         VBox vBoxHandicap = new VBox(handicapCheckBox, handicapSetting);
         vBoxHandicap.setSpacing(10);
+        vBoxHandicap.setAlignment(Pos.CENTER);
         vBox.getChildren().add(vBoxHandicap);
 
         // Start game button
         Button startGame = new Button("Start Game");
-        startGame.setStyle(STYLE);
         startGame.setOnMouseClicked(e -> controller.changeSceneToGameScene());
-        pane.setBottom(startGame);
+
+        FlowPane pa = new FlowPane(startGame);
+        pa.setAlignment(Pos.CENTER);
+        pa.setPadding(new Insets(30));
+        pa.setHgap(10);
+        pa.setVgap(10);
+
+        pane.setBottom(pa);
     }
     //endregion
 
