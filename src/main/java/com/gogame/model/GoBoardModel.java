@@ -27,9 +27,10 @@ public class GoBoardModel {
 
     private GoField[][] fields;
 
+    //private StringBuilder gameDataStorage;
     private final List<GameListener> listeners;
     //endregion
-    private StringBuilder gameDataStorage;
+
 
     public GoBoardModel(int size, double komi, int handicap) {
         this.size = size;
@@ -85,9 +86,12 @@ public class GoBoardModel {
         this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
     }
 
+    /*
     public void setGameDataStorage(StringBuilder sb) {
         this.gameDataStorage = sb;
     }
+
+     */
 
     public void setKomi(double komi) {
         this.komi = komi;
@@ -113,9 +117,12 @@ public class GoBoardModel {
         return gameState;
     }
 
+    /*
     public String getGameDataStorage() {
         return gameDataStorage.toString();
     }
+
+     */
 
     public int getCapturedByWhite() {
         return capturedByWhite;
@@ -295,9 +302,10 @@ public class GoBoardModel {
         }
     }
 
-    public void storeData(String s) {
+    /*public void storeData(String s) {
         this.gameDataStorage.append(s);
     }
+    */
 
     public void addGameListener(GameListener l) {
         listeners.add(l);

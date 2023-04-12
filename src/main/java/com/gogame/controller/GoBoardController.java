@@ -49,56 +49,5 @@ public class GoBoardController {
         model.pass();
     }
 
-
-    /*public void openImportFile() {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extensionFilter);
-        File selectedFile = fileChooser.showOpenDialog(view.getScene().getWindow());
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
-            String line = reader.readLine();
-
-            // Read metadata
-            if(line != null) {
-                resetModel();
-                //todo Repaint view ---------------- needs to be implemented with possible different size
-                view.enableGameControlButtons();
-                view.draw();
-                line = reader.readLine();
-            }
-
-            //todo Check if the input file is in right format
-            while (line != null) {
-                String[] temp = line.split(";");
-                if(temp.length == 1) {
-                    passPlayer();
-                } else {
-                    model.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]));
-                }
-
-                line = reader.readLine();
-            }
-            reader.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void exportFile() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
-        try {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yyyy");
-            LocalDateTime now = LocalDateTime.now();
-            FileWriter fileWriter = new FileWriter(selectedDirectory.getAbsolutePath() + "\\" + FILENAME + dtf.format(now) + ".txt");
-            fileWriter.write(model.getGameDataStorage());
-            fileWriter.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }*/
     //endregion
 }

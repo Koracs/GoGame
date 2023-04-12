@@ -1,51 +1,46 @@
-package com.gogame.controller;
+package com.gogame.model;
 
-import com.gogame.listener.GameState;
-import com.gogame.model.GoBoardModel;
-import com.gogame.view.GameScreenView;
+import com.gogame.listener.GameEvent;
+import com.gogame.listener.GameListener;
 import com.gogame.view.TutorialView;
-import com.gogame.view.WinScreenView;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.stage.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
-public class GameScreenController {
-    //region Fields
-    private final GameScreenView view;
-    private final GoBoardModel model;
+public class SaveGameModel {
+    private final GoBoardModel gameModel;
+    private StringBuilder gameDataStorage;
 
-    // Constants
-    private final String FILENAME = "gamedata_";
-    //endregion
+    public SaveGameModel(GoBoardModel gameModel) {
+        this.gameModel = gameModel;
 
-    // Constructor
-    public GameScreenController(GameScreenView view, GoBoardModel model){
-        this.view = view;
-        this.model = model;
+        gameModel.addGameListener(new GameListener() {
+            @Override
+            public void moveCompleted(GameEvent event) {
+                storeData( event.getRow() + ";" + event.getCol() + "\n");
+            }
+
+            @Override
+            public void resetGame(GameEvent event) {
+
+            }
+        });
     }
 
-    //region Methods
-    public void changeSceneToWinScreen(GameState gameState) {
-        // Switch player to get the winner
-        //model.switchPlayer();
-        WinScreenView nextView = new WinScreenView(gameState.toString()); //Todo implement winner via gameState
-        Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage) {
-            Stage s = (Stage) w;
-            Scene scene = new Scene(nextView.getPane(), 500, 600);
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            s.setScene(scene);
-        }
+    public String getGameDataStorage() {
+        return gameDataStorage.toString();
     }
 
-    /*
+    private void storeData(String s) {
+        this.gameDataStorage.append(s);
+    }
+
     public void importGameFile() {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
@@ -114,8 +109,4 @@ public class GameScreenController {
             throw new RuntimeException(e);
         }
     }
-
-     */
-    //endregion
-
 }
