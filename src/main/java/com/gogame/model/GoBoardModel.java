@@ -138,7 +138,7 @@ public class GoBoardModel {
             return;
         }
 
-        if (fields[row][col].isEmpty()) {
+        if (fields[row][col].isEmpty() && fields[row][col].isAllowed(currentPlayer)) {
             fields[row][col].setStone(currentPlayer);
 
             checkCapture(row, col);

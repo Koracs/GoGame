@@ -2,6 +2,7 @@ package com.gogame.controller;
 
 import com.gogame.view.GameSettingsView;
 import com.gogame.view.StartScreenView;
+import com.gogame.view.TutorialSettingsView;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -29,6 +30,16 @@ public class StartScreenController {
     //region Methods
     public void changeSceneToGameSettingsScreen() {
         GameSettingsView nextView = new GameSettingsView();
+        Window w = view.getPane().getScene().getWindow();
+        if(w instanceof Stage s) {
+            Scene scene = new Scene(nextView.getPane(), 500, 600);
+            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            s.setScene(scene);
+        }
+    }
+
+    public void changeSceneToTutorialSettingScreen() {
+        TutorialSettingsView nextView = new TutorialSettingsView();
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage s) {
             Scene scene = new Scene(nextView.getPane(), 500, 600);

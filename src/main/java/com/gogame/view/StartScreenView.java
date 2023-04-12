@@ -40,7 +40,7 @@ public class StartScreenView extends View {
         startGame.setOnMouseClicked(e -> controller.changeSceneToGameSettingsScreen());
 
         Button tutorial = new Button("Tutorial");
-        tutorial.setOnMouseClicked(e -> System.out.println("Tutorial button clicked!"));
+        tutorial.setOnMouseClicked(e -> controller.changeSceneToTutorialSettingScreen());
 
         FlowPane pa = new FlowPane(startGame, tutorial);
         pa.setHgap(10);
