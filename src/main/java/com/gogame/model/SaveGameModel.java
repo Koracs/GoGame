@@ -40,6 +40,11 @@ public class SaveGameModel {
             public void resetGame(GameEvent event) {
 
             }
+
+            @Override
+            public void playerPassed(GameEvent event) {
+                storeData(event.getState().toString() + "\n");
+            }
         });
     }
 

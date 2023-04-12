@@ -278,7 +278,7 @@ public class GoBoardModel {
         gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_PASSED : GameState.WHITE_PASSED;
 
         for (GameListener listener : listeners) {
-            listener.moveCompleted(new GameEvent(this, gameState));
+            listener.playerPassed(new GameEvent(this, gameState));
         }
         switchPlayer();
     }

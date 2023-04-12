@@ -53,6 +53,11 @@ public class GameScreenView extends View {
             public void resetGame(GameEvent event) {
                 gameState.setText(event.getState().toString());
             }
+
+            @Override
+            public void playerPassed(GameEvent event) {
+                gameState.setText(event.getState().toString());
+            }
         });
     }
 

@@ -7,4 +7,6 @@ public interface GameListener extends EventListener {
     void moveCompleted(GameEvent event);
 
     void resetGame(GameEvent event);
+
+    void playerPassed(GameEvent event);
 }
