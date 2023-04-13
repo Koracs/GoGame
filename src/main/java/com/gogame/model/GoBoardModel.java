@@ -138,7 +138,7 @@ public class GoBoardModel {
             return;
         }
 
-        if (fields[row][col].isEmpty() && fields[row][col].isAllowed(currentPlayer)) {
+        if (fields[row][col].isEmpty()) {
             fields[row][col].setStone(currentPlayer);
 
             checkCapture(row, col);
@@ -147,11 +147,6 @@ public class GoBoardModel {
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
-        }
-
-        if(isBoardFull()) {
-            // Game ends - game board is full
-            System.out.println("GoBardFull"); //todo implement switch to win screen
         }
     }
 
@@ -177,19 +172,11 @@ public class GoBoardModel {
     private void checkCapture(int row, int col) { //todo implement scoring
         List<GoField> neighbours = new ArrayList<>();
 
-        //center
-        findNeighboursOfSameColor(row, col, neighbours, fields[row][col].getStone());
-        if (!chainContainsLiberties(neighbours)) {
-            neighbours.forEach(GoField::removeStone);
-            neighbours.forEach(s -> s.setCapStone(currentPlayer));
-        }
-        neighbours.clear();
         //top
         if (row > 0) {
             findNeighboursOfSameColor(row - 1, col, neighbours, fields[row - 1][col].getStone());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
-                neighbours.forEach(s -> s.setCapStone(currentPlayer));
             }
             neighbours.clear();
         }
@@ -198,7 +185,6 @@ public class GoBoardModel {
             findNeighboursOfSameColor(row, col + 1, neighbours, fields[row][col + 1].getStone());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
-                neighbours.forEach(s -> s.setCapStone(currentPlayer));
             }
             neighbours.clear();
         }
@@ -207,7 +193,6 @@ public class GoBoardModel {
             findNeighboursOfSameColor(row + 1, col, neighbours, fields[row + 1][col].getStone());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
-                neighbours.forEach(s -> s.setCapStone(currentPlayer));
             }
             neighbours.clear();
         }
@@ -216,10 +201,16 @@ public class GoBoardModel {
             findNeighboursOfSameColor(row, col - 1, neighbours, fields[row][col - 1].getStone());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
-                neighbours.forEach(s -> s.setCapStone(currentPlayer));
             }
             neighbours.clear();
         }
+
+        //center
+        findNeighboursOfSameColor(row, col, neighbours, fields[row][col].getStone());
+        if (!chainContainsLiberties(neighbours)) {
+            neighbours.forEach(GoField::removeStone);
+        }
+        neighbours.clear();
     }
 
     /**
@@ -302,17 +293,6 @@ public class GoBoardModel {
         }
         switchPlayer();
         prevPassed = true;
-    }
-
-    public boolean isBoardFull() {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                if(fields[row][col].isEmpty()) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public void printModel() {
