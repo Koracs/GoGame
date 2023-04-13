@@ -14,9 +14,9 @@ public class GoBoardModel {
 
     // Model variables
     private static final int[] sizes = new int[]{9, 13, 19};
-    private double komi;
-    private int handicap;
-    private int size;
+    private final double komi;
+    private final int handicap;
+    private final int size;
     private int handicapCount;
     private Stone currentPlayer;
     private GameState gameState;
@@ -91,20 +91,8 @@ public class GoBoardModel {
                 fields[row][col] = new GoField(row, col);
             }
         }
-        //this.gameDataStorage = new StringBuilder(this.size + ";" + this.handicap + ";" + this.komi + "\n");
     }
 
-    public void setKomi(double komi) {
-        this.komi = komi;
-    }
-
-    public void setHandicap(int handicap) {
-        this.handicap = handicap;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
 
     public int getSize() {
         return size;
@@ -225,6 +213,7 @@ public class GoBoardModel {
         if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
             return;
         }
+        if(fields[row][col].isPreset()) return;
         if (neighbours.contains(fields[row][col])) return;
 
         if (fields[row][col].getStone().equals(currentColor)) neighbours.add(fields[row][col]);

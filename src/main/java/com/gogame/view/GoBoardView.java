@@ -30,10 +30,12 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
 
     public GoBoardView(GoBoardModel model) {
-        this.boardSize = model.getSize(); //todo Get data over Controller
+        this.boardSize = model.getSize();
         this.model = model;
         controller = new GoBoardController(model, this);
 
+        setMinSize(500,500);
+        setPrefSize(600,600);
         widthProperty().addListener(e -> {
             setScale();
             draw();

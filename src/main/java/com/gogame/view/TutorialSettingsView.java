@@ -4,6 +4,8 @@ import com.gogame.controller.TutorialSettingsController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -12,84 +14,57 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TutorialSettingsView extends View{
+public class TutorialSettingsView extends View {
     //region Fields
     private BorderPane pane;
-
     private final TutorialSettingsController controller;
-
-    private List<Button> tutorialButtons;
+    private List<String> tutorials;
     //endregion
 
     // Constructor
     public TutorialSettingsView() {
         controller = new TutorialSettingsController(this);
-        tutorialButtons = new ArrayList<>();
+
+        tutorials = new ArrayList<>();
+        tutorials.add("tutorial 1"); //todo replace with parser of game files (felix)
+        tutorials.add("tutorial 2");
+        tutorials.add("tutorial 3");
+        tutorials.add("tutorial 4");
 
         drawScene();
     }
 
     //region Getter/Setter
-
-    //endregion
     @Override
     public BorderPane getPane() {
         return this.pane;
     }
-    //region Methods
+    //endregion
 
+
+    //region Methods
     @Override
     protected void drawScene() {
         pane = new BorderPane();
+        FlowPane flowPane = new FlowPane();
+        flowPane.setAlignment(Pos.TOP_CENTER);
+        flowPane.setPadding(new Insets(30));
+        flowPane.setHgap(10);
+        flowPane.setVgap(10);
+        pane.setCenter(flowPane);
 
-        // Implement test tutorials
-        //todo CSS implementieren - auswählen und icon
-        Button tutorial1 = new Button("Tutorial 1");
-        tutorialButtons.add(tutorial1);
-        tutorial1.getStyleClass().add("tutorialButton");
-        tutorial1.setOnMouseClicked(e -> {
-            controller.selectTutorial(1);
-            selectTutorialButton(1);
-        });
+        ToggleGroup tutorialGroup = new ToggleGroup();
 
-        Button tutorial2 = new Button("Tutorial 2");
-        tutorialButtons.add(tutorial2);
-        tutorial2.getStyleClass().add("tutorialButton");
-        tutorial2.setOnMouseClicked(e -> {
-            controller.selectTutorial(2);
-            selectTutorialButton(2);
-        });
-
-        Button tutorial3 = new Button("Tutorial 3");
-        tutorialButtons.add(tutorial3);
-        tutorial3.getStyleClass().add("tutorialButton");
-        tutorial3.setOnMouseClicked(e -> {
-            controller.selectTutorial(3);
-            selectTutorialButton(3);
-        });
-
-        Button tutorial4 = new Button("Tutorial 4");
-        tutorialButtons.add(tutorial4);
-        tutorial4.getStyleClass().add("tutorialButton");
-        tutorial4.setOnMouseClicked(e -> {
-            controller.selectTutorial(4);
-            selectTutorialButton(4);
-        });
-
-        VBox vBox1 = new VBox(tutorial1, tutorial2);
-        vBox1.setSpacing(20);
-        VBox vBox2 = new VBox(tutorial3, tutorial4);
-        vBox2.setSpacing(20);
-        HBox hBox = new HBox(vBox1, vBox2);
-        hBox.setPadding(new Insets(30));
-        hBox.setSpacing(20);
-        hBox.setAlignment(Pos.CENTER);
-
-        pane.setCenter(hBox);
+        for (String tutorial : tutorials) {
+            ToggleButton button = new ToggleButton(tutorial);
+            button.setToggleGroup(tutorialGroup);
+            flowPane.getChildren().add(button);
+            //todo implement controller (or select only on "start game")
+        }
 
         // Buttons
         Button startGame = new Button("Start game");
-        startGame.setOnMouseClicked(e -> System.out.println("Start game with " + controller.getSelectedTutorial())); //todo Implement logic
+        startGame.setOnMouseClicked(e -> controller.changeSceneToTutorialScene()); //todo Implement logic
 
         Button importGame = new Button("Import game");
         importGame.setOnMouseClicked(e -> System.out.println("Import game")); //todo Implement logic
@@ -101,14 +76,6 @@ public class TutorialSettingsView extends View{
         pa.setAlignment(Pos.CENTER);
 
         pane.setBottom(pa);
-    }
-
-    private void selectTutorialButton(int i) {
-        tutorialButtons.forEach(b -> {
-            b.getStyleClass().remove("tutorialButtonSelected");
-            b.getStyleClass().add("tutorialButton");
-        });
-        tutorialButtons.get(i-1).getStyleClass().add("tutorialButtonSelected");
     }
     //endregion
 }

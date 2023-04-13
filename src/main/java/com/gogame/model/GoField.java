@@ -5,16 +5,20 @@ public class GoField {
     private final int col;
     private Stone stone;
 
+    private boolean wasPreset;
+
 
     public GoField(int row, int col){
         this.row = row;
         this.col = col;
         this.stone = Stone.NONE;
+        wasPreset = false;
     }
     public GoField(int row, int col,Stone stone){
         this.row = row;
         this.col = col;
         this.stone = stone;
+        wasPreset = (stone == Stone.PRESET);
     }
 
     public int getRow() {
@@ -65,19 +69,14 @@ public class GoField {
     }
 
     public void setStone(Stone stone) {
+        if(!wasPreset) wasPreset = (stone == Stone.PRESET);
         this.stone = stone;
     }
     public void removeStone(){
-        this.stone = Stone.NONE;
+        if(wasPreset) this.stone = Stone.PRESET;
+        else this.stone = Stone.NONE;
     }
 
-    public void setCapStone(Stone currentPlayer) {
-        if(currentPlayer == Stone.BLACK) {
-            this.stone = Stone.CAP_BLACK;
-        } else if(currentPlayer == Stone.WHITE) {
-            this.stone = Stone.CAP_WHITE;
-        }
-    }
 
     @Override
     public String toString() {
