@@ -36,5 +36,23 @@
     -fx-background-color: -fx-color1;
 }
 
+.popup {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-radius: 10;
+    -fx-font-size: 20 px;
+    -fx-font-weight: bold;
+}
+
+.tutorialButton {
+    -fx-background-color: white;
+    -fx-border-color: grey;
+    -fx-border-radius: 5;
+}
+
+.tutorialButtonSelected {
+    -fx-background-color: #6767fd;
+}
+
 
 

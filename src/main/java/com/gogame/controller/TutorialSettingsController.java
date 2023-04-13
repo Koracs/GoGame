@@ -41,10 +41,18 @@ public class TutorialSettingsController {
             case 3:
                 selectedTutorial = TUTORIAL3;
                 break;
-                case 4:
-                    selectedTutorial = TUTORIAL4;
-                     break;
+            case 4:
+                selectedTutorial = TUTORIAL4;
+                break;
         }
+    }
+
+    public void importGameData() {
+
+    }
+
+    public void selectFile() {
+
     }
     //endregion
 }

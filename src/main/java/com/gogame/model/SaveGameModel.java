@@ -122,9 +122,10 @@ public class SaveGameModel {
             });
 
             VBox vBox = new VBox(label, button);
-            vBox.setStyle(" -fx-background-color: white;");
+            vBox.getStyleClass().add("popup");
             vBox.setAlignment(Pos.CENTER);
             statusPopup.getContent().add(vBox);
+            statusPopup.centerOnScreen();
             statusPopup.show(view.getPane().getScene().getWindow());
         } catch (IOException e) {
             throw new RuntimeException(e);
