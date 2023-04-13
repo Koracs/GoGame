@@ -1,6 +1,7 @@
 package com.gogame.view;
 
 import com.gogame.controller.TutorialSettingsController;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -80,6 +81,7 @@ public class TutorialSettingsView extends View{
         VBox vBox2 = new VBox(tutorial3, tutorial4);
         vBox2.setSpacing(20);
         HBox hBox = new HBox(vBox1, vBox2);
+        hBox.setPadding(new Insets(30));
         hBox.setSpacing(20);
         hBox.setAlignment(Pos.CENTER);
 
@@ -93,7 +95,9 @@ public class TutorialSettingsView extends View{
         importGame.setOnMouseClicked(e -> System.out.println("Import game")); //todo Implement logic
 
         FlowPane pa = new FlowPane(startGame, importGame);
+        pa.setPadding(new Insets(30));
         pa.setHgap(10);
+        pa.setVgap(10);
         pa.setAlignment(Pos.CENTER);
 
         pane.setBottom(pa);

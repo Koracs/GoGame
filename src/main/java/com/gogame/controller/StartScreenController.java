@@ -30,21 +30,23 @@ public class StartScreenController {
     //region Methods
     public void changeSceneToGameSettingsScreen() {
         GameSettingsView nextView = new GameSettingsView();
-        Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage s) {
-            Scene scene = new Scene(nextView.getPane(), 500, 600);
+        Scene s = view.getPane().getScene();
+        Window w = s.getWindow();
+        if(w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            s.setScene(scene);
+            stage.setScene(scene);
         }
     }
 
     public void changeSceneToTutorialSettingScreen() {
         TutorialSettingsView nextView = new TutorialSettingsView();
-        Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage s) {
-            Scene scene = new Scene(nextView.getPane(), 500, 600);
+        Scene s = view.getPane().getScene();
+        Window w = s.getWindow();
+        if(w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            s.setScene(scene);
+            stage.setScene(scene);
         }
     }
     //endregion
