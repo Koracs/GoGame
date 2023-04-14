@@ -33,6 +33,10 @@ public class SaveGame {
         return gameDataStorage.toString();
     }
 
+    public void resetData() {
+        this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
+    }
+
     public void storeData(String s) {
         this.gameDataStorage.append(s);
     }

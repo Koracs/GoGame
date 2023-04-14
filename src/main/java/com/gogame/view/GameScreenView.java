@@ -68,7 +68,7 @@ public class GameScreenView extends View {
 
             @Override
             public void resetGame(GameEvent event) {
-
+                saveGame.resetData();
             }
 
             @Override
