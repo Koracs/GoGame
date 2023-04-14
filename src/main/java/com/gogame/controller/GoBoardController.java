@@ -1,7 +1,6 @@
 package com.gogame.controller;
 
 import com.gogame.model.*;
-import com.gogame.listener.GameListener;
 import com.gogame.view.GoBoardView;
 
 import javafx.scene.input.MouseEvent;
@@ -57,10 +56,6 @@ public class GoBoardController {
 
         model.makeMove(row, col);
 
-    }
-
-    public void addGameListener(GameListener l) {
-        model.addGameListener(l);
     }
 
     public void resetModel() {
