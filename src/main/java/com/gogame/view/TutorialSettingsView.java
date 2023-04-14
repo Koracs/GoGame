@@ -6,6 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -75,7 +77,21 @@ public class TutorialSettingsView extends View {
         pa.setVgap(10);
         pa.setAlignment(Pos.CENTER);
 
+        // Back Button
+        HBox topBox = new HBox();
+        topBox.setAlignment(Pos.CENTER_LEFT);
+        topBox.setPadding(new Insets(10));
+        Button backButton = new Button("Back");
+        Image image = new Image(getClass().getResourceAsStream("/pictures/backArrow.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(backButton.getFont().getSize());
+        imageView.setFitHeight(backButton.getFont().getSize());
+        backButton.setGraphic(imageView);
+        backButton.setOnMouseClicked(e -> controller.changeSceneToStartScreen());
+        topBox.getChildren().add(backButton);
+
         pane.setBottom(pa);
+        pane.setTop(topBox);
     }
     //endregion
 }
