@@ -11,7 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         StartScreenView startScreenView = new StartScreenView();
-        Scene scene = new Scene(startScreenView.getPane(),500,600);
+        Scene scene = new Scene(startScreenView.getPane(),500,500);
         scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Go Game");

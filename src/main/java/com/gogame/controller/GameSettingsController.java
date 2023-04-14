@@ -84,7 +84,7 @@ public class GameSettingsController {
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage) {
             Stage s = (Stage) w;
-            Scene scene = new Scene(nextView.getPane(), 800, 700);
+            Scene scene = new Scene(nextView.getPane());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             s.setScene(scene);
         }
