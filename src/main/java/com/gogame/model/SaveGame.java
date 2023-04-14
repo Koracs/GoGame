@@ -2,10 +2,7 @@ package com.gogame.model;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
-import com.gogame.listener.GameEvent;
-import com.gogame.listener.GameListener;
 import com.gogame.view.GameScreenView;
-import com.gogame.view.GoBoardView;
 import com.gogame.view.TutorialView;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,34 +15,18 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class SaveGameModel {
+public class SaveGame {
     private final String FILENAME = "gamedata_";
+    private final String EXT = ".txt";
 
     private final GoBoardController goBoardController;
     private final GameScreenController gameScreenController;
     private StringBuilder gameDataStorage;
 
-    public SaveGameModel(GoBoardController goBoardController, GameScreenController gameScreenController) {
+    public SaveGame(GoBoardController goBoardController, GameScreenController gameScreenController) {
         this.goBoardController = goBoardController;
         this.gameScreenController = gameScreenController;
         this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
-
-        goBoardController.addGameListener(new GameListener() {
-            @Override
-            public void moveCompleted(GameEvent event) {
-                storeData(event.getRow() + ";" + event.getCol() + "/ " + event.getState() + "\n");
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-
-            }
-
-            @Override
-            public void playerPassed(GameEvent event) {
-                storeData(event.getState().toString() + "\n");
-            }
-        });
     }
 
     public String getGameDataStorage() {
@@ -107,7 +88,23 @@ public class SaveGameModel {
         try {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yyyy");
             LocalDateTime now = LocalDateTime.now();
-            FileWriter fileWriter = new FileWriter(selectedDirectory.getAbsolutePath() + "\\" + FILENAME + dtf.format(now) + ".txt");
+
+            // Check for valid file name
+            String filePath = selectedDirectory.getAbsolutePath() + "\\" + FILENAME + dtf.format(now);
+
+            File temp = new File(filePath + EXT);
+            if(temp.exists()) {
+                int i = 1;
+                temp = new File(filePath + "_" + i + EXT);
+                while(temp.exists()) {
+                    i++;
+                    temp = new File(filePath + "_" + i + EXT);
+                }
+
+                filePath = filePath + "_" + i;
+            }
+
+            FileWriter fileWriter = new FileWriter(filePath + EXT);
             fileWriter.write(gameDataStorage.toString());
             fileWriter.close();
             Popup statusPopup = new Popup();

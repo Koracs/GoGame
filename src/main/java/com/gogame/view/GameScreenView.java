@@ -2,10 +2,10 @@ package com.gogame.view;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
-import com.gogame.controller.SaveGameController;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
+import com.gogame.model.SaveGame;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -21,8 +21,8 @@ public class GameScreenView extends View {
     private final GoBoardModel goBoardModel;
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
-    private final SaveGameController saveGameController;
     private final GoBoardView goBoardView;
+    private final SaveGame saveGame;
 
     private BorderPane pane;
 
@@ -36,7 +36,7 @@ public class GameScreenView extends View {
         goBoardController = goBoardView.getController();
         gameState = new TextField();
 
-        saveGameController = new SaveGameController(this, goBoardController, gameScreenController);
+        saveGame = new SaveGame(goBoardController, gameScreenController);
 
         //add eventHandler to allow gameplay interaction
         EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
@@ -57,6 +57,23 @@ public class GameScreenView extends View {
             @Override
             public void playerPassed(GameEvent event) {
                 gameState.setText(event.getState().toString());
+            }
+        });
+
+        model.addGameListener(new GameListener() {
+            @Override
+            public void moveCompleted(GameEvent event) {
+                saveGame.storeData(event.getRow() + ";" + event.getCol() + "/ " + event.getState() + "\n");
+            }
+
+            @Override
+            public void resetGame(GameEvent event) {
+
+            }
+
+            @Override
+            public void playerPassed(GameEvent event) {
+                saveGame.storeData(event.getState().toString() + "\n");
             }
         });
     }
@@ -113,9 +130,9 @@ public class GameScreenView extends View {
         Menu menu = new Menu("Game");
 
         MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> saveGameController.importGameFile());
+        importButton.setOnAction(e -> saveGame.importGameFile());
         MenuItem exportButton = new MenuItem("Export game");
-        exportButton.setOnAction(e -> saveGameController.exportGameFile());
+        exportButton.setOnAction(e -> saveGame.exportGameFile());
 
         menu.getItems().add(importButton);
         menu.getItems().add(exportButton);
