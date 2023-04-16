@@ -2,6 +2,7 @@ package com.gogame.controller;
 
 import com.gogame.view.StartScreenView;
 import com.gogame.view.WinScreenView;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -32,6 +33,10 @@ public class WinScreenController {
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }
+    }
+
+    public void exitGame() {
+        Platform.exit();
     }
 
 

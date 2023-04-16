@@ -43,7 +43,7 @@ public class GameScreenView extends View {
         goBoardView.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
 
         drawScene();
-        model.addGameListener(new GameListener() { //todo outsource into own class
+        model.addGameListener(new GameListener() { //todo outsource into own class?
             @Override
             public void moveCompleted(GameEvent event) {
                 gameState.setText(event.getRow() + " " + event.getCol() + ": " + event.getState().toString());
@@ -100,7 +100,7 @@ public class GameScreenView extends View {
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
         Button resignButton = new Button("Resign");
-        resignButton.setOnMouseClicked(e -> gameScreenController.changeSceneToWinScreen(goBoardModel.getGameState())); //todo get Data over Controller
+        resignButton.setOnMouseClicked(e -> gameScreenController.changeSceneToWinScreen(goBoardModel.getCurrentPlayer())); //todo get Data over Controller
 
         gameplayButtons.setPadding(new Insets(30));
         gameplayButtons.setHgap(10);

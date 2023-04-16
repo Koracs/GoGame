@@ -1,6 +1,7 @@
 package com.gogame.view;
 
 import com.gogame.controller.WinScreenController;
+import com.gogame.model.Stone;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -20,8 +21,8 @@ public class WinScreenView extends View {
     //endregion
 
     // Constructor
-    public WinScreenView(String winner) {
-        this.winner = winner;
+    public WinScreenView(Stone winner) {
+        this.winner = winner == Stone.BLACK? "White" : "Black";
         controller = new WinScreenController(this);
         drawScene();
     }
@@ -46,10 +47,14 @@ public class WinScreenView extends View {
 
         Text winText = new Text("Player " + winner + " wins!");
 
+
         Button homeMenu = new Button("Home menu");
         homeMenu.setOnMouseClicked(e -> controller.changeSceneToStartScreen());
 
-        FlowPane pa = new FlowPane(homeMenu);
+        Button exitGame = new Button("Exit Game");
+        exitGame.setOnMouseClicked(e -> controller.exitGame());
+
+        FlowPane pa = new FlowPane(homeMenu,exitGame);
         pa.setAlignment(Pos.CENTER);
         pa.setPadding(new Insets(30));
         pa.setHgap(10);
