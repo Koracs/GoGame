@@ -60,6 +60,11 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
             public void playerPassed(GameEvent event) {
 
             }
+
+            @Override
+            public void gameEnded(GameEvent event) {
+
+            }
         });
 
         draw();

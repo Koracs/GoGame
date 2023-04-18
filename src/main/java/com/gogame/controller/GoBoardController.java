@@ -66,5 +66,12 @@ public class GoBoardController {
         model.pass();
     }
 
+    public void makeMove(int row, int col) {
+        model.makeMove(row, col);
+    }
+
+    public void placeHandicapStone(int row, int col) {
+
+    }
     //endregion
 }

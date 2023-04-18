@@ -29,10 +29,10 @@ public class GameScreenController {
     //region Methods
 
 
-    public void changeSceneToWinScreen(Stone currentPlayer) {
+    public void changeSceneToWinScreen(GameState winner) {
         // Switch player to get the winner
         //model.switchPlayer();
-        WinScreenView nextView = new WinScreenView(currentPlayer); //Todo implement winner via gameState
+        WinScreenView nextView = new WinScreenView(winner);
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         if(w instanceof Stage stage) {

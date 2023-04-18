@@ -1,6 +1,7 @@
 package com.gogame.view;
 
 import com.gogame.controller.WinScreenController;
+import com.gogame.listener.GameState;
 import com.gogame.model.Stone;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,7 +12,7 @@ import javafx.scene.text.Text;
 
 public class WinScreenView extends View {
     //region Fields
-    private final String winner;
+    private final GameState winner;
 
     // Pane of this class
     private BorderPane pane;
@@ -21,8 +22,8 @@ public class WinScreenView extends View {
     //endregion
 
     // Constructor
-    public WinScreenView(Stone winner) {
-        this.winner = winner == Stone.BLACK? "White" : "Black";
+    public WinScreenView(GameState winner) {
+        this.winner = winner;
         controller = new WinScreenController(this);
         drawScene();
     }
@@ -45,7 +46,7 @@ public class WinScreenView extends View {
     protected void drawScene() {
         pane = new BorderPane();
 
-        Text winText = new Text("Player " + winner + " wins!");
+        Text winText = new Text(winner.toString());
 
 
         Button homeMenu = new Button("Home menu");

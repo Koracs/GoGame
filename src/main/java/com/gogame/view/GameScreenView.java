@@ -58,12 +58,17 @@ public class GameScreenView extends View {
             public void playerPassed(GameEvent event) {
                 gameState.setText(event.getState().toString());
             }
+
+            @Override
+            public void gameEnded(GameEvent event) {
+
+            }
         });
 
         model.addGameListener(new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
-                saveGame.storeData(event.getRow() + ";" + event.getCol() + "/ " + event.getState() + "\n");
+                saveGame.storeData(event.getRow() + ";" + event.getCol() + "- " + event.getState() + "\n");
             }
 
             @Override
@@ -74,6 +79,31 @@ public class GameScreenView extends View {
             @Override
             public void playerPassed(GameEvent event) {
                 saveGame.storeData(event.getState().toString() + "\n");
+            }
+
+            @Override
+            public void gameEnded(GameEvent event) {
+            }
+        });
+
+        model.addGameListener(new GameListener() {
+            @Override
+            public void moveCompleted(GameEvent event) {
+            }
+
+            @Override
+            public void resetGame(GameEvent event) {
+
+            }
+
+            @Override
+            public void playerPassed(GameEvent event) {
+
+            }
+
+            @Override
+            public void gameEnded(GameEvent event) {
+                gameScreenController.changeSceneToWinScreen(event.getState());
             }
         });
     }
@@ -100,7 +130,10 @@ public class GameScreenView extends View {
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
         Button resignButton = new Button("Resign");
-        resignButton.setOnMouseClicked(e -> gameScreenController.changeSceneToWinScreen(goBoardModel.getCurrentPlayer())); //todo get Data over Controller
+        resignButton.setOnMouseClicked(e -> {
+            goBoardModel.playerResigned();
+            gameScreenController.changeSceneToWinScreen(goBoardModel.getGameState());
+        });
 
         gameplayButtons.setPadding(new Insets(30));
         gameplayButtons.setHgap(10);
