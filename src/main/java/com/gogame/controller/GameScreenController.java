@@ -4,6 +4,7 @@ import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.Stone;
 import com.gogame.view.GameScreenView;
+import com.gogame.view.StartScreenView;
 import com.gogame.view.WinScreenView;
 import javafx.scene.Scene;
 import javafx.stage.*;
@@ -35,6 +36,17 @@ public class GameScreenController {
         WinScreenView nextView = new WinScreenView(winner);
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
+        if(w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            stage.setScene(scene);
+        }
+    }
+
+    public void changeSceneToStartScreen() {
+        Scene s = view.getPane().getScene();
+        Window w = s.getWindow();
+        StartScreenView nextView = new StartScreenView();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
