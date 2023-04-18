@@ -273,6 +273,7 @@ public class GoBoardModel {
         if(prevPassed) {
             // Player in previous round passed - game ends
             System.out.println("Game ends"); //todo Switch to winscreen
+
         }
 
         gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_PASSED : GameState.WHITE_PASSED;

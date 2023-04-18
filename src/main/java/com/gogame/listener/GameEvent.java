@@ -1,6 +1,7 @@
 package com.gogame.listener;
 
 import com.gogame.model.GoBoardModel;
+import javafx.scene.text.Text;
 
 import java.util.EventObject;
 
@@ -29,6 +30,15 @@ public class GameEvent extends EventObject {
 
     public int getCol() {
         return col;
+    }
+
+    public String getRowLetter(){
+        GoBoardModel model = (GoBoardModel) source;
+        return String.valueOf(model.getSize()-row);
+    }
+
+    public String getColLetter(){
+        return String.valueOf((char) (col + 65));
     }
 
     public GameState getState() {

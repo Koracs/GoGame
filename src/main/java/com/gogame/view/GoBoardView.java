@@ -26,7 +26,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
     private final GoBoardController controller;
     private final int boardSize;
     private double tileSize;
-    private GoBoardModel model;
+    private final GoBoardModel model;
 
 
     public GoBoardView(GoBoardModel model) {
@@ -147,7 +147,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
     private Circle createStone(double centerX, double centerY, Stone stone, double tileSize) {
         double radius = switch (stone) {
-            case BLACK, WHITE -> tileSize / 3;
+            case BLACK, WHITE -> tileSize / 2.5;
             case PRESET -> tileSize / 6;
             default -> 0;
         };

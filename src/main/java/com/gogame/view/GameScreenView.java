@@ -6,6 +6,7 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.SaveGame;
+import com.gogame.model.Stone;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -46,7 +47,10 @@ public class GameScreenView extends View {
         model.addGameListener(new GameListener() { //todo outsource into own class?
             @Override
             public void moveCompleted(GameEvent event) {
-                gameState.setText(event.getRow() + " " + event.getCol() + ": " + event.getState().toString());
+                String lastPlayer = goBoardModel.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
+                //todo convert to ABC/123
+                gameState.setText("Player " + lastPlayer + " placed at: " + event.getColLetter()
+                        + " " + event.getRowLetter() + ". " + event.getState().toString());
             }
 
             @Override
@@ -95,8 +99,6 @@ public class GameScreenView extends View {
 
 
         // Buttons for gameplay
-        Button resetButton = new Button("Reset");
-        resetButton.setOnMouseClicked(e -> goBoardController.resetModel());
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
         Button resignButton = new Button("Resign");
@@ -106,7 +108,6 @@ public class GameScreenView extends View {
         gameplayButtons.setHgap(10);
         gameplayButtons.setVgap(10);
         gameplayButtons.setAlignment(Pos.CENTER);
-        gameplayButtons.getChildren().add(resetButton);
         gameplayButtons.getChildren().add(passButton);
         gameplayButtons.getChildren().add(resignButton);
 
@@ -127,17 +128,30 @@ public class GameScreenView extends View {
 
         // Buttons to import/export games
         MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Game");
+        SeparatorMenuItem separator = new SeparatorMenuItem();
+        Menu game = new Menu("Game");
+        Menu file = new Menu("File");
+
+        MenuItem restartButton = new MenuItem("Restart game");
+        restartButton.setOnAction(e -> goBoardController.resetModel());
+        MenuItem mainMenuButton = new MenuItem("Main menu");
+        mainMenuButton.setOnAction(e -> gameScreenController.changeSceneToStartScreen());
+
+        game.getItems().add(restartButton);
+        game.getItems().add(separator);
+        game.getItems().add(mainMenuButton);
+
 
         MenuItem importButton = new MenuItem("Import game");
         importButton.setOnAction(e -> saveGame.importGameFile());
         MenuItem exportButton = new MenuItem("Export game");
         exportButton.setOnAction(e -> saveGame.exportGameFile());
 
-        menu.getItems().add(importButton);
-        menu.getItems().add(exportButton);
+        file.getItems().add(importButton);
+        file.getItems().add(exportButton);
 
-        menuBar.getMenus().add(menu);
+        menuBar.getMenus().add(game);
+        menuBar.getMenus().add(file);
         pane.setTop(menuBar);
     }
 
