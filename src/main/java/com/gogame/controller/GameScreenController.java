@@ -2,6 +2,7 @@ package com.gogame.controller;
 
 import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
+import com.gogame.model.Stone;
 import com.gogame.view.GameScreenView;
 import com.gogame.view.WinScreenView;
 import javafx.scene.Scene;
@@ -28,10 +29,10 @@ public class GameScreenController {
     //region Methods
 
 
-    public void changeSceneToWinScreen(GameState gameState) {
+    public void changeSceneToWinScreen(Stone currentPlayer) {
         // Switch player to get the winner
         //model.switchPlayer();
-        WinScreenView nextView = new WinScreenView(gameState.toString()); //Todo implement winner via gameState
+        WinScreenView nextView = new WinScreenView(currentPlayer); //Todo implement winner via gameState
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         if(w instanceof Stage stage) {
