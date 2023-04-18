@@ -35,34 +35,13 @@ public class GoField {
     }
 
     public boolean isEmpty() {
-        return this.stone == Stone.NONE||this.stone == Stone.PRESET || this.stone == Stone.CAP_BLACK || this.stone == Stone.CAP_WHITE;
+        return this.stone == Stone.NONE||this.stone == Stone.PRESET;
     }
 
     public boolean isPreset() {
         return this.stone == Stone.PRESET;
     }
 
-    public boolean isAllowed(Stone currentPlayer) { //todo Check ko rule
-        if(this.stone == Stone.NONE||this.stone == Stone.PRESET) {
-            return true;
-        }
-
-        if(currentPlayer == Stone.BLACK && this.stone == Stone.CAP_BLACK) {
-            return true;
-        }
-
-        if(currentPlayer == Stone.WHITE && this.stone == Stone.CAP_WHITE) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isOtherColor(Stone otherStone){
-        if(this.stone == Stone.NONE || this.stone == Stone.PRESET || this.stone == Stone.CAP_BLACK || this.stone == Stone.CAP_WHITE
-           || otherStone == Stone.NONE || otherStone == Stone.PRESET || otherStone == Stone.CAP_BLACK || otherStone == Stone.CAP_WHITE) return false;
-
-        return !this.stone.equals(otherStone);
-    }
 
     public boolean isNoEnemy(Stone otherStone){
         return this.isEmpty() || stone == otherStone;

@@ -51,11 +51,16 @@ public class GoBoardController {
 
     //region Methods
     public void mouseClicked(MouseEvent e) {
-        int row = (int) Math.round((e.getY()) / view.getScale() - 1);
-        int col = (int) Math.round((e.getX()) / view.getScale() - 1);
+        model.makeMove(getNearestRow(e.getY()), getNearestCol(e.getX()));
 
-        model.makeMove(row, col);
+    }
 
+    public int getNearestRow(double y){
+        return (int) Math.round(y / view.getScale() - 1);
+    }
+
+    public int getNearestCol(double x){
+        return (int) Math.round(x / view.getScale() - 1);
     }
 
     public void resetModel() {

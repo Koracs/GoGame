@@ -25,9 +25,8 @@ public class WinScreenController {
     //region Methods
     public void changeSceneToStartScreen() {
         Scene s = view.getPane().getScene();
-        Stage stageStart = (Stage) s.getWindow();
         Window w = s.getWindow();
-        StartScreenView nextView = new StartScreenView(stageStart);
+        StartScreenView nextView = new StartScreenView();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
