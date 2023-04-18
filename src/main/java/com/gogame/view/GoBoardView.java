@@ -11,6 +11,7 @@ import com.gogame.model.Stone;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -70,6 +71,24 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
         drawBoard();
         drawCoordinates();
         drawStones();
+    }
+
+    Circle hover;
+    public void drawHover(MouseEvent e) {
+        try {
+            getChildren().remove(hover);
+            int row = controller.getNearestRow(e.getY());
+            int col = controller.getNearestCol(e.getX());
+
+            hover = new Circle((col+1)*getScale(),(row+1)*getScale(),tileSize/2.5);
+
+            if(model.getField(row,col).isEmpty()) hover.setFill(Color.web("rgba(0,255,0,0.5)"));
+            else hover.setFill(Color.web("rgba(255,0,0,0.5)"));
+
+            getChildren().add(hover);
+        } catch (ArrayIndexOutOfBoundsException ignore){
+        }
+
     }
 
 

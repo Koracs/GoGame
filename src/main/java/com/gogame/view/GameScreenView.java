@@ -43,6 +43,9 @@ public class GameScreenView extends View {
         EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
         goBoardView.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
 
+        EventHandler<MouseEvent> moveHandler = goBoardView::drawHover;
+        goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED,moveHandler);
+
         drawScene();
         model.addGameListener(new GameListener() { //todo outsource into own class?
             @Override

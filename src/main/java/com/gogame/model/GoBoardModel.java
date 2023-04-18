@@ -102,6 +102,10 @@ public class GoBoardModel {
         return fields;
     }
 
+    public GoField getField(int row, int col){
+        return fields[row][col];
+    }
+
     public GameState getGameState() {
         return gameState;
     }
