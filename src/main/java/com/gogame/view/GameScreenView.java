@@ -19,7 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class GameScreenView extends View {
-    private final GoBoardModel goBoardModel;
+    private GoBoardModel goBoardModel;
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
     private final GoBoardView goBoardView;
@@ -65,12 +65,17 @@ public class GameScreenView extends View {
             public void playerPassed(GameEvent event) {
                 gameState.setText(event.getState().toString());
             }
+
+            @Override
+            public void gameEnded(GameEvent event) {
+
+            }
         });
 
         model.addGameListener(new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
-                saveGame.storeData(event.getRow() + ";" + event.getCol() + "/ " + event.getState() + "\n");
+                saveGame.storeData(event.getRow() + ";" + event.getCol() + "- " + event.getState() + "\n");
             }
 
             @Override
@@ -82,7 +87,36 @@ public class GameScreenView extends View {
             public void playerPassed(GameEvent event) {
                 saveGame.storeData(event.getState().toString() + "\n");
             }
+
+            @Override
+            public void gameEnded(GameEvent event) {
+            }
         });
+
+        model.addGameListener(new GameListener() {
+            @Override
+            public void moveCompleted(GameEvent event) {
+            }
+
+            @Override
+            public void resetGame(GameEvent event) {
+
+            }
+
+            @Override
+            public void playerPassed(GameEvent event) {
+
+            }
+
+            @Override
+            public void gameEnded(GameEvent event) {
+                gameScreenController.changeSceneToWinScreen(event.getState());
+            }
+        });
+    }
+
+    public void setModel(GoBoardModel goBoardModel) {
+        this.goBoardModel = goBoardModel;
     }
 
     @Override
@@ -105,7 +139,10 @@ public class GameScreenView extends View {
         Button passButton = new Button("Pass");
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
         Button resignButton = new Button("Resign");
-        resignButton.setOnMouseClicked(e -> gameScreenController.changeSceneToWinScreen(goBoardModel.getCurrentPlayer())); //todo get Data over Controller
+        resignButton.setOnMouseClicked(e -> {
+            goBoardModel.playerResigned();
+            gameScreenController.changeSceneToWinScreen(goBoardModel.getGameState());
+        });
 
         gameplayButtons.setPadding(new Insets(30));
         gameplayButtons.setHgap(10);
@@ -146,7 +183,7 @@ public class GameScreenView extends View {
 
 
         MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> saveGame.importGameFile());
+        importButton.setOnAction(e -> saveGame.importGameFile(false));
         MenuItem exportButton = new MenuItem("Export game");
         exportButton.setOnAction(e -> saveGame.exportGameFile());
 

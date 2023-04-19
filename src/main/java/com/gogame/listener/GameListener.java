@@ -9,4 +9,6 @@ public interface GameListener extends EventListener {
     void resetGame(GameEvent event);
 
     void playerPassed(GameEvent event);
+
+    void gameEnded(GameEvent event);
 }

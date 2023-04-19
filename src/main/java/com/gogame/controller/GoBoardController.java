@@ -23,6 +23,11 @@ public class GoBoardController {
         this.model = model;
     }
 
+    public void setViewModel(GoBoardModel model) {
+        this.model = model;
+        this.view.setModel(model);
+    }
+
     public void setView(GoBoardView view) {
         this.view = view;
     }
@@ -71,5 +76,8 @@ public class GoBoardController {
         model.pass();
     }
 
+    public void makeMove(int row, int col) {
+        model.makeMove(row, col);
+    }
     //endregion
 }

@@ -25,9 +25,10 @@ public class GoBoardModel {
     private int capturedByBlack;
     private boolean prevPassed;
 
-    private GoField[][] fields;
+    private double pointsWhite;
+    private double pointsBlack;
 
-    //private StringBuilder gameDataStorage;
+    private GoField[][] fields;
     private final List<GameListener> listeners;
     //endregion
 
@@ -91,6 +92,11 @@ public class GoBoardModel {
                 fields[row][col] = new GoField(row, col);
             }
         }
+
+        pointsBlack = 0;
+        pointsWhite = komi;
+        capturedByBlack = 0;
+        capturedByWhite = 0;
     }
 
 
@@ -253,6 +259,11 @@ public class GoBoardModel {
         return false;
     }
 
+    //todo Not yet implemented
+    public void deleteLastMove() {
+        System.out.println("Delete last move!");
+    }
+
     public void switchPlayer() {
         if (currentPlayer == Stone.BLACK) {
             currentPlayer = Stone.WHITE;
@@ -276,8 +287,8 @@ public class GoBoardModel {
     public void pass() {
         if(prevPassed) {
             // Player in previous round passed - game ends
-            System.out.println("Game ends"); //todo Switch to winscreen
-
+            gameEnds();
+            return;
         }
 
         gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_PASSED : GameState.WHITE_PASSED;
@@ -287,6 +298,28 @@ public class GoBoardModel {
         }
         switchPlayer();
         prevPassed = true;
+    }
+
+    private void gameEnds() {
+        calculateScores();
+
+        if(pointsBlack == pointsWhite) {
+            gameState = GameState.DRAW;
+        } else {
+            gameState = pointsWhite > pointsBlack ? GameState.WHITE_WON : GameState.BLACK_WON;
+        }
+
+        for (GameListener listener : listeners) {
+            listener.gameEnded(new GameEvent(this, gameState));
+        }
+    }
+
+    private void calculateScores() {
+
+    }
+
+    public void playerResigned() {
+        gameState = currentPlayer == Stone.BLACK ? GameState.WHITE_WON : GameState.BLACK_WON;
     }
 
     public void printModel() {
@@ -311,5 +344,12 @@ public class GoBoardModel {
         listeners.remove(l);
     }
 
+    public List<GameListener> getGameListeners() {
+        return this.listeners;
+    }
+
+    public void setGameListeners(List<GameListener> listeners) {
+        this.listeners.addAll(listeners);
+    }
     //endregion
 }

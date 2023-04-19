@@ -12,7 +12,7 @@ import javafx.stage.*;
 public class GameScreenController {
     //region Fields
     private final GameScreenView view;
-    private final GoBoardModel model;
+    private GoBoardModel model;
     //endregion
 
     // Constructor
@@ -25,15 +25,20 @@ public class GameScreenController {
     public GameScreenView getView() {
         return this.view;
     }
+
+    public void setViewModel(GoBoardModel model) {
+        this.model = model;
+        this.view.setModel(model);
+    }
     //endregion
 
     //region Methods
 
 
-    public void changeSceneToWinScreen(Stone currentPlayer) {
+    public void changeSceneToWinScreen(GameState winner) {
         // Switch player to get the winner
         //model.switchPlayer();
-        WinScreenView nextView = new WinScreenView(currentPlayer); //Todo implement winner via gameState
+        WinScreenView nextView = new WinScreenView(winner);
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         if(w instanceof Stage stage) {
