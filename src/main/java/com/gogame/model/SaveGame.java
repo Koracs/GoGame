@@ -3,17 +3,18 @@ package com.gogame.model;
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
 import com.gogame.view.GoBoardView;
-import com.gogame.view.TutorialView;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.*;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class SaveGame {
+    //region Constants
     private final String FILENAME = "gamedata_";
     private final String EXT = ".txt";
 
@@ -21,33 +22,38 @@ public class SaveGame {
     private final String PASS_REGEX = "Black|White player passed.";
     private final String MOVE_REGEX = "\\d(\\d)?;\\d(\\d)?- (White)|(Black)";
     private final String HANDICAP_REGEX = "\\d(\\d)?;\\d(\\d)?- Place handicap stones.";
+    //endregion
 
+    //region Fields
     private final GoBoardController goBoardController;
-    private final GameScreenController gameScreenController;
     private final GoBoardView view;
     private StringBuilder gameDataStorage;
+    //endregion
 
+    // Constructor
     public SaveGame(GoBoardController goBoardController, GameScreenController gameScreenController) {
         this.goBoardController = goBoardController;
-        this.gameScreenController = gameScreenController;
         this.view = goBoardController.getView();
         this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
     }
 
+    //region Getter/Setter
     public String getGameDataStorage() {
         return gameDataStorage.toString();
     }
 
+    public void setGameDataStorage(StringBuilder sb) {
+        this.gameDataStorage = sb;
+    }
+    //endregion
+
+    //region Methods
     public void resetData() {
         this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
     }
 
     public void storeData(String s) {
         this.gameDataStorage.append(s);
-    }
-
-    public void setGameDataStorage(StringBuilder sb) {
-        this.gameDataStorage = sb;
     }
 
     public void importGameFile() {
@@ -69,7 +75,7 @@ public class SaveGame {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
             String line = reader.readLine();
-            StringBuilder sb = new StringBuilder();
+            List<String> data = new ArrayList<>();
 
             // Read data
             if (line != null) {
@@ -79,13 +85,13 @@ public class SaveGame {
                     return;
                 }
 
-                sb.append(line);
+                data.add(line);
 
                 line = reader.readLine();
 
                 while (line != null) {
                     if(move.matcher(line).find() || pass.matcher(line).matches() || handicap.matcher(line).matches()) {
-                        sb.append(line);
+                        data.add(line);
                     } else {
                         // Wrong input
                         createAlert(Alert.AlertType.INFORMATION, "Error", "Input file is not in the right format", line);
@@ -97,24 +103,18 @@ public class SaveGame {
                 reader.close();
 
                 // Valid input check - now load game
-                setGameDataStorage(sb);
-                goBoardController.resetModel();
-                String[] data = gameDataStorage.toString().split("\n");
+                String[] meta = data.get(0).split(";");
+                goBoardController.resetModel(Integer.parseInt(meta[0]), Integer.parseInt(meta[1]), Double.parseDouble(meta[2]));
 
-                //todo Repaint GoBoardView with size
-                String[] meta = data[0].split(";");
-
-                for(int i = 1;i < data.length;i++) {
-                    String[] temp = data[i].split(";");
+                for(int i = 1;i < data.size();i++) {
+                    String[] temp = data.get(i).split(";");
 
                     if(temp.length == 1) {
                         goBoardController.passPlayer();
                     } else {
-                        goBoardController.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]));
+                        goBoardController.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1].split("-")[0]));
                     }
                 }
-
-                goBoardController.getView().draw();
             }
         } catch (IOException e) {
             createAlert(Alert.AlertType.ERROR, "Runtime Exception", null, e.getMessage());
@@ -167,4 +167,5 @@ public class SaveGame {
         alert.setContentText(content);
         alert.showAndWait();
     }
+    //endregion
 }

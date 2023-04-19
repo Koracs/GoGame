@@ -67,16 +67,17 @@ public class GoBoardController {
         model.reset();
     }
 
+    public void resetModel(int size, int handicap, double komi) {
+        view.setBoardSize(size);
+        model.reset(size, handicap, komi);
+    }
+
     public void passPlayer() {
         model.pass();
     }
 
     public void makeMove(int row, int col) {
         model.makeMove(row, col);
-    }
-
-    public void placeHandicapStone(int row, int col) {
-
     }
     //endregion
 }

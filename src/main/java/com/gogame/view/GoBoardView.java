@@ -25,7 +25,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
     //region Fields
     // Pane of this class
     private final GoBoardController controller;
-    private final int boardSize;
+    private int boardSize;
     private double tileSize;
     private final GoBoardModel model;
 
@@ -70,6 +70,14 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
         draw();
     }
+
+    //region Getter/Setter
+
+    public void setBoardSize(int boardSize) {
+        this.boardSize = boardSize;
+    }
+
+    //endregion
 
     public void draw() {
         getChildren().clear();

@@ -14,9 +14,9 @@ public class GoBoardModel {
 
     // Model variables
     private static final int[] sizes = new int[]{9, 13, 19};
-    private final double komi;
-    private final int handicap;
-    private final int size;
+    private double komi;
+    private int handicap;
+    private int size;
     private int handicapCount;
     private Stone currentPlayer;
     private GameState gameState;
@@ -106,6 +106,10 @@ public class GoBoardModel {
 
     public GoField[][] getFields() {
         return fields;
+    }
+
+    public GoField getField(int row, int col){
+        return fields[row][col];
     }
 
     public GameState getGameState() {
@@ -267,6 +271,19 @@ public class GoBoardModel {
 
     public void reset() {
         gameState = GameState.RESET;
+        initModel();
+        initHandicapFields();
+
+        for (GameListener listener : listeners) {
+            listener.resetGame(new GameEvent(this, gameState));
+        }
+    }
+
+    public void reset(int size, int handicap, double komi) {
+        gameState = GameState.RESET;
+        this.size = size;
+        this.handicap = handicap;
+        this.komi = komi;
         initModel();
         initHandicapFields();
 
