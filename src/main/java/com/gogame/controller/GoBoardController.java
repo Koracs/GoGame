@@ -23,6 +23,11 @@ public class GoBoardController {
         this.model = model;
     }
 
+    public void setViewModel(GoBoardModel model) {
+        this.model = model;
+        this.view.setModel(model);
+    }
+
     public void setView(GoBoardView view) {
         this.view = view;
     }
@@ -65,11 +70,6 @@ public class GoBoardController {
 
     public void resetModel() {
         model.reset();
-    }
-
-    public void resetModel(int size, int handicap, double komi) {
-        view.setBoardSize(size);
-        model.reset(size, handicap, komi);
     }
 
     public void passPlayer() {

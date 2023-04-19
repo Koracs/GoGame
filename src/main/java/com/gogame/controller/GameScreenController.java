@@ -12,7 +12,7 @@ import javafx.stage.*;
 public class GameScreenController {
     //region Fields
     private final GameScreenView view;
-    private final GoBoardModel model;
+    private GoBoardModel model;
     //endregion
 
     // Constructor
@@ -24,6 +24,11 @@ public class GameScreenController {
     //region Getter/Setter
     public GameScreenView getView() {
         return this.view;
+    }
+
+    public void setViewModel(GoBoardModel model) {
+        this.model = model;
+        this.view.setModel(model);
     }
     //endregion
 

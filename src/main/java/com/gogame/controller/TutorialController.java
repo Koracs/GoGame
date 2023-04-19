@@ -1,6 +1,7 @@
 package com.gogame.controller;
 
 import com.gogame.model.GoBoardModel;
+import com.gogame.model.SaveGame;
 import com.gogame.view.TutorialView;
 
 public class TutorialController {
@@ -8,24 +9,19 @@ public class TutorialController {
     private final TutorialView view;
     private final GoBoardModel model;
 
-    public TutorialController(TutorialView view, GoBoardModel model){
+    private final SaveGame saveGame;
+
+    public TutorialController(TutorialView view, GoBoardModel model, GoBoardController controller){
         this.view = view;
         this.model = model;
-        loadGame();
+        this.saveGame = new SaveGame(controller, null); //todo im View anlegen?
     }
 
-    private void loadGame() {
-        /*
-        //todo Check if the input file is in right format
-        while (line != null) {
-            String[] temp = line.split(";");
-            if(temp.length == 1) {
-                passPlayer();
-            } else {
-                model.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]));
-            }
+    public void loadMove() {
+        saveGame.loadGradually(true);
+    }
 
-            line = reader.readLine();
-        }*/
+    public void deleteMove() {
+        saveGame.loadGradually(false);
     }
 }

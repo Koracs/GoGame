@@ -2,6 +2,7 @@ package com.gogame.model;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
+import com.gogame.controller.TutorialController;
 import com.gogame.view.GoBoardView;
 import javafx.scene.control.Alert;
 import javafx.stage.*;
@@ -10,6 +11,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -26,13 +28,17 @@ public class SaveGame {
 
     //region Fields
     private final GoBoardController goBoardController;
+    private final GameScreenController gameScreenController;
     private final GoBoardView view;
     private StringBuilder gameDataStorage;
+    private List<String> data;
+    private int index;
     //endregion
 
     // Constructor
     public SaveGame(GoBoardController goBoardController, GameScreenController gameScreenController) {
         this.goBoardController = goBoardController;
+        this.gameScreenController = gameScreenController;
         this.view = goBoardController.getView();
         this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
     }
@@ -56,7 +62,7 @@ public class SaveGame {
         this.gameDataStorage.append(s);
     }
 
-    public void importGameFile() {
+    public void importGameFile(boolean tutorial) {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extensionFilter);
@@ -75,7 +81,8 @@ public class SaveGame {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
             String line = reader.readLine();
-            List<String> data = new ArrayList<>();
+            data = new ArrayList<>();
+            index = 1;
 
             // Read data
             if (line != null) {
@@ -102,22 +109,64 @@ public class SaveGame {
 
                 reader.close();
 
-                // Valid input check - now load game
+
                 String[] meta = data.get(0).split(";");
-                goBoardController.resetModel(Integer.parseInt(meta[0]), Integer.parseInt(meta[1]), Double.parseDouble(meta[2]));
+                int size = Integer.parseInt(meta[0]);
 
-                for(int i = 1;i < data.size();i++) {
-                    String[] temp = data.get(i).split(";");
+                int[] sizes = GoBoardModel.getSizes();
+                boolean validInput = false;
+                for(int i = 0;i < sizes.length;i++) {
+                    if(sizes[i] == size) {
+                        validInput = true;
+                    }
+                }
 
-                    if(temp.length == 1) {
-                        goBoardController.passPlayer();
-                    } else {
-                        goBoardController.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1].split("-")[0]));
+                if(!validInput) {
+                    // Invalid size
+                    createAlert(Alert.AlertType.INFORMATION, "Error", "Input file contains invalid line", meta[0]);
+                    return;
+                }
+
+                // Valid input check - now load game
+                GoBoardModel newModel = new GoBoardModel(Integer.parseInt(meta[0]), Double.parseDouble(meta[2]), Integer.parseInt(meta[1]));
+                newModel.setGameListeners(goBoardController.getModel().getGameListeners());
+                goBoardController.setViewModel(newModel);
+                gameScreenController.setViewModel(newModel);
+
+                if(!tutorial) {
+                    for(int i = 1;i < data.size();i++) {
+                        String[] temp = data.get(i).split(";");
+
+                        if(temp.length == 1) {
+                            goBoardController.passPlayer();
+                        } else {
+                            goBoardController.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1].split("-")[0]));
+                        }
                     }
                 }
             }
         } catch (IOException e) {
             createAlert(Alert.AlertType.ERROR, "Runtime Exception", null, e.getMessage());
+        }
+    }
+
+    public void loadGradually(boolean forward) {
+        if(forward) {
+            if(index >= data.size())
+                return;
+
+            String[] temp = data.get(index).split(";");
+
+            if(temp.length == 1) {
+                goBoardController.passPlayer();
+            } else {
+                goBoardController.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1].split("-")[0]));
+            }
+
+            index++;
+        } else {
+            //todo Durchlaufen vom Start bis index
+            index--;
         }
     }
 

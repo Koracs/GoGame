@@ -14,9 +14,9 @@ public class GoBoardModel {
 
     // Model variables
     private static final int[] sizes = new int[]{9, 13, 19};
-    private double komi;
-    private int handicap;
-    private int size;
+    private final double komi;
+    private final int handicap;
+    private final int size;
     private int handicapCount;
     private Stone currentPlayer;
     private GameState gameState;
@@ -259,6 +259,11 @@ public class GoBoardModel {
         return false;
     }
 
+    //todo Not yet implemented
+    public void deleteLastMove() {
+        System.out.println("Delete last move!");
+    }
+
     public void switchPlayer() {
         if (currentPlayer == Stone.BLACK) {
             currentPlayer = Stone.WHITE;
@@ -271,19 +276,6 @@ public class GoBoardModel {
 
     public void reset() {
         gameState = GameState.RESET;
-        initModel();
-        initHandicapFields();
-
-        for (GameListener listener : listeners) {
-            listener.resetGame(new GameEvent(this, gameState));
-        }
-    }
-
-    public void reset(int size, int handicap, double komi) {
-        gameState = GameState.RESET;
-        this.size = size;
-        this.handicap = handicap;
-        this.komi = komi;
         initModel();
         initHandicapFields();
 
@@ -352,5 +344,12 @@ public class GoBoardModel {
         listeners.remove(l);
     }
 
+    public List<GameListener> getGameListeners() {
+        return this.listeners;
+    }
+
+    public void setGameListeners(List<GameListener> listeners) {
+        this.listeners.addAll(listeners);
+    }
     //endregion
 }

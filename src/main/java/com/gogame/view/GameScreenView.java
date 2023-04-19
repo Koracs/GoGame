@@ -19,7 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class GameScreenView extends View {
-    private final GoBoardModel goBoardModel;
+    private GoBoardModel goBoardModel;
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
     private final GoBoardView goBoardView;
@@ -115,6 +115,10 @@ public class GameScreenView extends View {
         });
     }
 
+    public void setModel(GoBoardModel goBoardModel) {
+        this.goBoardModel = goBoardModel;
+    }
+
     @Override
     protected void drawScene() {
         pane = new BorderPane();
@@ -179,7 +183,7 @@ public class GameScreenView extends View {
 
 
         MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> saveGame.importGameFile());
+        importButton.setOnAction(e -> saveGame.importGameFile(false));
         MenuItem exportButton = new MenuItem("Export game");
         exportButton.setOnAction(e -> saveGame.exportGameFile());
 

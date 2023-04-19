@@ -20,11 +20,10 @@ public class TutorialView extends View{
 
 
     public TutorialView(GoBoardModel model) {
-        tutorialScreenController = new TutorialController(this, model);
-
         goBoardModel = model;
         goBoardView = new GoBoardView(model);
         goBoardController = goBoardView.getController();
+        tutorialScreenController = new TutorialController(this, model, goBoardController);
 
         drawScene();
     }
@@ -42,9 +41,12 @@ public class TutorialView extends View{
 
         // Buttons for tutorial interaction
         Button backButton = new Button("<--");
-        backButton.setOnMouseClicked(e -> System.out.println("Last Move"));
+        backButton.setOnMouseClicked(e -> {
+            goBoardModel.deleteLastMove();
+            tutorialScreenController.deleteMove();
+        });
         Button forwardButton = new Button("-->");
-        forwardButton.setOnMouseClicked(e -> System.out.println("Next Move"));
+        forwardButton.setOnMouseClicked(e -> tutorialScreenController.loadMove());
 
         FlowPane interactionButtons = new FlowPane();
         interactionButtons.setPadding(new Insets(30));
