@@ -82,9 +82,12 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
             hover = new Circle((col+1)*getScale(),(row+1)*getScale(),tileSize/2.5);
 
-            if(model.getField(row,col).isEmpty()) hover.setFill(Color.web("rgba(0,255,0,0.5)"));
-            else hover.setFill(Color.web("rgba(255,0,0,0.5)"));
+            String hoverColor;
 
+            if(model.getField(row,col).isEmpty()) hoverColor = model.getCurrentPlayer() == Stone.BLACK ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)";
+            else hoverColor = "rgba(255,0,0,0.5)";
+
+            hover.setFill(Color.web(hoverColor));
             getChildren().add(hover);
         } catch (ArrayIndexOutOfBoundsException ignore){
         }
