@@ -1,7 +1,6 @@
 package com.gogame.controller;
 
 import com.gogame.model.GoBoardModel;
-import com.gogame.view.GameScreenView;
 import com.gogame.view.StartScreenView;
 import com.gogame.view.TutorialSettingsView;
 import com.gogame.view.TutorialView;

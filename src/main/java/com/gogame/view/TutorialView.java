@@ -3,6 +3,7 @@ package com.gogame.view;
 import com.gogame.controller.GoBoardController;
 import com.gogame.controller.TutorialController;
 import com.gogame.model.GoBoardModel;
+import com.gogame.model.SaveGame;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -16,14 +17,16 @@ public class TutorialView extends View{
     private final GoBoardController goBoardController;
 
     private final GoBoardView goBoardView;
+    private final SaveGame saveGame;
     private BorderPane pane;
 
 
     public TutorialView(GoBoardModel model) {
-        goBoardModel = model;
-        goBoardView = new GoBoardView(model);
-        goBoardController = goBoardView.getController();
-        tutorialScreenController = new TutorialController(this, model, goBoardController);
+        this.goBoardModel = model;
+        this.goBoardView = new GoBoardView(model);
+        this.goBoardController = goBoardView.getController();
+        this.tutorialScreenController = new TutorialController(this, model, goBoardController);
+        this.saveGame = new SaveGame(goBoardController);
 
         drawScene();
     }
@@ -41,12 +44,9 @@ public class TutorialView extends View{
 
         // Buttons for tutorial interaction
         Button backButton = new Button("<--");
-        backButton.setOnMouseClicked(e -> {
-            goBoardModel.deleteLastMove();
-            tutorialScreenController.deleteMove();
-        });
+        backButton.setOnMouseClicked(e -> saveGame.loadGradually(false));
         Button forwardButton = new Button("-->");
-        forwardButton.setOnMouseClicked(e -> tutorialScreenController.loadMove());
+        forwardButton.setOnMouseClicked(e -> saveGame.loadGradually(true));
 
         FlowPane interactionButtons = new FlowPane();
         interactionButtons.setPadding(new Insets(30));

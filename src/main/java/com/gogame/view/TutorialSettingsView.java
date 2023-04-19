@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +67,7 @@ public class TutorialSettingsView extends View {
         Button startGame = new Button("Start game");
         startGame.setOnMouseClicked(e -> controller.changeSceneToTutorialScene()); //todo Implement logic
 
-        Button importGame = new Button("Import game");
+        Button importGame = new Button("Import game"); //todo necessary??
         importGame.setOnMouseClicked(e -> System.out.println("Import game")); //todo Implement logic
 
         FlowPane pa = new FlowPane(startGame, importGame);

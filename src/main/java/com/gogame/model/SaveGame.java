@@ -2,7 +2,6 @@ package com.gogame.model;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
-import com.gogame.controller.TutorialController;
 import com.gogame.view.GoBoardView;
 import javafx.scene.control.Alert;
 import javafx.stage.*;
@@ -11,7 +10,6 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,6 +37,13 @@ public class SaveGame {
     public SaveGame(GoBoardController goBoardController, GameScreenController gameScreenController) {
         this.goBoardController = goBoardController;
         this.gameScreenController = gameScreenController;
+        this.view = goBoardController.getView();
+        this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
+    }
+
+    public SaveGame(GoBoardController goBoardController) {
+        this.goBoardController = goBoardController;
+        this.gameScreenController = null;
         this.view = goBoardController.getView();
         this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
     }
@@ -130,19 +135,12 @@ public class SaveGame {
                 // Valid input check - now load game
                 GoBoardModel newModel = new GoBoardModel(Integer.parseInt(meta[0]), Double.parseDouble(meta[2]), Integer.parseInt(meta[1]));
                 newModel.setGameListeners(goBoardController.getModel().getGameListeners());
+                goBoardController.getView().setBoardSize(size);
                 goBoardController.setViewModel(newModel);
                 gameScreenController.setViewModel(newModel);
 
                 if(!tutorial) {
-                    for(int i = 1;i < data.size();i++) {
-                        String[] temp = data.get(i).split(";");
-
-                        if(temp.length == 1) {
-                            goBoardController.passPlayer();
-                        } else {
-                            goBoardController.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1].split("-")[0]));
-                        }
-                    }
+                    simulateMove(data.size());
                 }
             }
         } catch (IOException e) {
@@ -165,8 +163,21 @@ public class SaveGame {
 
             index++;
         } else {
-            //todo Durchlaufen vom Start bis index
             index--;
+            goBoardController.resetModel();
+            simulateMove(index);
+        }
+    }
+
+    private void simulateMove(int range) {
+        for(int i = 1;i < range;i++) {
+            String[] temp = data.get(i).split(";");
+
+            if(temp.length == 1) {
+                goBoardController.passPlayer();
+            } else {
+                goBoardController.makeMove(Integer.parseInt(temp[0]), Integer.parseInt(temp[1].split("-")[0]));
+            }
         }
     }
 
