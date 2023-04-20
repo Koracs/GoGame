@@ -14,6 +14,7 @@ public class TutorialSettingsController {
     private String selectedTutorial;
 
     // Constants
+    //todo change this
     private final String TUTORIAL1 = "/gameData/Tutorial1.txt";
     private final String TUTORIAL2 = "/gameData/Tutorial2.txt";
     private final String TUTORIAL3 = "/gameData/Tutorial3.txt";
@@ -23,17 +24,8 @@ public class TutorialSettingsController {
     // Constructor
     public TutorialSettingsController(TutorialSettingsView view) {
         this.view = view;
-        //todo weg mit dem
         this.selectedTutorial = TUTORIAL1;
     }
-
-    //region Getter/Setter
-
-    public String getSelectedTutorial() {
-        return selectedTutorial;
-    }
-
-    //endregion
 
     //region Methods
     public void selectTutorial(String tut) {
@@ -52,14 +44,6 @@ public class TutorialSettingsController {
                 selectedTutorial = TUTORIAL4;
                 break;
         }
-    }
-
-    public void importGameData() {
-
-    }
-
-    public void selectFile() {
-
     }
 
     public void changeSceneToTutorialScene(String selected) {
