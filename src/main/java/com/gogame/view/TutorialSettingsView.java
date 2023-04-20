@@ -55,17 +55,22 @@ public class TutorialSettingsView extends View {
         pane.setCenter(flowPane);
 
         ToggleGroup tutorialGroup = new ToggleGroup();
+        boolean first = true;
 
         for (String tutorial : tutorials) {
             ToggleButton button = new ToggleButton(tutorial);
             button.setToggleGroup(tutorialGroup);
+            if(first) {
+                tutorialGroup.selectToggle(button);
+                first = false;
+            }
             flowPane.getChildren().add(button);
             //todo implement controller (or select only on "start game")
         }
 
         // Buttons
         Button startGame = new Button("Start game");
-        startGame.setOnMouseClicked(e -> controller.changeSceneToTutorialScene()); //todo Implement logic
+        startGame.setOnMouseClicked(e -> controller.changeSceneToTutorialScene(tutorialGroup.getSelectedToggle().toString().split("'")[1]));
 
         Button importGame = new Button("Import game"); //todo necessary??
         importGame.setOnMouseClicked(e -> System.out.println("Import game")); //todo Implement logic

@@ -1,6 +1,6 @@
 13;0;0.0
-3;3- White player's turn.
-3;4- Black player's turn.
+3;5- White player's turn.
+3;7- Black player's turn.
 4;4- White player's turn.
 4;5- Black player's turn.
 5;5- White player's turn.

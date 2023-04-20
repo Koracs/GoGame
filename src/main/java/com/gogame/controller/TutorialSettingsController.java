@@ -36,18 +36,19 @@ public class TutorialSettingsController {
     //endregion
 
     //region Methods
-    public void selectTutorial(int tut) {
+    public void selectTutorial(String tut) {
+        //todo implement same as in tutorialSettingsView
         switch (tut) {
-            case 1:
+            case "tutorial 1":
                 selectedTutorial = TUTORIAL1;
                 break;
-            case 2:
+            case "tutorial 2":
                 selectedTutorial = TUTORIAL2;
                 break;
-            case 3:
+            case "tutorial 3":
                 selectedTutorial = TUTORIAL3;
                 break;
-            case 4:
+            case "tutorial 4":
                 selectedTutorial = TUTORIAL4;
                 break;
         }
@@ -61,7 +62,8 @@ public class TutorialSettingsController {
 
     }
 
-    public void changeSceneToTutorialScene() {
+    public void changeSceneToTutorialScene(String selected) {
+        selectTutorial(selected);
         String path = getClass().getResource(selectedTutorial).getPath().substring(1);
         TutorialView nextView = new TutorialView(path);
         Window w = view.getPane().getScene().getWindow();
