@@ -93,6 +93,7 @@ public class GoBoardModel {
             }
         }
 
+        currentPlayer = Stone.BLACK;
         pointsBlack = 0;
         pointsWhite = komi;
         capturedByBlack = 0;

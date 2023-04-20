@@ -25,11 +25,13 @@ public class SaveGame {
     //endregion
 
     //region Fields
-    private final GoBoardController goBoardController;
-    private final GameScreenController gameScreenController;
-    private final GoBoardView view;
+    private GoBoardController goBoardController;
+    private GameScreenController gameScreenController;
+    private GoBoardView view;
     private StringBuilder gameDataStorage;
     private List<String> data;
+    private String filePath;
+    private String[] meta;
     private int index;
     //endregion
 
@@ -48,6 +50,14 @@ public class SaveGame {
         this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
     }
 
+    public SaveGame(String path) {
+        this.filePath = path;
+        this.goBoardController = null;
+        this.gameScreenController = null;
+        this.view = null;
+        this.gameDataStorage = null;
+    }
+
     //region Getter/Setter
     public String getGameDataStorage() {
         return gameDataStorage.toString();
@@ -55,6 +65,11 @@ public class SaveGame {
 
     public void setGameDataStorage(StringBuilder sb) {
         this.gameDataStorage = sb;
+    }
+
+    public void initSaveGame(GoBoardController goBoardController) {
+        this.goBoardController = goBoardController;
+        this.view = goBoardController.getView();
     }
     //endregion
 
@@ -67,7 +82,26 @@ public class SaveGame {
         this.gameDataStorage.append(s);
     }
 
+    public GoBoardModel importFileData() {
+        try {
+            if(readData(filePath)) {
+                index = 1;
+                // Valid input check - now load game
+                return new GoBoardModel(Integer.parseInt(meta[0]), Double.parseDouble(meta[2]), Integer.parseInt(meta[1]));
+            }
+        } catch (IOException e) {
+            createAlert(Alert.AlertType.ERROR, "Runtime Exception", null, e.getMessage());
+        }
+
+        return null;
+    }
+
     public void importGameFile(boolean tutorial) {
+        if(gameScreenController == null || goBoardController == null || gameDataStorage == null || view == null) {
+            createAlert(Alert.AlertType.ERROR, "Error", null, "Fields not initialized");
+            return;
+        }
+
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extensionFilter);
@@ -78,64 +112,12 @@ public class SaveGame {
             return;
         }
 
-        Pattern metadata = Pattern.compile(METADATA_REGEX);
-        Pattern pass = Pattern.compile(PASS_REGEX);
-        Pattern move = Pattern.compile(MOVE_REGEX);
-        Pattern handicap = Pattern.compile(HANDICAP_REGEX);
-
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
-            String line = reader.readLine();
-            data = new ArrayList<>();
-            index = 1;
-
-            // Read data
-            if (line != null) {
-                // Check if valid input file
-                if(!metadata.matcher(line).matches()) {
-                    createAlert(Alert.AlertType.INFORMATION, "Error", "Input file is not in the right format", line);
-                    return;
-                }
-
-                data.add(line);
-
-                line = reader.readLine();
-
-                while (line != null) {
-                    if(move.matcher(line).find() || pass.matcher(line).matches() || handicap.matcher(line).matches()) {
-                        data.add(line);
-                    } else {
-                        // Wrong input
-                        createAlert(Alert.AlertType.INFORMATION, "Error", "Input file is not in the right format", line);
-                        return;
-                    }
-                    line = reader.readLine();
-                }
-
-                reader.close();
-
-
-                String[] meta = data.get(0).split(";");
-                int size = Integer.parseInt(meta[0]);
-
-                int[] sizes = GoBoardModel.getSizes();
-                boolean validInput = false;
-                for(int i = 0;i < sizes.length;i++) {
-                    if(sizes[i] == size) {
-                        validInput = true;
-                    }
-                }
-
-                if(!validInput) {
-                    // Invalid size
-                    createAlert(Alert.AlertType.INFORMATION, "Error", "Input file contains invalid line", meta[0]);
-                    return;
-                }
-
+            if(readData(selectedFile.getAbsolutePath())) {
                 // Valid input check - now load game
                 GoBoardModel newModel = new GoBoardModel(Integer.parseInt(meta[0]), Double.parseDouble(meta[2]), Integer.parseInt(meta[1]));
                 newModel.setGameListeners(goBoardController.getModel().getGameListeners());
-                goBoardController.getView().setBoardSize(size);
+                goBoardController.getView().setBoardSize(Integer.parseInt(meta[0]));
                 goBoardController.setViewModel(newModel);
                 gameScreenController.setViewModel(newModel);
 
@@ -148,10 +130,74 @@ public class SaveGame {
         }
     }
 
+    private boolean readData(String filePath) throws IOException {
+        Pattern metadata = Pattern.compile(METADATA_REGEX);
+        Pattern pass = Pattern.compile(PASS_REGEX);
+        Pattern move = Pattern.compile(MOVE_REGEX);
+        Pattern handicap = Pattern.compile(HANDICAP_REGEX);
+
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        String line = reader.readLine();
+        data = new ArrayList<>();
+
+        // Read data
+        if (line != null) {
+            // Check if valid input file
+            if (!metadata.matcher(line).matches()) {
+                createAlert(Alert.AlertType.ERROR, "Error", "Input file is not in the right format", line);
+                return false;
+            }
+
+            data.add(line);
+
+            line = reader.readLine();
+
+            while (line != null) {
+                if (move.matcher(line).find() || pass.matcher(line).matches() || handicap.matcher(line).matches()) {
+                    data.add(line);
+                } else {
+                    // Wrong input
+                    createAlert(Alert.AlertType.ERROR, "Error", "Input file is not in the right format", line);
+                    return false;
+                }
+                line = reader.readLine();
+            }
+
+            reader.close();
+
+            meta = data.get(0).split(";");
+            int size = Integer.parseInt(meta[0]);
+
+            int[] sizes = GoBoardModel.getSizes();
+            boolean validInput = false;
+            for (int i = 0; i < sizes.length; i++) {
+                if (sizes[i] == size) {
+                    validInput = true;
+                }
+            }
+
+            if (!validInput) {
+                // Invalid size
+                createAlert(Alert.AlertType.ERROR, "Error", "Input file contains invalid line", meta[0]);
+                return false;
+            }
+            return true;
+        }
+        createAlert(Alert.AlertType.ERROR, "Error", null, "No data in file");
+        return false;
+    }
+
     public void loadGradually(boolean forward) {
+        if(goBoardController == null || view == null) {
+            createAlert(Alert.AlertType.ERROR, "Error", null, "Fields not initialized");
+            return;
+        }
+
         if(forward) {
-            if(index >= data.size())
+            if(index >= data.size()) {
+                createAlert(Alert.AlertType.INFORMATION, "Information", null, "End of tutorial reached");
                 return;
+            }
 
             String[] temp = data.get(index).split(";");
 
@@ -182,6 +228,11 @@ public class SaveGame {
     }
 
     public void exportGameFile() {
+        if(gameScreenController == null || goBoardController == null || gameDataStorage == null || view == null) {
+            createAlert(Alert.AlertType.ERROR, "Error", null, "Fields not initialized");
+            return;
+        }
+
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
 
