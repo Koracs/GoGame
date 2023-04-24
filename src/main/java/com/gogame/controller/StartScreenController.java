@@ -34,6 +34,7 @@ public class StartScreenController {
         Window w = s.getWindow();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }
@@ -45,6 +46,7 @@ public class StartScreenController {
         Window w = s.getWindow();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }

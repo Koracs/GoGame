@@ -5,6 +5,7 @@ import com.gogame.controller.GoBoardController;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
+import com.gogame.model.KeyHandler;
 import com.gogame.model.SaveGame;
 import com.gogame.model.Stone;
 import javafx.event.EventHandler;
@@ -12,7 +13,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -48,8 +48,7 @@ public class GameScreenView extends View {
         EventHandler<MouseEvent> moveHandler = goBoardView::moveHoverMouse;
         goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED,moveHandler);
 
-        EventHandler<KeyEvent> moveHoverHandler = goBoardView::moveHoverKeyboard;
-        goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, moveHoverHandler);
+        KeyHandler.view = goBoardView;
 
         drawScene();
         model.addGameListener(new GameListener() { //todo outsource into own class?

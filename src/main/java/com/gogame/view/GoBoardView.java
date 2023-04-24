@@ -122,16 +122,34 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
     }
 
     public void moveHoverKeyboard(KeyEvent e) {
-        if(e.getCode().isArrowKey()) {
-            switch (e.getCode()) {
-                case UP -> currentRow -= 1;
-                case DOWN -> currentRow += 1;
-                case LEFT -> currentCol -= 1;
-                case RIGHT -> currentCol += 1;
+        switch (e.getCode()) {
+            case W -> {
+                if (currentRow >= 1) {
+                    currentRow -= 1;
+                }
             }
-
-            drawHover();
+            case S -> {
+                if (currentRow < boardSize) {
+                    currentRow += 1;
+                }
+            }
+            case A -> {
+                if (currentCol >= 1) {
+                    currentCol -= 1;
+                }
+            }
+            case D -> {
+                if (currentCol < boardSize) {
+                    currentCol += 1;
+                }
+            }
         }
+
+        drawHover();
+    }
+
+    public void setStoneKeyboard() {
+        model.makeMove(currentRow, currentRow);
     }
 
     // Initially hover the field in top left corner at the start of every move - for keyboard control

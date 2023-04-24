@@ -82,12 +82,13 @@ public class GameSettingsController {
     }
     public void changeSceneToGameScene() {
         GameScreenView nextView = new GameScreenView(initGoBoardModel());
+        Scene s = view.getPane().getScene();
         Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage) {
-            Stage s = (Stage) w;
+        if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane());
+            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            s.setScene(scene);
+            stage.setScene(scene);
         }
     }
 
@@ -97,6 +98,7 @@ public class GameSettingsController {
         StartScreenView nextView = new StartScreenView();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }
