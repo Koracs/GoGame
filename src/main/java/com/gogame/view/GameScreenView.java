@@ -12,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -36,6 +37,7 @@ public class GameScreenView extends View {
         goBoardView = new GoBoardView(model);
         goBoardController = goBoardView.getController();
         gameState = new TextField();
+        gameState.setDisable(true);
 
         saveGame = new SaveGame(goBoardController, gameScreenController);
 
@@ -43,15 +45,17 @@ public class GameScreenView extends View {
         EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
         goBoardView.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
 
-        EventHandler<MouseEvent> moveHandler = goBoardView::drawHover;
+        EventHandler<MouseEvent> moveHandler = goBoardView::moveHoverMouse;
         goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED,moveHandler);
+
+        EventHandler<KeyEvent> moveHoverHandler = goBoardView::moveHoverKeyboard;
+        goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, moveHoverHandler);
 
         drawScene();
         model.addGameListener(new GameListener() { //todo outsource into own class?
             @Override
             public void moveCompleted(GameEvent event) {
                 String lastPlayer = goBoardModel.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
-                //todo convert to ABC/123
                 gameState.setText("Player " + lastPlayer + " placed at: " + event.getColLetter()
                         + " " + event.getRowLetter() + ". " + event.getState().toString());
             }

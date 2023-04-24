@@ -11,6 +11,7 @@ import com.gogame.model.Stone;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -28,8 +29,12 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
     private int boardSize;
     private double tileSize;
     private GoBoardModel model;
+    Circle hover;
+    private int currentRow;
+    private int currentCol;
+    //endregion
 
-
+    // Constructor
     public GoBoardView(GoBoardModel model) {
         this.boardSize = model.getSize();
         this.model = model;
@@ -73,7 +78,6 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
     //region Getter/Setter
 
-
     public void setModel(GoBoardModel model) {
         this.model = model;
     }
@@ -82,36 +86,80 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
         this.boardSize = boardSize;
     }
 
+
+    public void setScale() {
+        double scale = Math.min(getWidth(), getHeight());
+        this.tileSize = scale / (boardSize + 1);
+    }
+
+    public double getScale() {
+        return this.tileSize;
+    }
+
+    public GoBoardController getController() {
+        return this.controller;
+    }
+
     //endregion
 
+    //region Methods
     public void draw() {
         getChildren().clear();
         drawBoard();
         drawCoordinates();
         drawStones();
+        initHover();
     }
 
-    Circle hover;
-    public void drawHover(MouseEvent e) {
+    public void moveHoverMouse(MouseEvent e) {
         try {
-            getChildren().remove(hover);
-            int row = controller.getNearestRow(e.getY());
-            int col = controller.getNearestCol(e.getX());
+            currentRow = controller.getNearestRow(e.getY());
+            currentCol = controller.getNearestCol(e.getX());
 
-            hover = new Circle((col+1)*getScale(),(row+1)*getScale(),tileSize/2.5);
-
-            String hoverColor;
-
-            if(model.getField(row,col).isEmpty()) hoverColor = model.getCurrentPlayer() == Stone.BLACK ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)";
-            else hoverColor = "rgba(255,0,0,0.5)";
-
-            hover.setFill(Color.web(hoverColor));
-            getChildren().add(hover);
+            drawHover();
         } catch (ArrayIndexOutOfBoundsException ignore){
         }
-
     }
 
+    public void moveHoverKeyboard(KeyEvent e) {
+        if(e.getCode().isArrowKey()) {
+            switch (e.getCode()) {
+                case UP -> currentRow -= 1;
+                case DOWN -> currentRow += 1;
+                case LEFT -> currentCol -= 1;
+                case RIGHT -> currentCol += 1;
+            }
+
+            drawHover();
+        }
+    }
+
+    // Initially hover the field in top left corner at the start of every move - for keyboard control
+    private void initHover() {
+        currentCol = 0;
+        currentRow = 0;
+
+        drawHover();
+    }
+
+    private void drawHover() {
+        // If the index is outside of the gamefield return
+        if(currentRow == -1 || currentCol == -1 || currentRow == boardSize || currentCol == boardSize) {
+            return;
+        }
+
+        getChildren().remove(hover);
+
+        hover = new Circle((currentCol+1)*getScale(),(currentRow+1)*getScale(),tileSize/2.5);
+
+        String hoverColor;
+
+        if(model.getField(currentRow,currentCol).isEmpty()) hoverColor = model.getCurrentPlayer() == Stone.BLACK ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)";
+        else hoverColor = "rgba(255,0,0,0.5)";
+
+        hover.setFill(Color.web(hoverColor));
+        getChildren().add(hover);
+    }
 
     private void drawBoard() {
         //draw background rectangle
@@ -197,18 +245,5 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
         return circle;
     }
-
-    public void setScale() {
-        double scale = Math.min(getWidth(), getHeight());
-        this.tileSize = scale / (boardSize + 1);
-    }
-
-    public double getScale() {
-        return this.tileSize;
-    }
-
-    public GoBoardController getController() {
-        return controller;
-    }
-
+    //endregion
 }
