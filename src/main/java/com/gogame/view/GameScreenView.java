@@ -27,7 +27,8 @@ public class GameScreenView extends View {
 
     private BorderPane pane;
 
-    private final TextField gameState;
+    private final GameStateField gameState;
+    private final CaptureStatus captureStatus;
 
     public GameScreenView(GoBoardModel model) {
         gameScreenController = new GameScreenController(this, model);
@@ -35,7 +36,8 @@ public class GameScreenView extends View {
         goBoardModel = model;
         goBoardView = new GoBoardView(model);
         goBoardController = goBoardView.getController();
-        gameState = new TextField();
+        gameState = new GameStateField(model);
+        captureStatus = new CaptureStatus(model);
 
         saveGame = new SaveGame(goBoardController, gameScreenController);
 
@@ -47,31 +49,6 @@ public class GameScreenView extends View {
         goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED,moveHandler);
 
         drawScene();
-        model.addGameListener(new GameListener() { //todo outsource into own class?
-            @Override
-            public void moveCompleted(GameEvent event) {
-                String lastPlayer = goBoardModel.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
-                //todo convert to ABC/123
-                gameState.setText("Player " + lastPlayer + " placed at: " + event.getColLetter()
-                        + " " + event.getRowLetter() + ". " + event.getState().toString());
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-                gameState.setText(event.getState().toString());
-            }
-
-            @Override
-            public void playerPassed(GameEvent event) {
-                gameState.setText(event.getState().toString());
-            }
-
-            @Override
-            public void gameEnded(GameEvent event) {
-
-            }
-        });
-
         model.addGameListener(new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
@@ -93,7 +70,7 @@ public class GameScreenView extends View {
             }
         });
 
-        model.addGameListener(new GameListener() {
+        model.addGameListener(new GameListener() { //todo move to controller instead of view?
             @Override
             public void moveCompleted(GameEvent event) {
             }
@@ -125,12 +102,10 @@ public class GameScreenView extends View {
         pane.setCenter(goBoardView);
 
         VBox interactionField = new VBox();
-        FlowPane captureStatus = new FlowPane();
         FlowPane gameplayButtons = new FlowPane(Orientation.VERTICAL);
         interactionField.getChildren().add(captureStatus);
         interactionField.getChildren().add(gameplayButtons);
         pane.setLeft(interactionField);
-
 
         pane.setBottom(gameState);
 
@@ -150,21 +125,6 @@ public class GameScreenView extends View {
         gameplayButtons.setAlignment(Pos.CENTER);
         gameplayButtons.getChildren().add(passButton);
         gameplayButtons.getChildren().add(resignButton);
-
-        //Buttons for capture status
-        Label labelWhite = new Label("Captured by White: ");
-        Text capturedByWhite = new Text("0");
-        Label labelBlack = new Label("Captured by Black: ");
-        Text capturedByBlack = new Text("0");
-
-        captureStatus.setPadding(new Insets(30));
-        captureStatus.setHgap(10);
-        captureStatus.setVgap(10);
-        captureStatus.getChildren().add(labelWhite);
-        captureStatus.getChildren().add(capturedByWhite);
-        captureStatus.getChildren().add(labelBlack);
-        captureStatus.getChildren().add(capturedByBlack);
-        captureStatus.setMaxWidth(120);
 
         // Buttons to import/export games
         MenuBar menuBar = new MenuBar();
