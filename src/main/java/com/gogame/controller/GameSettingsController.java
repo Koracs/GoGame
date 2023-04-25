@@ -83,11 +83,10 @@ public class GameSettingsController {
     public void changeSceneToGameScene() {
         GameScreenView nextView = new GameScreenView(initGoBoardModel());
         Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage) {
-            Stage s = (Stage) w;
+        if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            s.setScene(scene);
+            stage.setScene(scene);
         }
     }
 

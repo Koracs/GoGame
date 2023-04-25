@@ -6,9 +6,8 @@ import com.gogame.model.GoBoardModel;
 import com.gogame.model.SaveGame;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 
 public class TutorialView extends View{
 
@@ -20,6 +19,9 @@ public class TutorialView extends View{
     private final SaveGame saveGame;
     private BorderPane pane;
 
+    private final GameStateField gameState;
+    private final CaptureStatus captureStatus;
+
 
     public TutorialView(GoBoardModel model) {
         this.goBoardModel = model;
@@ -27,6 +29,9 @@ public class TutorialView extends View{
         this.goBoardController = goBoardView.getController();
         this.tutorialScreenController = new TutorialController(this, model, goBoardController);
         this.saveGame = new SaveGame(goBoardController);
+
+        gameState = new GameStateField(model);
+        captureStatus = new CaptureStatus(model);
 
         drawScene();
     }
@@ -40,6 +45,15 @@ public class TutorialView extends View{
     protected void drawScene() {
         pane = new BorderPane();
         pane.setCenter(goBoardView);
+        pane.setBottom(gameState);
+
+        VBox interactionField = new VBox();
+        FlowPane interactionButtons = new FlowPane();
+        interactionField.getChildren().add(captureStatus);
+        interactionField.getChildren().add(interactionButtons);
+        pane.setLeft(interactionField);
+
+
 
 
         // Buttons for tutorial interaction
@@ -48,8 +62,8 @@ public class TutorialView extends View{
         Button forwardButton = new Button("-->");
         forwardButton.setOnMouseClicked(e -> saveGame.loadGradually(true));
 
-        FlowPane interactionButtons = new FlowPane();
         interactionButtons.setPadding(new Insets(30));
+        interactionButtons.setPrefWidth(20);
         interactionButtons.setHgap(10);
         interactionButtons.setVgap(10);
         interactionButtons.setAlignment(Pos.CENTER);
@@ -57,6 +71,22 @@ public class TutorialView extends View{
         interactionButtons.getChildren().add(backButton);
         interactionButtons.getChildren().add(forwardButton);
 
-        pane.setBottom(interactionButtons);
+        // Buttons to import/export games
+        MenuBar menuBar = new MenuBar();
+        SeparatorMenuItem separator = new SeparatorMenuItem();
+        Menu game = new Menu("Game");
+
+        MenuItem restartButton = new MenuItem("Restart game");
+        restartButton.setOnAction(e -> goBoardController.resetModel());
+        MenuItem mainMenuButton = new MenuItem("Main menu");
+        mainMenuButton.setOnAction(e -> tutorialScreenController.changeSceneToStartScreen());
+
+        game.getItems().add(restartButton);
+        game.getItems().add(separator);
+        game.getItems().add(mainMenuButton);
+
+        menuBar.getMenus().add(game);
+
+        pane.setTop(menuBar);
     }
 }

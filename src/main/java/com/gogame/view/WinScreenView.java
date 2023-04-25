@@ -61,7 +61,6 @@ public class WinScreenView extends View {
         pa.setHgap(10);
         pa.setVgap(10);
 
-
         pane.setCenter(winText);
         pane.setBottom(pa);
     }
