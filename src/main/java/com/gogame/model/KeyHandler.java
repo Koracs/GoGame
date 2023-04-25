@@ -9,9 +9,9 @@ public class KeyHandler {
 
     public static void handleKeyPressed(KeyEvent event) {
         if(view != null) {
-            if(event.getCode().isLetterKey()) {
+            if(event.getCode().isLetterKey() && event.getCode() != KeyCode.P) {
                 view.moveHoverKeyboard(event);
-            } else if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.SPACE) {
+            } else if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.P) {
                 view.setStoneKeyboard();
             }
         }

@@ -57,7 +57,6 @@ public class GoBoardController {
     //region Methods
     public void mouseClicked(MouseEvent e) {
         model.makeMove(getNearestRow(e.getY()), getNearestCol(e.getX()));
-
     }
 
     public int getNearestRow(double y){

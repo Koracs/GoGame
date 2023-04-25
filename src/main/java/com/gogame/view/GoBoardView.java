@@ -129,7 +129,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
                 }
             }
             case S -> {
-                if (currentRow < boardSize) {
+                if (currentRow < (boardSize - 1)) {
                     currentRow += 1;
                 }
             }
@@ -139,7 +139,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
                 }
             }
             case D -> {
-                if (currentCol < boardSize) {
+                if (currentCol < (boardSize - 1)) {
                     currentCol += 1;
                 }
             }
@@ -149,7 +149,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
     }
 
     public void setStoneKeyboard() {
-        model.makeMove(currentRow, currentRow);
+        controller.makeMove(currentRow, currentCol);
     }
 
     // Initially hover the field in top left corner at the start of every move - for keyboard control
