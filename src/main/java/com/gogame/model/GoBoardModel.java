@@ -260,9 +260,8 @@ public class GoBoardModel {
         return false;
     }
 
-    //todo Not yet implemented
-    public void deleteLastMove() {
-        System.out.println("Delete last move!");
+    private boolean isAllowedMove() {
+        return false;
     }
 
     public void switchPlayer() {
@@ -302,6 +301,7 @@ public class GoBoardModel {
     }
 
     private void gameEnds() {
+        finishGameField();
         calculateScores();
 
         if(pointsBlack == pointsWhite) {
@@ -315,8 +315,23 @@ public class GoBoardModel {
         }
     }
 
-    private void calculateScores() {
+    private void finishGameField() {
 
+    }
+
+    private void calculateScores() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if(fields[row][col].getStone() == Stone.BLACK) {
+                    pointsBlack++;
+                } else if (fields[row][col].getStone() == Stone.WHITE) {
+                    pointsWhite++;
+                }
+            }
+        }
+
+        pointsBlack += capturedByBlack;
+        pointsWhite += capturedByWhite;
     }
 
     public void playerResigned() {

@@ -82,5 +82,7 @@ public class GoBoardController {
     public void makeMove(int row, int col) {
         model.makeMove(row, col);
     }
+
+
     //endregion
 }
