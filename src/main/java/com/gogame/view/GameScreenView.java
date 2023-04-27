@@ -5,7 +5,6 @@ import com.gogame.controller.GoBoardController;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
-import com.gogame.model.KeyHandler;
 import com.gogame.model.SaveGame;
 import com.gogame.model.Stone;
 import javafx.event.EventHandler;
@@ -13,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -41,14 +41,23 @@ public class GameScreenView extends View {
 
         saveGame = new SaveGame(goBoardController, gameScreenController);
 
-        //add eventHandler to allow gameplay interaction
+        //eventHandler for placing stones
         EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
         goBoardView.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
 
+        //eventHandler for mouse hovering
         EventHandler<MouseEvent> moveHandler = goBoardView::moveHoverMouse;
         goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED,moveHandler);
 
-        KeyHandler.view = goBoardView;
+        //eventHandler for keyboard interaction
+        goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case SPACE, ENTER:
+                    goBoardView.setStoneKeyboard();
+                default: goBoardView.moveHoverKeyboard(keyEvent);
+            }
+        });
+
 
         drawScene();
         model.addGameListener(new GameListener() { //todo outsource into own class?
@@ -200,6 +209,8 @@ public class GameScreenView extends View {
 
     @Override
     public BorderPane getPane() {
+        pane.setFocusTraversable(true);
+        pane.getCenter().requestFocus();
         return this.pane;
     }
 }

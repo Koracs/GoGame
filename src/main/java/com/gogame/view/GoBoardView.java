@@ -8,6 +8,8 @@ import com.gogame.model.GoBoardModel;
 import com.gogame.model.GoField;
 import com.gogame.model.Stone;
 
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 
@@ -40,8 +42,8 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
         this.model = model;
         controller = new GoBoardController(model, this);
 
-        setMinSize(500,500);
-        setPrefSize(600,600);
+        setMinSize(500, 500);
+        setPrefSize(600, 600);
         widthProperty().addListener(e -> {
             setScale();
             draw();
@@ -108,7 +110,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
         drawBoard();
         drawCoordinates();
         drawStones();
-        initHover();
+        drawHover();
     }
 
     public void moveHoverMouse(MouseEvent e) {
@@ -117,31 +119,23 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
             currentCol = controller.getNearestCol(e.getX());
 
             drawHover();
-        } catch (ArrayIndexOutOfBoundsException ignore){
+        } catch (ArrayIndexOutOfBoundsException ignore) {
         }
     }
 
     public void moveHoverKeyboard(KeyEvent e) {
         switch (e.getCode()) {
-            case W -> {
-                if (currentRow >= 1) {
-                    currentRow -= 1;
-                }
+            case W, UP -> {
+                if (currentRow >= 1) currentRow -= 1;
             }
-            case S -> {
-                if (currentRow < (boardSize - 1)) {
-                    currentRow += 1;
-                }
+            case S, DOWN -> {
+                if (currentRow < (boardSize - 1)) currentRow += 1;
             }
-            case A -> {
-                if (currentCol >= 1) {
-                    currentCol -= 1;
-                }
+            case A, LEFT -> {
+                if (currentCol >= 1) currentCol -= 1;
             }
-            case D -> {
-                if (currentCol < (boardSize - 1)) {
-                    currentCol += 1;
-                }
+            case D, RIGHT -> {
+                if (currentCol < (boardSize - 1)) currentCol += 1;
             }
         }
 
@@ -150,29 +144,22 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
     public void setStoneKeyboard() {
         controller.makeMove(currentRow, currentCol);
-    }
-
-    // Initially hover the field in top left corner at the start of every move - for keyboard control
-    private void initHover() {
-        currentCol = 0;
-        currentRow = 0;
-
         drawHover();
     }
 
     private void drawHover() {
-        // If the index is outside of the gamefield return
-        if(currentRow == -1 || currentCol == -1 || currentRow == boardSize || currentCol == boardSize) {
+        if (currentRow < 0 || currentCol < 0 || currentRow >= boardSize || currentCol >= boardSize) {
             return;
         }
 
         getChildren().remove(hover);
 
-        hover = new Circle((currentCol+1)*getScale(),(currentRow+1)*getScale(),tileSize/2.5);
+        hover = new Circle((currentCol + 1) * getScale(), (currentRow + 1) * getScale(), tileSize / 2.5);
 
         String hoverColor;
 
-        if(model.getField(currentRow,currentCol).isEmpty()) hoverColor = model.getCurrentPlayer() == Stone.BLACK ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)";
+        if (model.getField(currentRow, currentCol).isEmpty())
+            hoverColor = model.getCurrentPlayer() == Stone.BLACK ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)";
         else hoverColor = "rgba(255,0,0,0.5)";
 
         hover.setFill(Color.web(hoverColor));

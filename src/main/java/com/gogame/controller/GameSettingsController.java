@@ -5,6 +5,7 @@ import com.gogame.view.GameSettingsView;
 import com.gogame.view.GameScreenView;
 import com.gogame.view.StartScreenView;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -86,9 +87,14 @@ public class GameSettingsController {
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane());
-            scene.setOnKeyPressed(s.getOnKeyPressed());
+            //scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            //scene.setOnKeyPressed(KeyHandler::handleKeyPressed);
+            //scene.addEventFilter(KeyEvent.KEY_PRESSED,System.out::println);
             stage.setScene(scene);
+
+           BorderPane root = (BorderPane)stage.getScene().getRoot();
+           root.getCenter().requestFocus();
         }
     }
 
@@ -98,7 +104,7 @@ public class GameSettingsController {
         StartScreenView nextView = new StartScreenView();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
-            scene.setOnKeyPressed(s.getOnKeyPressed());
+            //scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }
