@@ -24,7 +24,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class GoBoardView extends Pane { //todo interface for views? (registerView())
+public class GoBoardView extends Pane implements GameListener{ //todo interface for views? (registerView())
     //region Fields
     // Pane of this class
     private final GoBoardController controller;
@@ -42,8 +42,9 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
         this.model = model;
         controller = new GoBoardController(model, this);
 
-        setMinSize(500, 500);
-        setPrefSize(600, 600);
+
+        setPrefSize(600,600);
+        
         widthProperty().addListener(e -> {
             setScale();
             draw();
@@ -53,28 +54,7 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
             draw();
         });
 
-        model.addGameListener(new GameListener() {
-            @Override
-            public void moveCompleted(GameEvent event) {
-                draw();
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-                draw();
-            }
-
-            @Override
-            public void playerPassed(GameEvent event) {
-
-            }
-
-            @Override
-            public void gameEnded(GameEvent event) {
-
-            }
-        });
-
+        model.addGameListener(this);
         draw();
     }
 
@@ -104,7 +84,29 @@ public class GoBoardView extends Pane { //todo interface for views? (registerVie
 
     //endregion
 
+
     //region Methods
+
+    @Override
+    public void moveCompleted(GameEvent event) {
+        draw();
+    }
+
+    @Override
+    public void resetGame(GameEvent event) {
+        draw();
+    }
+
+    @Override
+    public void playerPassed(GameEvent event) {
+
+    }
+
+    @Override
+    public void gameEnded(GameEvent event) {
+
+    }
+
     public void draw() {
         getChildren().clear();
         drawBoard();

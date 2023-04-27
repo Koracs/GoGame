@@ -89,8 +89,7 @@ public class GameSettingsController {
             Scene scene = new Scene(nextView.getPane());
             //scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            //scene.setOnKeyPressed(KeyHandler::handleKeyPressed);
-            //scene.addEventFilter(KeyEvent.KEY_PRESSED,System.out::println);
+
             stage.setScene(scene);
 
            BorderPane root = (BorderPane)stage.getScene().getRoot();
