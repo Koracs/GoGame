@@ -1,16 +1,13 @@
-19;0;0.0
-7;7
-8;8
-7;8
-13;17
-8;9
-17;17
-9;8
-17;13
-8;7
-8;8
-8;8
-7;9
-8;10
-9;9
-9;10
+13;0;0.0
+3;3- White player's turn.
+3;4- Black player's turn.
+4;4- White player's turn.
+4;5- Black player's turn.
+5;5- White player's turn.
+5;6- Black player's turn.
+6;6- White player's turn.
+6;7- Black player's turn.
+Black player passed.
+7;7- Black player's turn.
+Black player passed.
+7;8- Black player's turn.

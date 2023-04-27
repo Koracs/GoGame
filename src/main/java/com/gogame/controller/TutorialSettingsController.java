@@ -1,6 +1,5 @@
 package com.gogame.controller;
 
-import com.gogame.model.GoBoardModel;
 import com.gogame.view.StartScreenView;
 import com.gogame.view.TutorialSettingsView;
 import com.gogame.view.TutorialView;
@@ -15,10 +14,11 @@ public class TutorialSettingsController {
     private String selectedTutorial;
 
     // Constants
-    private final String TUTORIAL1 = " /Tutorial1";
-    private final String TUTORIAL2 = " /Tutorial2";
-    private final String TUTORIAL3 = " /Tutorial3";
-    private final String TUTORIAL4 = " /Tutorial4";
+    //todo change this
+    private final String TUTORIAL1 = "/gameData/Tutorial1.txt";
+    private final String TUTORIAL2 = "/gameData/Tutorial2.txt";
+    private final String TUTORIAL3 = "/gameData/Tutorial3.txt";
+    private final String TUTORIAL4 = "/gameData/Tutorial4.txt";
     //endregion
 
     // Constructor
@@ -27,51 +27,36 @@ public class TutorialSettingsController {
         this.selectedTutorial = TUTORIAL1;
     }
 
-    //region Getter/Setter
-
-    public String getSelectedTutorial() {
-        return selectedTutorial;
-    }
-
-    //endregion
-
     //region Methods
-    public void selectTutorial(int tut) {
+    public void selectTutorial(String tut) {
+        //todo implement same as in tutorialSettingsView
         switch (tut) {
-            case 1:
+            case "tutorial 1":
                 selectedTutorial = TUTORIAL1;
                 break;
-            case 2:
+            case "tutorial 2":
                 selectedTutorial = TUTORIAL2;
                 break;
-            case 3:
+            case "tutorial 3":
                 selectedTutorial = TUTORIAL3;
                 break;
-            case 4:
+            case "tutorial 4":
                 selectedTutorial = TUTORIAL4;
                 break;
         }
     }
 
-    public void importGameData() {
-
-    }
-
-    public void selectFile() {
-
-    }
-
-    private GoBoardModel initGoBoardModel(){
-        return new GoBoardModel(19,0,0); //todo
-    }
-    public void changeSceneToTutorialScene() {
-        TutorialView nextView = new TutorialView(initGoBoardModel());
+    public void changeSceneToTutorialScene(String selected) {
+        selectTutorial(selected);
+        String path = getClass().getResource(selectedTutorial).getPath().substring(1);
+        TutorialView nextView = new TutorialView(path);
+        Scene s = view.getPane().getScene();
         Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage) {
-            Stage s = (Stage) w;
+        if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane());
+            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            s.setScene(scene);
+            stage.setScene(scene);
         }
     }
 
@@ -81,6 +66,7 @@ public class TutorialSettingsController {
         StartScreenView nextView = new StartScreenView();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }

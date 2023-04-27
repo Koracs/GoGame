@@ -18,8 +18,10 @@ public class Main extends Application {
         StartScreenView startScreenView = new StartScreenView();
         Scene scene = new Scene(startScreenView.getPane(), 500, 500);
         scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+        //scene.setOnKeyPressed(KeyHandler::handleKeyPressed);
         stage.setScene(scene);
         stage.setTitle("Go Game");
+
         stage.show();
         stage.setMinHeight(500);
         stage.setMinWidth(500);

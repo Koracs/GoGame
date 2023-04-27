@@ -2,7 +2,6 @@ package com.gogame.controller;
 
 import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
-import com.gogame.model.Stone;
 import com.gogame.view.GameScreenView;
 import com.gogame.view.StartScreenView;
 import com.gogame.view.WinScreenView;
@@ -43,6 +42,7 @@ public class GameScreenController {
         Window w = s.getWindow();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }
@@ -54,6 +54,7 @@ public class GameScreenController {
         StartScreenView nextView = new StartScreenView();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }

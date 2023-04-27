@@ -12,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -36,19 +37,32 @@ public class GameScreenView extends View {
         goBoardModel = model;
         goBoardView = new GoBoardView(model);
         goBoardController = goBoardView.getController();
+
         gameState = new GameStateField(model);
         captureStatus = new CaptureStatus(model);
 
         saveGame = new SaveGame(goBoardController, gameScreenController);
 
-        //add eventHandler to allow gameplay interaction
+        //eventHandler for placing stones
         EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
         goBoardView.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHandler);
 
-        EventHandler<MouseEvent> moveHandler = goBoardView::drawHover;
+        //eventHandler for mouse hovering
+        EventHandler<MouseEvent> moveHandler = goBoardView::moveHoverMouse;
         goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED,moveHandler);
 
+        //eventHandler for keyboard interaction
+        goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case SPACE, ENTER:
+                    goBoardView.setStoneKeyboard();
+                default: goBoardView.moveHoverKeyboard(keyEvent);
+            }
+        });
+
+
         drawScene();
+
         model.addGameListener(new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
@@ -157,6 +171,8 @@ public class GameScreenView extends View {
 
     @Override
     public BorderPane getPane() {
+        pane.setFocusTraversable(true);
+        pane.getCenter().requestFocus();
         return this.pane;
     }
 }

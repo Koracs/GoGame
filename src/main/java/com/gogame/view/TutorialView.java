@@ -23,10 +23,12 @@ public class TutorialView extends View{
     private final CaptureStatus captureStatus;
 
 
-    public TutorialView(GoBoardModel model) {
-        this.goBoardModel = model;
-        this.goBoardView = new GoBoardView(model);
+    public TutorialView(String selectedTutorial) {
+        this.saveGame = new SaveGame(selectedTutorial);
+        this.goBoardModel = saveGame.importFileData();
+        this.goBoardView = new GoBoardView(goBoardModel);
         this.goBoardController = goBoardView.getController();
+
         this.tutorialScreenController = new TutorialController(this, model, goBoardController);
         this.saveGame = new SaveGame(goBoardController);
 
