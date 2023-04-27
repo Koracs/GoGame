@@ -15,9 +15,6 @@ import java.util.regex.Pattern;
 
 public class SaveGame {
     //region Constants
-    private final String FILENAME = "gamedata_";
-    private final String EXT = ".txt";
-
     private final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";
     private final String PASS_REGEX = "Black|White player passed.";
     private final String MOVE_REGEX = "\\d(\\d)?;\\d(\\d)?- (White)|(Black)";
@@ -233,40 +230,21 @@ public class SaveGame {
             return;
         }
 
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialFileName("mySaveGame.txt");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt"));
+        File file = chooser.showSaveDialog(view.getScene().getWindow());
 
-        if(selectedDirectory == null) {
-            // Closed directory chooser manually
-            return;
-        }
+        if(file != null) {
+            try {
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(gameDataStorage.toString());
+                fileWriter.close();
 
-        try {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yyyy");
-            LocalDateTime now = LocalDateTime.now();
-
-            // Check for valid file name
-            String filePath = selectedDirectory.getAbsolutePath() + "\\" + FILENAME + dtf.format(now);
-
-            File temp = new File(filePath + EXT);
-            if(temp.exists()) {
-                int i = 1;
-                temp = new File(filePath + "_" + i + EXT);
-                while(temp.exists()) {
-                    i++;
-                    temp = new File(filePath + "_" + i + EXT);
-                }
-
-                filePath = filePath + "_" + i;
+                createAlert(Alert.AlertType.INFORMATION, "Information", null, "Game successfully exported!");
+            } catch (IOException e) {
+                createAlert(Alert.AlertType.ERROR, "Runtime Exception", null, e.getMessage());
             }
-
-            FileWriter fileWriter = new FileWriter(filePath + EXT);
-            fileWriter.write(gameDataStorage.toString());
-            fileWriter.close();
-
-            createAlert(Alert.AlertType.INFORMATION, "Information", null, "Game successfully exported!");
-        } catch (IOException e) {
-            createAlert(Alert.AlertType.ERROR, "Runtime Exception", null, e.getMessage());
         }
     }
 
