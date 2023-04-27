@@ -112,7 +112,6 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
         drawBoard();
         drawCoordinates();
         drawStones();
-        drawHover();
     }
 
     public void moveHoverMouse(MouseEvent e) {

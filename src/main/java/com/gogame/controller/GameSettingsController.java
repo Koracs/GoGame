@@ -76,24 +76,23 @@ public class GameSettingsController {
 
     //region Methods
 
-    private GoBoardModel initGoBoardModel(){
+    private GoBoardModel initGoBoardModel() {
         return new GoBoardModel(boardSize,
                 komiActive ? komi : 0,
                 handicapActive ? handicap : 0);
     }
+
     public void changeSceneToGameScene() {
         GameScreenView nextView = new GameScreenView(initGoBoardModel());
         Scene s = view.getPane().getScene();
         Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage stage) {
+        if (w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane());
-            //scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-
             stage.setScene(scene);
 
-           BorderPane root = (BorderPane)stage.getScene().getRoot();
-           root.getCenter().requestFocus();
+            BorderPane root = (BorderPane) stage.getScene().getRoot();
+            root.getCenter().requestFocus();
         }
     }
 
@@ -101,9 +100,8 @@ public class GameSettingsController {
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         StartScreenView nextView = new StartScreenView();
-        if(w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
-            //scene.setOnKeyPressed(s.getOnKeyPressed());
+        if (w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }

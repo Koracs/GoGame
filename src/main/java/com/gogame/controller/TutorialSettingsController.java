@@ -54,7 +54,6 @@ public class TutorialSettingsController {
         Window w = view.getPane().getScene().getWindow();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane());
-            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }
@@ -66,7 +65,6 @@ public class TutorialSettingsController {
         StartScreenView nextView = new StartScreenView();
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
-            scene.setOnKeyPressed(s.getOnKeyPressed());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }

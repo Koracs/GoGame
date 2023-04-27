@@ -28,12 +28,11 @@ public class TutorialView extends View{
         this.goBoardModel = saveGame.importFileData();
         this.goBoardView = new GoBoardView(goBoardModel);
         this.goBoardController = goBoardView.getController();
+        this.tutorialScreenController = new TutorialController(this, goBoardModel, goBoardController);
+        saveGame.initSaveGame(goBoardController);
 
-        this.tutorialScreenController = new TutorialController(this, model, goBoardController);
-        this.saveGame = new SaveGame(goBoardController);
-
-        gameState = new GameStateField(model);
-        captureStatus = new CaptureStatus(model);
+        gameState = new GameStateField(goBoardModel);
+        captureStatus = new CaptureStatus(goBoardModel);
 
         drawScene();
     }
