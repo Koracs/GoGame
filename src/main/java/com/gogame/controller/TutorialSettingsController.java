@@ -15,10 +15,10 @@ public class TutorialSettingsController {
 
     // Constants
     //todo change this
-    private final String TUTORIAL1 = "/gameData/Tutorial1.txt";
-    private final String TUTORIAL2 = "/gameData/Tutorial2.txt";
-    private final String TUTORIAL3 = "/gameData/Tutorial3.txt";
-    private final String TUTORIAL4 = "/gameData/Tutorial4.txt";
+    private final String TUTORIAL1 = "/tutorials/Tutorial1.txt";
+    private final String TUTORIAL2 = "/tutorials/Tutorial2.txt";
+    private final String TUTORIAL3 = "/tutorials/Tutorial3.txt";
+    private final String TUTORIAL4 = "/tutorials/Tutorial4.txt";
     //endregion
 
     // Constructor
