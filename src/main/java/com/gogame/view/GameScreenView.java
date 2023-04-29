@@ -6,7 +6,6 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.SaveGame;
-import com.gogame.model.Stone;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -17,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public class GameScreenView extends View {
     private GoBoardModel goBoardModel;
@@ -127,8 +125,11 @@ public class GameScreenView extends View {
 
         // Buttons for gameplay
         Button passButton = new Button("Pass");
+        passButton.setFocusTraversable(false);
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
+
         Button resignButton = new Button("Resign");
+        resignButton.setFocusTraversable(false);
         resignButton.setOnMouseClicked(e -> {
             goBoardModel.playerResigned();
             gameScreenController.changeSceneToWinScreen(goBoardModel.getGameState());
