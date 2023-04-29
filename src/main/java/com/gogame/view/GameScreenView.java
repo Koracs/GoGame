@@ -49,14 +49,15 @@ public class GameScreenView extends View {
 
         //eventHandler for mouse hovering
         EventHandler<MouseEvent> moveHandler = goBoardView::moveHoverMouse;
-        goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED,moveHandler);
+        goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED, moveHandler);
 
         //eventHandler for keyboard interaction
         goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
             switch (keyEvent.getCode()) {
                 case SPACE, ENTER:
                     goBoardView.setStoneKeyboard();
-                default: goBoardView.moveHoverKeyboard(keyEvent);
+                default:
+                    goBoardView.moveHoverKeyboard(keyEvent);
             }
         });
 
@@ -157,7 +158,10 @@ public class GameScreenView extends View {
 
 
         MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> saveGame.importGameFile(false));
+        importButton.setOnAction(e -> {
+            saveGame.importGameFile(false);
+            goBoardView.autosize();
+        });
         MenuItem exportButton = new MenuItem("Export game");
         exportButton.setOnAction(e -> saveGame.exportGameFile());
 
