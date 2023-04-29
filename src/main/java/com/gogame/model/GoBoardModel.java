@@ -29,6 +29,7 @@ public class GoBoardModel {
     private double pointsBlack;
 
     private GoField[][] fields;
+    private boolean[][] visited;
     private final List<GameListener> listeners;
     //endregion
 
@@ -260,9 +261,8 @@ public class GoBoardModel {
         return false;
     }
 
-    //todo Not yet implemented
-    public void deleteLastMove() {
-        System.out.println("Delete last move!");
+    private boolean isAllowedMove() {
+        return false;
     }
 
     public void switchPlayer() {
@@ -304,6 +304,9 @@ public class GoBoardModel {
     private void gameEnds() {
         calculateScores();
 
+        System.out.println("Points Black = " + pointsBlack);
+        System.out.println("Points White = " + pointsWhite);
+
         if(pointsBlack == pointsWhite) {
             gameState = GameState.DRAW;
         } else {
@@ -316,7 +319,104 @@ public class GoBoardModel {
     }
 
     private void calculateScores() {
+        //todo implement remove dead stones
+        removeDeadStones();
 
+        //todo implement counter for capture stones
+        pointsBlack += capturedByBlack;
+        pointsWhite += capturedByWhite;
+
+        // Add points for the stones on the field
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if(fields[row][col].getStone() == Stone.BLACK) {
+                    pointsBlack++;
+                } else if (fields[row][col].getStone() == Stone.WHITE) {
+                    pointsWhite++;
+                }
+            }
+        }
+
+        // Initialize visited array
+        visited = new boolean[size][size];
+        for(int i = 0;i < size;i++) {
+            for(int j = 0;j < size;j++) {
+                visited[i][j] = false;
+            }
+        }
+
+        // Add points for the controlled areas on the board
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if(!visited[row][col] && fields[row][col].isEmpty()) {
+                    List<Integer> area = new ArrayList<>();
+                    boolean isSurroundedBlack = true;
+                    boolean isSurroundedWhite = true;
+                    findEmptyArea(row, col, area);
+                    for (int pos : area) {
+                        int r = pos / size;
+                        int c = pos % size;
+                        if (!isSurrounded(r, c, Stone.BLACK)) {
+                            isSurroundedBlack = false;
+                        }
+                        if (!isSurrounded(r, c, Stone.WHITE)) {
+                            isSurroundedWhite = false;
+                        }
+                        if(!isSurroundedWhite && !isSurroundedBlack) {
+                            break;
+                        }
+                    }
+                    if (isSurroundedWhite) {
+                        pointsWhite += area.size();
+                    } else if (isSurroundedBlack) {
+                        pointsBlack += area.size();
+                    }
+                }
+            }
+        }
+    }
+
+    private void removeDeadStones() {
+
+    }
+
+    private void findEmptyArea(int row, int col, List<Integer> area) {
+        if (row < 0 || row >= size || col < 0 || col >= size) {
+            return;
+        }
+        if (visited[row][col]) {
+            return;
+        }
+        if (!fields[row][col].isEmpty()) {
+            return;
+        }
+        visited[row][col] = true;
+
+        int position = row * size + col;
+        area.add(position);
+        findEmptyArea(row + 1, col, area);
+        findEmptyArea(row - 1, col, area);
+        findEmptyArea(row, col + 1, area);
+        findEmptyArea(row, col - 1, area);
+    }
+
+    private boolean isSurrounded(int row, int col, Stone stone) {
+        boolean isSurrounded = true;
+        isSurrounded &= checkNeighbours(row + 1, col, stone);
+        isSurrounded &= checkNeighbours(row - 1, col, stone);
+        isSurrounded &= checkNeighbours(row, col + 1, stone);
+        isSurrounded &= checkNeighbours(row, col - 1, stone);
+        return isSurrounded;
+    }
+
+    private boolean checkNeighbours(int row, int col, Stone stone) {
+        if (row < 0 || row >= size || col < 0 || col >= size) {
+            return true;
+        }
+        if (fields[row][col].isEmpty() || fields[row][col].getStone() == stone) {
+            return true;
+        }
+        return false;
     }
 
     public void playerResigned() {
