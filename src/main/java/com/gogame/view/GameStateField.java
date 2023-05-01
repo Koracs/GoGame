@@ -11,6 +11,7 @@ public class GameStateField extends TextField implements GameListener {
     public GameStateField(GoBoardModel model){
         super();
         model.addGameListener(this);
+        setFocusTraversable(false);
     }
     @Override
     public void moveCompleted(GameEvent event) {

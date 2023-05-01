@@ -7,52 +7,53 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 public class TutorialSettingsController {
     //region Fields
     private final TutorialSettingsView view;
+    private static final String TUTORIAL_DIRECTORY = "src/main/resources/tutorials/";
 
-    private String selectedTutorial;
-
-    // Constants
-    //todo change this
-    private final String TUTORIAL1 = "/tutorials/Tutorial1.txt";
-    private final String TUTORIAL2 = "/tutorials/Tutorial2.txt";
-    private final String TUTORIAL3 = "/tutorials/Tutorial3.txt";
-    private final String TUTORIAL4 = "/tutorials/Tutorial4.txt";
     //endregion
 
     // Constructor
     public TutorialSettingsController(TutorialSettingsView view) {
         this.view = view;
-        this.selectedTutorial = TUTORIAL1;
     }
 
     //region Methods
-    public void selectTutorial(String tut) {
-        //todo implement same as in tutorialSettingsView
-        switch (tut) {
-            case "tutorial 1":
-                selectedTutorial = TUTORIAL1;
-                break;
-            case "tutorial 2":
-                selectedTutorial = TUTORIAL2;
-                break;
-            case "tutorial 3":
-                selectedTutorial = TUTORIAL3;
-                break;
-            case "tutorial 4":
-                selectedTutorial = TUTORIAL4;
-                break;
+
+    public List<String> getTutorials() {
+        List<String> tutorials = new ArrayList<>();
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(TUTORIAL_DIRECTORY))) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path)) {
+                    String tutorialName = path.getFileName().toString();
+                    tutorials.add(tutorialName.substring(0, tutorialName.length() - 4));
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        return tutorials;
     }
 
-    public void changeSceneToTutorialScene(String selected) {
-        selectTutorial(selected);
-        String path = getClass().getResource(selectedTutorial).getPath().substring(1);
+    public void changeSceneToTutorialScene(String selectedTutorial) {
+        String path = TUTORIAL_DIRECTORY + selectedTutorial + ".txt";
         TutorialView nextView = new TutorialView(path);
+
         Scene s = view.getPane().getScene();
         Window w = view.getPane().getScene().getWindow();
-        if(w instanceof Stage stage) {
+        if (w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
@@ -63,11 +64,13 @@ public class TutorialSettingsController {
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         StartScreenView nextView = new StartScreenView();
-        if(w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+        if (w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
         }
     }
+
+
     //endregion
 }

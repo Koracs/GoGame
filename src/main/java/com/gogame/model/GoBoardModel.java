@@ -85,6 +85,7 @@ public class GoBoardModel {
     public Stone getCurrentPlayer() {
         return this.currentPlayer;
     }
+    private Stone getOtherPlayer() { return currentPlayer == Stone.BLACK ? Stone.WHITE : Stone.BLACK;}
 
     private void initModel() {
         fields = new GoField[size][size];
@@ -110,7 +111,7 @@ public class GoBoardModel {
         return fields;
     }
 
-    public GoField getField(int row, int col){
+    public GoField getField(int row, int col) {
         return fields[row][col];
     }
 
@@ -140,6 +141,10 @@ public class GoBoardModel {
 
         if (fields[row][col].isEmpty()) {
             fields[row][col].setStone(currentPlayer);
+            if (moveIsSuicide(row, col)) {
+                fields[row][col].removeStone();
+                return;
+            }
 
             checkCapture(row, col);
             switchPlayer();
@@ -174,7 +179,7 @@ public class GoBoardModel {
 
         //top
         if (row > 0) {
-            findNeighboursOfSameColor(row - 1, col, neighbours, fields[row - 1][col].getStone());
+            findNeighboursOfSameColor(row - 1, col, neighbours, getOtherPlayer());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
             }
@@ -182,7 +187,7 @@ public class GoBoardModel {
         }
         //right
         if (col < fields.length - 1) {
-            findNeighboursOfSameColor(row, col + 1, neighbours, fields[row][col + 1].getStone());
+            findNeighboursOfSameColor(row, col + 1, neighbours, getOtherPlayer());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
             }
@@ -190,7 +195,7 @@ public class GoBoardModel {
         }
         //bottom
         if (row < fields.length - 1) {
-            findNeighboursOfSameColor(row + 1, col, neighbours, fields[row + 1][col].getStone());
+            findNeighboursOfSameColor(row + 1, col, neighbours, getOtherPlayer());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
             }
@@ -198,7 +203,7 @@ public class GoBoardModel {
         }
         //left
         if (col > 0) {
-            findNeighboursOfSameColor(row, col - 1, neighbours, fields[row][col - 1].getStone());
+            findNeighboursOfSameColor(row, col - 1, neighbours, getOtherPlayer());
             if (!chainContainsLiberties(neighbours)) {
                 neighbours.forEach(GoField::removeStone);
             }
@@ -206,7 +211,7 @@ public class GoBoardModel {
         }
 
         //center
-        findNeighboursOfSameColor(row, col, neighbours, fields[row][col].getStone());
+        findNeighboursOfSameColor(row, col, neighbours, currentPlayer);
         if (!chainContainsLiberties(neighbours)) {
             neighbours.forEach(GoField::removeStone);
         }
@@ -225,7 +230,7 @@ public class GoBoardModel {
         if (col < 0 || col >= fields.length || row < 0 || row >= fields.length) {
             return;
         }
-        if(fields[row][col].isPreset()) return;
+        if (fields[row][col].isPreset()) return;
         if (neighbours.contains(fields[row][col])) return;
 
         if (fields[row][col].getStone().equals(currentColor)) neighbours.add(fields[row][col]);
@@ -248,6 +253,7 @@ public class GoBoardModel {
      * @return True if the chain contains liberties, false if it is captured
      */
     private boolean chainContainsLiberties(List<GoField> chain) {
+        if(chain.isEmpty()) return true;
         for (GoField field : chain) {
             int row = field.getRow();
             int col = field.getCol();
@@ -261,18 +267,55 @@ public class GoBoardModel {
         return false;
     }
 
-    private boolean isAllowedMove() {
+    private boolean moveIsSuicide(int row, int col) {
+        List<GoField> neighbours = new ArrayList<>();
+
+        //top
+        if (row > 0) {
+            findNeighboursOfSameColor(row - 1, col, neighbours, getOtherPlayer());
+            if (!chainContainsLiberties(neighbours)) {
+               return false;
+            }
+            neighbours.clear();
+        }
+        //right
+        if (col < fields.length - 1) {
+            findNeighboursOfSameColor(row, col + 1, neighbours, getOtherPlayer());
+            if (!chainContainsLiberties(neighbours)) {
+                return false;
+            }
+            neighbours.clear();
+        }
+        //bottom
+        if (row < fields.length - 1) {
+            findNeighboursOfSameColor(row + 1, col, neighbours, getOtherPlayer());
+            if (!chainContainsLiberties(neighbours)) {
+                return false;
+            }
+            neighbours.clear();
+        }
+        //left
+        if (col > 0) {
+            findNeighboursOfSameColor(row, col - 1, neighbours, getOtherPlayer());
+            if (!chainContainsLiberties(neighbours)) {
+                return false;
+            }
+            neighbours.clear();
+        }
+
+        findNeighboursOfSameColor(row, col, neighbours, currentPlayer);
+        if (!chainContainsLiberties(neighbours)) {
+            return true;
+        }
+        neighbours.clear();
+
         return false;
     }
 
+
     public void switchPlayer() {
-        if (currentPlayer == Stone.BLACK) {
-            currentPlayer = Stone.WHITE;
-            gameState = GameState.WHITE_TURN;
-        } else if (currentPlayer == Stone.WHITE) {
-            currentPlayer = Stone.BLACK;
-            gameState = GameState.BLACK_TURN;
-        }
+        currentPlayer = getOtherPlayer();
+        gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_TURN : GameState.WHITE_TURN;
     }
 
     public void reset() {
@@ -286,7 +329,7 @@ public class GoBoardModel {
     }
 
     public void pass() {
-        if(prevPassed) {
+        if (prevPassed) {
             // Player in previous round passed - game ends
             gameEnds();
             return;
@@ -307,7 +350,7 @@ public class GoBoardModel {
         System.out.println("Points Black = " + pointsBlack);
         System.out.println("Points White = " + pointsWhite);
 
-        if(pointsBlack == pointsWhite) {
+        if (pointsBlack == pointsWhite) {
             gameState = GameState.DRAW;
         } else {
             gameState = pointsWhite > pointsBlack ? GameState.WHITE_WON : GameState.BLACK_WON;
@@ -329,7 +372,7 @@ public class GoBoardModel {
         // Add points for the stones on the field
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                if(fields[row][col].getStone() == Stone.BLACK) {
+                if (fields[row][col].getStone() == Stone.BLACK) {
                     pointsBlack++;
                 } else if (fields[row][col].getStone() == Stone.WHITE) {
                     pointsWhite++;
@@ -339,8 +382,8 @@ public class GoBoardModel {
 
         // Initialize visited array
         visited = new boolean[size][size];
-        for(int i = 0;i < size;i++) {
-            for(int j = 0;j < size;j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 visited[i][j] = false;
             }
         }
@@ -348,7 +391,7 @@ public class GoBoardModel {
         // Add points for the controlled areas on the board
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                if(!visited[row][col] && fields[row][col].isEmpty()) {
+                if (!visited[row][col] && fields[row][col].isEmpty()) {
                     List<Integer> area = new ArrayList<>();
                     boolean isSurroundedBlack = true;
                     boolean isSurroundedWhite = true;
@@ -362,7 +405,7 @@ public class GoBoardModel {
                         if (!isSurrounded(r, c, Stone.WHITE)) {
                             isSurroundedWhite = false;
                         }
-                        if(!isSurroundedWhite && !isSurroundedBlack) {
+                        if (!isSurroundedWhite && !isSurroundedBlack) {
                             break;
                         }
                     }
@@ -449,7 +492,7 @@ public class GoBoardModel {
         return this.listeners;
     }
 
-    public void setGameListeners(List<GameListener> listeners) {
+    public void setGameListeners(List<GameListener> listeners) { //todo rename to addGameListeners?
         this.listeners.addAll(listeners);
     }
     //endregion

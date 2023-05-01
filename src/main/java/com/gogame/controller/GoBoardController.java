@@ -3,6 +3,7 @@ package com.gogame.controller;
 import com.gogame.model.*;
 import com.gogame.view.GoBoardView;
 
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class GoBoardController {
@@ -55,7 +56,12 @@ public class GoBoardController {
     //endregion
 
     //region Methods
-    public void mouseClicked(MouseEvent e) {
+
+    public void mouseClicked(MouseEvent e){
+        if(e.getButton() == MouseButton.PRIMARY) placeStone(e);
+        else if(e.getButton() == MouseButton.SECONDARY) placeMarking(e);
+    }
+    private void placeStone(MouseEvent e) {
         int row = getNearestRow(e.getY());
         int col = getNearestCol(e.getX());
         if (row < 0 || col < 0 || row >= model.getSize() || col >= model.getSize()) return;
@@ -81,6 +87,15 @@ public class GoBoardController {
 
     public void makeMove(int row, int col) {
         model.makeMove(row, col);
+    }
+
+    private void placeMarking(MouseEvent e) {
+        int row = getNearestRow(e.getY());
+        int col = getNearestCol(e.getX());
+        if (row < 0 || col < 0 || row >= model.getSize() || col >= model.getSize()) return;
+
+        view.setMarking(row, col);
+        view.draw();
     }
 
 

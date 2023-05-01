@@ -6,7 +6,6 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.SaveGame;
-import com.gogame.model.Stone;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -17,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public class GameScreenView extends View {
     private GoBoardModel goBoardModel;
@@ -49,14 +47,15 @@ public class GameScreenView extends View {
 
         //eventHandler for mouse hovering
         EventHandler<MouseEvent> moveHandler = goBoardView::moveHoverMouse;
-        goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED,moveHandler);
+        goBoardView.addEventHandler(MouseEvent.MOUSE_MOVED, moveHandler);
 
         //eventHandler for keyboard interaction
         goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
             switch (keyEvent.getCode()) {
                 case SPACE, ENTER:
                     goBoardView.setStoneKeyboard();
-                default: goBoardView.moveHoverKeyboard(keyEvent);
+                default:
+                    goBoardView.moveHoverKeyboard(keyEvent);
             }
         });
 
@@ -126,8 +125,11 @@ public class GameScreenView extends View {
 
         // Buttons for gameplay
         Button passButton = new Button("Pass");
+        passButton.setFocusTraversable(false);
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
+
         Button resignButton = new Button("Resign");
+        resignButton.setFocusTraversable(false);
         resignButton.setOnMouseClicked(e -> {
             goBoardModel.playerResigned();
             gameScreenController.changeSceneToWinScreen(goBoardModel.getGameState());
@@ -157,7 +159,10 @@ public class GameScreenView extends View {
 
 
         MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> saveGame.importGameFile(false));
+        importButton.setOnAction(e -> {
+            saveGame.importGameFile(false);
+            goBoardView.autosize();
+        });
         MenuItem exportButton = new MenuItem("Export game");
         exportButton.setOnAction(e -> saveGame.exportGameFile());
 
