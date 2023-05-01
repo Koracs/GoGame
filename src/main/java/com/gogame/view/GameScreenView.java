@@ -147,6 +147,7 @@ public class GameScreenView extends View {
         SeparatorMenuItem separator = new SeparatorMenuItem();
         Menu game = new Menu("Game");
         Menu file = new Menu("File");
+        Menu about = new Menu("About");
 
         MenuItem restartButton = new MenuItem("Restart game");
         restartButton.setOnAction(e -> goBoardController.resetModel());
@@ -156,7 +157,6 @@ public class GameScreenView extends View {
         game.getItems().add(restartButton);
         game.getItems().add(separator);
         game.getItems().add(mainMenuButton);
-
 
         MenuItem importButton = new MenuItem("Import game");
         importButton.setOnAction(e -> {
@@ -169,8 +169,25 @@ public class GameScreenView extends View {
         file.getItems().add(importButton);
         file.getItems().add(exportButton);
 
+        MenuItem howToPlay = new MenuItem("How to play");
+        Alert howToPlayDialog = new Alert(Alert.AlertType.INFORMATION);
+        howToPlayDialog.setTitle("How to play GO");
+        howToPlayDialog.setHeaderText(null);
+        howToPlayDialog.setContentText("https://de.wikipedia.org/wiki/Go-Regeln");
+        howToPlay.setOnAction(e -> howToPlayDialog.showAndWait());
+        about.getItems().add(howToPlay);
+
+        MenuItem aboutUs = new MenuItem("About us");
+        Alert aboutUsDialog = new Alert(Alert.AlertType.INFORMATION);
+        aboutUsDialog.setTitle("About us");
+        aboutUsDialog.setHeaderText("Go Game - PR SE SS2023");
+        aboutUsDialog.setContentText("Group 5: \nDominik Niederberger, Felix Stadler, Simon Ulmer");
+        aboutUs.setOnAction(e -> aboutUsDialog.showAndWait());
+        about.getItems().add(aboutUs);
+
         menuBar.getMenus().add(game);
         menuBar.getMenus().add(file);
+        menuBar.getMenus().add(about);
         pane.setTop(menuBar);
     }
 
