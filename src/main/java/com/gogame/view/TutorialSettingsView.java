@@ -26,11 +26,7 @@ public class TutorialSettingsView extends View {
     public TutorialSettingsView() {
         controller = new TutorialSettingsController(this);
 
-        tutorials = new ArrayList<>();
-        tutorials.add("tutorial 1"); //todo replace with parser of game files (felix)
-        tutorials.add("tutorial 2");
-        tutorials.add("tutorial 3");
-        tutorials.add("tutorial 4");
+        tutorials = controller.getTutorials();
 
         drawScene();
     }
@@ -71,6 +67,7 @@ public class TutorialSettingsView extends View {
         // Buttons
         Button startGame = new Button("Start game");
         startGame.setOnMouseClicked(e -> controller.changeSceneToTutorialScene(tutorialGroup.getSelectedToggle().toString().split("'")[1]));
+        System.out.println(tutorialGroup.getSelectedToggle().toString());
 
         Button importGame = new Button("Import game"); //todo necessary??
         importGame.setOnMouseClicked(e -> System.out.println("Import game")); //todo Implement logic

@@ -35,6 +35,7 @@ public class Main extends Application {
             alert.setHeaderText(null);
             alert.initStyle(StageStyle.UTILITY);
             alert.setContentText(e.getMessage());
+            e.printStackTrace();
             alert.showAndWait();
         } else {
             System.err.println("An unexpected error occurred in Thread: " + t + " Error:" + e);
