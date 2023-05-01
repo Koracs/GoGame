@@ -8,8 +8,6 @@ import com.gogame.model.GoBoardModel;
 import com.gogame.model.GoField;
 import com.gogame.model.Stone;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 
@@ -31,9 +29,12 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
     private int boardSize;
     private double tileSize;
     private GoBoardModel model;
-    Circle hover;
+    private GoField[][] fields;
+    private Circle hover;
     private int currentRow;
     private int currentCol;
+
+    private final boolean[][] marked;
     //endregion
 
     // Constructor
@@ -42,6 +43,8 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
         this.model = model;
         controller = new GoBoardController(model, this);
 
+        fields = model.getFields();
+        marked = new boolean[model.getSize()][model.getSize()];
 
         setPrefSize(600,600);
         
@@ -112,6 +115,7 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
         drawBoard();
         drawCoordinates();
         drawStones();
+        drawMarkings();
     }
 
     public void moveHoverMouse(MouseEvent e) {
@@ -226,7 +230,7 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
     }
 
     private void drawStones() {
-        GoField[][] fields = model.getFields();
+        fields = model.getFields();
         for (int row = 0; row < fields.length; row++) {
             for (int col = 0; col < fields[row].length; col++) {
                 if (fields[row][col].getStone() != Stone.NONE) {
@@ -250,6 +254,25 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
         circle.setFill(stone.getColor());
 
         return circle;
+    }
+
+
+    public void setMarking(int row, int col) {
+        marked[row][col] = !marked[row][col];
+    }
+    private void drawMarkings() {
+        for (int row = 0; row < marked.length; row++) {
+            for (int col = 0; col < marked[row].length; col++) {
+                if(marked[row][col]){
+                    Circle marking = new Circle((col + 1) * tileSize,(row + 1) * tileSize, tileSize/4);
+                    marking.setFill(Color.TRANSPARENT);
+
+                    if(fields[row][col].getStone() == Stone.BLACK) marking.setStroke(Color.WHITE);
+                    else marking.setStroke(Color.BLACK);
+                    getChildren().add(marking);
+                }
+            }
+        }
     }
     //endregion
 }
