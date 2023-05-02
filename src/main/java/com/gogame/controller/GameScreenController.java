@@ -37,7 +37,7 @@ public class GameScreenController {
     public void changeSceneToWinScreen(GameState winner) {
         // Switch player to get the winner
         //model.switchPlayer();
-        WinScreenView nextView = new WinScreenView(winner);
+        WinScreenView nextView = new WinScreenView(winner, model.getPointsBlack(), model.getPointsWhite());
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         if(w instanceof Stage stage) {

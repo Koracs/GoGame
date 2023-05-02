@@ -87,6 +87,14 @@ public class GoBoardModel {
     }
     private Stone getOtherPlayer() { return currentPlayer == Stone.BLACK ? Stone.WHITE : Stone.BLACK;}
 
+    public double getPointsWhite() {
+        return pointsWhite;
+    }
+
+    public double getPointsBlack() {
+        return pointsBlack;
+    }
+
     private void initModel() {
         fields = new GoField[size][size];
         for (int row = 0; row < size; row++) {
@@ -346,9 +354,6 @@ public class GoBoardModel {
 
     private void gameEnds() {
         calculateScores();
-
-        System.out.println("Points Black = " + pointsBlack);
-        System.out.println("Points White = " + pointsWhite);
 
         if (pointsBlack == pointsWhite) {
             gameState = GameState.DRAW;
