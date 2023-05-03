@@ -130,6 +130,14 @@ public class GoBoardModel {
 
     //endregion
 
+    /**
+     * Places a stone only on the game fields.
+     * Suicide moves will be ignored.
+     * Captures are checked for adjacent fields after placement.
+     *
+     * @param row Row of the board
+     * @param col Column of the board
+     */
     public void makeMove(int row, int col) {
         // Set passed to false
         prevPassed = false;
@@ -155,6 +163,12 @@ public class GoBoardModel {
         }
     }
 
+    /**
+     * Places a stone only on given handicap fields (Only allowed for black player if handicap is greater than 0)
+     *
+     * @param row Row of the board
+     * @param col Column of the board
+     */
     private void makeHandicapMove(int row, int col) {
         if (fields[row][col].isPreset()) {
             fields[row][col].setStone(currentPlayer);
@@ -169,18 +183,20 @@ public class GoBoardModel {
     }
 
     /**
-     * Check field or surrounding fields are captured.
+     * Check if field or surrounding fields are captured.
+     * If a capture move happened, adds points to the corresponding player
      *
      * @param row Row of the board
      * @param col Column of the board
      */
-    private void checkCapture(int row, int col) { //todo implement scoring
+    private void checkCapture(int row, int col) {
         List<GoField> neighbours = new ArrayList<>();
 
         //top
         if (row > 0) {
             findNeighboursOfSameColor(row - 1, col, neighbours, getOtherPlayer());
             if (!chainContainsLiberties(neighbours)) {
+                neighbours.forEach(e -> addCapturePoints(e.getStone()));
                 neighbours.forEach(GoField::removeStone);
             }
             neighbours.clear();
@@ -189,6 +205,7 @@ public class GoBoardModel {
         if (col < fields.length - 1) {
             findNeighboursOfSameColor(row, col + 1, neighbours, getOtherPlayer());
             if (!chainContainsLiberties(neighbours)) {
+                neighbours.forEach(e -> addCapturePoints(e.getStone()));
                 neighbours.forEach(GoField::removeStone);
             }
             neighbours.clear();
@@ -197,6 +214,7 @@ public class GoBoardModel {
         if (row < fields.length - 1) {
             findNeighboursOfSameColor(row + 1, col, neighbours, getOtherPlayer());
             if (!chainContainsLiberties(neighbours)) {
+                neighbours.forEach(e -> addCapturePoints(e.getStone()));
                 neighbours.forEach(GoField::removeStone);
             }
             neighbours.clear();
@@ -205,6 +223,7 @@ public class GoBoardModel {
         if (col > 0) {
             findNeighboursOfSameColor(row, col - 1, neighbours, getOtherPlayer());
             if (!chainContainsLiberties(neighbours)) {
+                neighbours.forEach(e -> addCapturePoints(e.getStone()));
                 neighbours.forEach(GoField::removeStone);
             }
             neighbours.clear();
@@ -213,9 +232,19 @@ public class GoBoardModel {
         //center
         findNeighboursOfSameColor(row, col, neighbours, currentPlayer);
         if (!chainContainsLiberties(neighbours)) {
+            neighbours.forEach(e -> addCapturePoints(e.getStone()));
             neighbours.forEach(GoField::removeStone);
         }
         neighbours.clear();
+    }
+
+    /**
+     * Adds a Capture point to the player which captured the given Stone. Increases score by one point
+     * @param stone Stone that has been captured
+     */
+    private void addCapturePoints(Stone stone){
+        if (stone == Stone.BLACK) capturedByWhite++;
+        else if(stone == Stone.WHITE) capturedByBlack++;
     }
 
     /**
@@ -267,6 +296,13 @@ public class GoBoardModel {
         return false;
     }
 
+    /**
+     * Check if a given move is considered suicide.
+     *
+     * @param row          Row of the board
+     * @param col          Column of the board
+     * @return True if the move is considered suicide, False if the move is valid
+     */
     private boolean moveIsSuicide(int row, int col) {
         List<GoField> neighbours = new ArrayList<>();
 

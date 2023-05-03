@@ -6,8 +6,16 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 
 public class Main extends Application {
@@ -30,12 +38,28 @@ public class Main extends Application {
 
     private static void handleException(Thread t, Throwable e) {
         if (Platform.isFxApplicationThread()) {
+            e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Runtime Exception");
             alert.setHeaderText(null);
-            alert.initStyle(StageStyle.UTILITY);
+
             alert.setContentText(e.getMessage());
-            e.printStackTrace();
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String exceptionText = sw.toString();
+
+            Label label = new Label("Exception stacktrace:");
+            TextArea exceptionArea = new TextArea(exceptionText);
+            exceptionArea.setEditable(false);
+            exceptionArea.setWrapText(true);
+
+            BorderPane stackTracePane = new BorderPane();
+            stackTracePane.setMaxWidth(Double.MAX_VALUE);
+            stackTracePane.setTop(label);
+            stackTracePane.setCenter(exceptionArea);
+
+            alert.getDialogPane().setExpandableContent(stackTracePane);
             alert.showAndWait();
         } else {
             System.err.println("An unexpected error occurred in Thread: " + t + " Error:" + e);

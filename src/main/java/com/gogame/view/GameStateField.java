@@ -9,9 +9,11 @@ import javafx.scene.control.TextField;
 public class GameStateField extends TextField implements GameListener {
 
     public GameStateField(GoBoardModel model){
-        super();
+        super(model.getGameState().toString());
         model.addGameListener(this);
         setFocusTraversable(false);
+        setEditable(false);
+        setMouseTransparent(true);
     }
     @Override
     public void moveCompleted(GameEvent event) {
