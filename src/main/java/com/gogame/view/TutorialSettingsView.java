@@ -11,8 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class TutorialSettingsView extends View {
@@ -67,7 +65,6 @@ public class TutorialSettingsView extends View {
         // Buttons
         Button startGame = new Button("Start game");
         startGame.setOnMouseClicked(e -> controller.changeSceneToTutorialScene(tutorialGroup.getSelectedToggle().toString().split("'")[1]));
-        System.out.println(tutorialGroup.getSelectedToggle().toString());
 
         Button importGame = new Button("Import game"); //todo necessary??
         importGame.setOnMouseClicked(e -> System.out.println("Import game")); //todo Implement logic
