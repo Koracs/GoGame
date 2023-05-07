@@ -29,7 +29,7 @@ public class GameScreenView extends View {
     private final GameStateField gameState;
     private final CaptureStatus captureStatus;
 
-    public GameScreenView(GoBoardModel model) {
+    public GameScreenView(GoBoardModel model, String importGame) {
         gameScreenController = new GameScreenController(this, model);
 
         goBoardModel = model;
@@ -103,6 +103,10 @@ public class GameScreenView extends View {
                 gameScreenController.changeSceneToWinScreen(event.getState());
             }
         });
+
+        if(!importGame.equals("")) {
+            saveGame.importGameFile(importGame);
+        }
     }
 
     public void setModel(GoBoardModel goBoardModel) {
