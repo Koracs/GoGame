@@ -56,9 +56,12 @@ public class GoField {
         else this.stone = Stone.NONE;
     }
 
-
     @Override
     public String toString() {
-        return stone + " ";
+        return "GoField{" +
+               "row=" + row +
+               ", col=" + col +
+               ", stone=" + stone +
+               '}';
     }
 }
