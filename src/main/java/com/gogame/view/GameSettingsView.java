@@ -11,9 +11,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
-import java.util.regex.Pattern;
-
+import java.io.File;
 public class GameSettingsView extends View {
     //region Fields
     private BorderPane pane;
@@ -112,9 +112,21 @@ public class GameSettingsView extends View {
 
         // Start game button
         Button startGame = new Button("Start Game");
-        startGame.setOnMouseClicked(e -> controller.changeSceneToGameScene());
+        startGame.setOnMouseClicked(e -> controller.changeSceneToGameScene(""));
 
-        FlowPane pa = new FlowPane(startGame);
+        // Import game button
+        Button importGame = new Button("Import Game");
+        importGame.setOnMouseClicked(e -> {
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extensionFilter);
+            File selectedFile = fileChooser.showOpenDialog(this.pane.getScene().getWindow());
+            if(selectedFile != null) {
+                controller.changeSceneToGameScene(selectedFile.getAbsolutePath());
+            }
+        });
+
+        FlowPane pa = new FlowPane(importGame, startGame);
         pa.setAlignment(Pos.CENTER);
         pa.setPadding(new Insets(30));
         pa.setHgap(10);

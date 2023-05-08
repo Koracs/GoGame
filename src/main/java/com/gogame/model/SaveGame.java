@@ -7,8 +7,6 @@ import javafx.scene.control.Alert;
 import javafx.stage.*;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -121,6 +119,22 @@ public class SaveGame {
                 if(!tutorial) {
                     simulateMove(data.size());
                 }
+            }
+        } catch (IOException e) {
+            createAlert(Alert.AlertType.ERROR, "Runtime Exception", null, e.getMessage());
+        }
+    }
+
+    public void importGameFile(String filePath) {
+        try {
+            if(readData(filePath)) {
+                // Valid input check - now load game
+                GoBoardModel newModel = new GoBoardModel(Integer.parseInt(meta[0]), Double.parseDouble(meta[2]), Integer.parseInt(meta[1]));
+                newModel.setGameListeners(goBoardController.getModel().getGameListeners());
+                goBoardController.getView().setBoardSize(Integer.parseInt(meta[0]));
+                goBoardController.setViewModel(newModel);
+                gameScreenController.setViewModel(newModel);
+                simulateMove(data.size());
             }
         } catch (IOException e) {
             createAlert(Alert.AlertType.ERROR, "Runtime Exception", null, e.getMessage());

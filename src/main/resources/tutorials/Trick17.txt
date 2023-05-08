@@ -1,0 +1,16 @@
+13;0;0.0
+8;3- White player's turn.
+6;3- Black player's turn.
+8;4- White player's turn.
+7;5- Black player's turn.
+8;5- White player's turn.
+8;6- Black player's turn.
+7;6- White player's turn.
+8;7- Black player's turn.
+6;6- White player's turn.
+6;8- Black player's turn.
+6;4- White player's turn.
+6;5- Black player's turn.
+5;5- White player's turn.
+7;4- Black player's turn.
+7;3- White player's turn.

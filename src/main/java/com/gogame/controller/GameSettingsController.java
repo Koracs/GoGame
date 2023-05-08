@@ -82,9 +82,15 @@ public class GameSettingsController {
                 handicapActive ? handicap : 0);
     }
 
-    public void changeSceneToGameScene() {
-        GameScreenView nextView = new GameScreenView(initGoBoardModel());
-        Scene s = view.getPane().getScene();
+    public void changeSceneToGameScene(String importGame) {
+        GameScreenView nextView;
+        if(importGame.equals("")) {
+            nextView = new GameScreenView(initGoBoardModel(), "");
+
+        } else {
+            nextView = new GameScreenView(initGoBoardModel(), importGame);
+        }
+
         Window w = view.getPane().getScene().getWindow();
         if (w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane());
