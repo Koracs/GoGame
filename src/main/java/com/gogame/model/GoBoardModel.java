@@ -31,6 +31,8 @@ public class GoBoardModel {
     private GoField[][] fields;
     private boolean[][] visited;
     private final List<GameListener> listeners;
+
+    private GoField lastCapture;
     //endregion
 
 
@@ -85,7 +87,10 @@ public class GoBoardModel {
     public Stone getCurrentPlayer() {
         return this.currentPlayer;
     }
-    private Stone getOtherPlayer() { return currentPlayer == Stone.BLACK ? Stone.WHITE : Stone.BLACK;}
+
+    private Stone getOtherPlayer() {
+        return currentPlayer == Stone.BLACK ? Stone.WHITE : Stone.BLACK;
+    }
 
     public double getPointsWhite() {
         return pointsWhite;
@@ -157,7 +162,7 @@ public class GoBoardModel {
 
         if (fields[row][col].isEmpty()) {
             fields[row][col].setStone(currentPlayer);
-            if (moveIsSuicide(row, col)) {
+            if (moveIsSuicide(row, col) || moveIsKo(row, col)) {
                 fields[row][col].removeStone();
                 return;
             }
@@ -203,7 +208,7 @@ public class GoBoardModel {
         //top
         if (row > 0) {
             findNeighboursOfSameColor(row - 1, col, neighbours, getOtherPlayer());
-            if (!chainContainsLiberties(neighbours)) {
+            if (!chainHasLiberties(neighbours)) {
                 neighbours.forEach(e -> addCapturePoints(e.getStone()));
                 neighbours.forEach(GoField::removeStone);
             }
@@ -212,7 +217,7 @@ public class GoBoardModel {
         //right
         if (col < fields.length - 1) {
             findNeighboursOfSameColor(row, col + 1, neighbours, getOtherPlayer());
-            if (!chainContainsLiberties(neighbours)) {
+            if (!chainHasLiberties(neighbours)) {
                 neighbours.forEach(e -> addCapturePoints(e.getStone()));
                 neighbours.forEach(GoField::removeStone);
             }
@@ -221,7 +226,7 @@ public class GoBoardModel {
         //bottom
         if (row < fields.length - 1) {
             findNeighboursOfSameColor(row + 1, col, neighbours, getOtherPlayer());
-            if (!chainContainsLiberties(neighbours)) {
+            if (!chainHasLiberties(neighbours)) {
                 neighbours.forEach(e -> addCapturePoints(e.getStone()));
                 neighbours.forEach(GoField::removeStone);
             }
@@ -230,7 +235,7 @@ public class GoBoardModel {
         //left
         if (col > 0) {
             findNeighboursOfSameColor(row, col - 1, neighbours, getOtherPlayer());
-            if (!chainContainsLiberties(neighbours)) {
+            if (!chainHasLiberties(neighbours)) {
                 neighbours.forEach(e -> addCapturePoints(e.getStone()));
                 neighbours.forEach(GoField::removeStone);
             }
@@ -239,8 +244,9 @@ public class GoBoardModel {
 
         //center
         findNeighboursOfSameColor(row, col, neighbours, currentPlayer);
-        if (!chainContainsLiberties(neighbours)) {
+        if (!chainHasLiberties(neighbours)) {
             neighbours.forEach(e -> addCapturePoints(e.getStone()));
+            //allNeighbours.addAll(neighbours);
             neighbours.forEach(GoField::removeStone);
         }
         neighbours.clear();
@@ -248,11 +254,12 @@ public class GoBoardModel {
 
     /**
      * Adds a Capture point to the player which captured the given Stone. Increases score by one point
+     *
      * @param stone Stone that has been captured
      */
-    private void addCapturePoints(Stone stone){
+    private void addCapturePoints(Stone stone) {
         if (stone == Stone.BLACK) capturedByWhite++;
-        else if(stone == Stone.WHITE) capturedByBlack++;
+        else if (stone == Stone.WHITE) capturedByBlack++;
     }
 
     /**
@@ -289,8 +296,8 @@ public class GoBoardModel {
      * @param chain List of GoFields in a chain
      * @return True if the chain contains liberties, false if it is captured
      */
-    private boolean chainContainsLiberties(List<GoField> chain) {
-        if(chain.isEmpty()) return true;
+    private boolean chainHasLiberties(List<GoField> chain) {
+        if (chain.isEmpty()) return true;
         for (GoField field : chain) {
             int row = field.getRow();
             int col = field.getCol();
@@ -307,8 +314,8 @@ public class GoBoardModel {
     /**
      * Check if a given move is considered suicide.
      *
-     * @param row          Row of the board
-     * @param col          Column of the board
+     * @param row Row of the board
+     * @param col Column of the board
      * @return True if the move is considered suicide, False if the move is valid
      */
     private boolean moveIsSuicide(int row, int col) {
@@ -317,15 +324,15 @@ public class GoBoardModel {
         //top
         if (row > 0) {
             findNeighboursOfSameColor(row - 1, col, neighbours, getOtherPlayer());
-            if (!chainContainsLiberties(neighbours)) {
-               return false;
+            if (!chainHasLiberties(neighbours)) {
+                return false;
             }
             neighbours.clear();
         }
         //right
         if (col < fields.length - 1) {
             findNeighboursOfSameColor(row, col + 1, neighbours, getOtherPlayer());
-            if (!chainContainsLiberties(neighbours)) {
+            if (!chainHasLiberties(neighbours)) {
                 return false;
             }
             neighbours.clear();
@@ -333,7 +340,7 @@ public class GoBoardModel {
         //bottom
         if (row < fields.length - 1) {
             findNeighboursOfSameColor(row + 1, col, neighbours, getOtherPlayer());
-            if (!chainContainsLiberties(neighbours)) {
+            if (!chainHasLiberties(neighbours)) {
                 return false;
             }
             neighbours.clear();
@@ -341,18 +348,61 @@ public class GoBoardModel {
         //left
         if (col > 0) {
             findNeighboursOfSameColor(row, col - 1, neighbours, getOtherPlayer());
-            if (!chainContainsLiberties(neighbours)) {
+            if (!chainHasLiberties(neighbours)) {
                 return false;
             }
             neighbours.clear();
         }
 
         findNeighboursOfSameColor(row, col, neighbours, currentPlayer);
-        if (!chainContainsLiberties(neighbours)) {
+        if (!chainHasLiberties(neighbours)) {
             return true;
         }
         neighbours.clear();
 
+        return false;
+    }
+
+    /**
+     * Determine if a Move is considered Ko.
+     *
+     * @param row Row of the board
+     * @param col Column of the board
+     * @return True if the move is considered Ko, False if the move is valid
+     */
+    private boolean moveIsKo(int row, int col) {
+        List<GoField> neighbours = new ArrayList<>();
+        List<GoField> allNeighbours = new ArrayList<>();
+
+        //top
+        if (row > 0) {
+            findNeighboursOfSameColor(row - 1, col, neighbours, getOtherPlayer());
+            if (!chainHasLiberties(neighbours)) allNeighbours.addAll(neighbours);
+            neighbours.clear();
+        }
+        //right
+        if (col < fields.length - 1) {
+            findNeighboursOfSameColor(row, col + 1, neighbours, getOtherPlayer());
+            if (!chainHasLiberties(neighbours)) allNeighbours.addAll(neighbours);
+            neighbours.clear();
+        }
+        //bottom
+        if (row < fields.length - 1) {
+            findNeighboursOfSameColor(row + 1, col, neighbours, getOtherPlayer());
+            if (!chainHasLiberties(neighbours)) allNeighbours.addAll(neighbours);
+            neighbours.clear();
+        }
+        //left
+        if (col > 0) {
+            findNeighboursOfSameColor(row, col - 1, neighbours, getOtherPlayer());
+            if (!chainHasLiberties(neighbours)) allNeighbours.addAll(neighbours);
+            neighbours.clear();
+        }
+
+        if (allNeighbours.size() == 1) {
+            if (lastCapture == getField(row, col)) return true;
+            lastCapture = allNeighbours.get(0);
+        } else lastCapture = null;
         return false;
     }
 
