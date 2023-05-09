@@ -1,50 +1,33 @@
 package com.gogame.view;
 
-import com.gogame.controller.GameSettingsController;
+import com.gogame.controller.GameScreenController;
 import com.gogame.model.GoBoardModel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
-import java.io.File;
-public class GameSettingsView extends View {
-    //region Fields
-    private BorderPane pane;
+import java.util.Objects;
 
-    private final GameSettingsController controller;
+public class SettingsDialog extends Alert {
 
-    //endregion
+    public SettingsDialog(GameScreenController controller){
+        super(Alert.AlertType.CONFIRMATION);
+        Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
 
-    //region Constructor
-    public GameSettingsView() {
-        controller = new GameSettingsController(this);
+        setHeaderText(null);
+        setGraphic(null);
+        setTitle("Game Settings");
 
-        drawScene();
-    }
-    //endregion
-
-    //region Getter/Setter
-    @Override
-    public BorderPane getPane() {
-        return this.pane;
-    }
-
-    //endregion
-
-    //region Methods
-    @Override
-    protected void drawScene() {
-        pane = new BorderPane();
+        BorderPane AlertPane = new BorderPane();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
-        pane.setCenter(vBox);
+        AlertPane.setCenter(vBox);
 
         // Set field size
         ToggleGroup boardSizeButtonGroup = new ToggleGroup();
@@ -57,7 +40,7 @@ public class GameSettingsView extends View {
             button.setOnMouseClicked(e -> controller.setBoardSize(i));
             hBox.getChildren().add(button);
             button.setSelected(i == controller.getBoardSize());
-            }
+        }
 
         hBox.setSpacing(20);
         hBox.setPadding(new Insets(10));
@@ -68,7 +51,7 @@ public class GameSettingsView extends View {
         CheckBox komiCheckBox = new CheckBox("Activate komi");
         Spinner<Double> komiSetting = new Spinner<>();
 
-        SpinnerValueFactory<Double> valueFactoryKomi = new SpinnerValueFactory.DoubleSpinnerValueFactory(0,7.5,controller.getKomi(),0.5);
+        SpinnerValueFactory<Double> valueFactoryKomi = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 7.5, controller.getKomi(), 0.5);
         komiSetting.setValueFactory(valueFactoryKomi);
 
         komiCheckBox.selectedProperty().addListener(e -> {
@@ -110,44 +93,6 @@ public class GameSettingsView extends View {
         vBoxHandicap.setAlignment(Pos.CENTER);
         vBox.getChildren().add(vBoxHandicap);
 
-        // Start game button
-        Button startGame = new Button("Start Game");
-        startGame.setOnMouseClicked(e -> controller.changeSceneToGameScene(""));
-
-        // Import game button
-        Button importGame = new Button("Import Game");
-        importGame.setOnMouseClicked(e -> {
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-            fileChooser.getExtensionFilters().add(extensionFilter);
-            File selectedFile = fileChooser.showOpenDialog(this.pane.getScene().getWindow());
-            if(selectedFile != null) {
-                controller.changeSceneToGameScene(selectedFile.getAbsolutePath());
-            }
-        });
-
-        FlowPane pa = new FlowPane(importGame, startGame);
-        pa.setAlignment(Pos.CENTER);
-        pa.setPadding(new Insets(30));
-        pa.setHgap(10);
-        pa.setVgap(10);
-
-        // Back Button
-        HBox topBox = new HBox();
-        topBox.setAlignment(Pos.CENTER_LEFT);
-        topBox.setPadding(new Insets(10));
-        Button backButton = new Button("Back");
-        Image image = new Image(getClass().getResourceAsStream("/pictures/backArrow.png"));
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(backButton.getFont().getSize());
-        imageView.setFitHeight(backButton.getFont().getSize());
-        backButton.setGraphic(imageView);
-        backButton.setOnMouseClicked(e -> controller.changeSceneToStartScreen());
-        topBox.getChildren().add(backButton);
-
-        pane.setBottom(pa);
-        pane.setTop(topBox);
+        getDialogPane().setContent(AlertPane);
     }
-    //endregion
-
 }
