@@ -15,12 +15,14 @@ import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.util.Optional;
 
 public class GameScreenView extends View {
+    //region Fields
     private GoBoardModel goBoardModel;
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
@@ -31,6 +33,7 @@ public class GameScreenView extends View {
 
     private final GameStateField gameState;
     private final CaptureStatus captureStatus;
+    //endregion
 
     public GameScreenView(GoBoardModel model) {
         gameScreenController = new GameScreenController(this, model);
@@ -144,17 +147,34 @@ public class GameScreenView extends View {
 
         MenuItem loadGame = new MenuItem("Open Game");
         loadGame.setOnAction(e -> {
-            saveGame.importGameFile(false);
-            goBoardView.autosize();
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extensionFilter);
+            File selectedFile = fileChooser.showOpenDialog(this.getPane().getScene().getWindow());
+            if(selectedFile != null) {
+                saveGame.importGameFile(selectedFile.getAbsolutePath(), false);
+                goBoardView.autosize();
+            }
         });
         file.getItems().add(loadGame);
 
         MenuItem saveButton = new MenuItem("Save Game");
-        saveButton.setOnAction(e -> saveGame.exportGameFile());
+        saveButton.setOnAction(e -> {
+            File newFile = new File(System.getProperty("user.dir"));
+            saveGame.exportGameFile(newFile);
+        });
         file.getItems().add(saveButton);
         saveButton.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 
-        //todo "save as"
+        MenuItem saveAsButton = new MenuItem("SaveAs Game");
+        saveAsButton.setOnAction(e -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setInitialFileName("mySaveGame.txt");
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt"));
+            File selectedFile = chooser.showSaveDialog(this.getPane().getScene().getWindow());
+            saveGame.exportGameFile(selectedFile);
+        });
+        file.getItems().add(saveAsButton);
 
         MenuItem exitGame = new MenuItem("Exit");
         exitGame.setOnAction(e -> Platform.exit());
