@@ -4,15 +4,21 @@ import com.gogame.controller.GoBoardController;
 import com.gogame.controller.TutorialController;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.SaveGame;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 
 public class TutorialView extends View{
 
     private final GoBoardModel goBoardModel;
-    private final TutorialController tutorialScreenController;
+    private final TutorialController tutorialController;
     private final GoBoardController goBoardController;
 
     private final GoBoardView goBoardView;
@@ -28,7 +34,7 @@ public class TutorialView extends View{
         this.goBoardModel = saveGame.importFileData();
         this.goBoardView = new GoBoardView(goBoardModel);
         this.goBoardController = goBoardView.getController();
-        this.tutorialScreenController = new TutorialController(this, goBoardModel, goBoardController);
+        this.tutorialController = new TutorialController(this, goBoardModel, goBoardController);
         saveGame.initSaveGame(goBoardController);
 
         gameState = new GameStateField(goBoardModel);
@@ -55,12 +61,20 @@ public class TutorialView extends View{
         pane.setLeft(interactionField);
 
 
-
-
         // Buttons for tutorial interaction
-        Button backButton = new Button("<--");
+        Button backButton = new Button("");
+        Image image = new Image(getClass().getResourceAsStream("/pictures/left-arrow.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(35);
+        imageView.setFitHeight(35);
+        backButton.setGraphic(imageView);
         backButton.setOnMouseClicked(e -> saveGame.loadGradually(false));
-        Button forwardButton = new Button("-->");
+        Button forwardButton = new Button("");
+        image = new Image(getClass().getResourceAsStream("/pictures/right-arrow.png"));
+        imageView = new ImageView(image);
+        imageView.setFitWidth(35);
+        imageView.setFitHeight(35);
+        forwardButton.setGraphic(imageView);
         forwardButton.setOnMouseClicked(e -> saveGame.loadGradually(true));
 
         interactionButtons.setPadding(new Insets(30));
@@ -74,17 +88,29 @@ public class TutorialView extends View{
 
         // Buttons to import/export games
         MenuBar menuBar = new MenuBar();
-        SeparatorMenuItem separator = new SeparatorMenuItem();
         Menu game = new Menu("Game");
 
-        MenuItem restartButton = new MenuItem("Restart game");
-        restartButton.setOnAction(e -> goBoardController.resetModel());
-        MenuItem mainMenuButton = new MenuItem("Main menu");
-        mainMenuButton.setOnAction(e -> tutorialScreenController.changeSceneToStartScreen());
-
+        MenuItem restartButton = new MenuItem("Restart tutorial");
+        restartButton.setOnAction(e -> {
+            goBoardController.resetModel();
+            saveGame.setIndex(1);
+        });
         game.getItems().add(restartButton);
-        game.getItems().add(separator);
-        game.getItems().add(mainMenuButton);
+        restartButton.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
+
+        MenuItem tutorialScreenButton = new MenuItem("Tutorial screen");
+        tutorialScreenButton.setOnAction(e -> tutorialController.changeSceneToTutorialScreen());
+        game.getItems().add(tutorialScreenButton);
+
+        MenuItem gameScreenButton = new MenuItem("Game screen");
+        gameScreenButton.setOnAction(e -> tutorialController.changeSceneToStartScreen());
+        game.getItems().add(gameScreenButton);
+
+        MenuItem exitGame = new MenuItem("Exit");
+        exitGame.setOnAction(e -> Platform.exit());
+        game.getItems().add(new SeparatorMenuItem());
+        game.getItems().add(exitGame);
+        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
 
         menuBar.getMenus().add(game);
 
