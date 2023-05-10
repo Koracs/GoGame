@@ -6,16 +6,19 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.SaveGame;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
+import java.util.Optional;
 
 public class GameScreenView extends View {
     private GoBoardModel goBoardModel;
@@ -29,7 +32,7 @@ public class GameScreenView extends View {
     private final GameStateField gameState;
     private final CaptureStatus captureStatus;
 
-    public GameScreenView(GoBoardModel model, String importGame) {
+    public GameScreenView(GoBoardModel model) {
         gameScreenController = new GameScreenController(this, model);
 
         goBoardModel = model;
@@ -62,7 +65,7 @@ public class GameScreenView extends View {
 
         drawScene();
 
-        model.addGameListener(new GameListener() {
+        goBoardModel.addGameListener(new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
                 saveGame.storeData(event.getRow() + ";" + event.getCol() + "- " + event.getState() + "\n");
@@ -83,30 +86,9 @@ public class GameScreenView extends View {
             }
         });
 
-        model.addGameListener(new GameListener() { //todo move to controller instead of view?
-            @Override
-            public void moveCompleted(GameEvent event) {
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-
-            }
-
-            @Override
-            public void playerPassed(GameEvent event) {
-
-            }
-
-            @Override
-            public void gameEnded(GameEvent event) {
-                gameScreenController.changeSceneToWinScreen(event.getState());
-            }
-        });
-
-        if(!importGame.equals("")) {
+        /*if (!importGame.equals("")) {
             saveGame.importGameFile(importGame);
-        }
+        }*/
     }
 
     public void setModel(GoBoardModel goBoardModel) {
@@ -126,7 +108,6 @@ public class GameScreenView extends View {
 
         pane.setBottom(gameState);
 
-
         // Buttons for gameplay
         Button passButton = new Button("Pass");
         passButton.setFocusTraversable(false);
@@ -136,7 +117,6 @@ public class GameScreenView extends View {
         resignButton.setFocusTraversable(false);
         resignButton.setOnMouseClicked(e -> {
             goBoardModel.playerResigned();
-            gameScreenController.changeSceneToWinScreen(goBoardModel.getGameState());
         });
 
         gameplayButtons.setPadding(new Insets(30));
@@ -148,50 +128,81 @@ public class GameScreenView extends View {
 
         // Buttons to import/export games
         MenuBar menuBar = new MenuBar();
-        SeparatorMenuItem separator = new SeparatorMenuItem();
-        Menu game = new Menu("Game");
-        Menu file = new Menu("File");
-        Menu about = new Menu("About");
+        Menu file = new Menu("_File");
 
-        MenuItem restartButton = new MenuItem("Restart game");
-        restartButton.setOnAction(e -> goBoardController.resetModel());
-        MenuItem mainMenuButton = new MenuItem("Main menu");
-        mainMenuButton.setOnAction(e -> gameScreenController.changeSceneToStartScreen());
+        Menu game = new Menu("_Game");
+        Menu help = new Menu("_Help");
+        menuBar.getMenus().add(file);
+        menuBar.getMenus().add(game);
+        menuBar.getMenus().add(help);
 
-        game.getItems().add(restartButton);
-        game.getItems().add(separator);
-        game.getItems().add(mainMenuButton);
+        MenuItem newGame = new MenuItem("New Game");
+        newGame.setOnAction(e -> goBoardController.resetModel());
+        file.getItems().add(newGame);
+        newGame.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
 
-        MenuItem importButton = new MenuItem("Import game");
-        importButton.setOnAction(e -> {
+
+        MenuItem loadGame = new MenuItem("Open Game");
+        loadGame.setOnAction(e -> {
             saveGame.importGameFile(false);
             goBoardView.autosize();
         });
-        MenuItem exportButton = new MenuItem("Export game");
-        exportButton.setOnAction(e -> saveGame.exportGameFile());
+        file.getItems().add(loadGame);
 
-        file.getItems().add(importButton);
-        file.getItems().add(exportButton);
+        MenuItem saveButton = new MenuItem("Save Game");
+        saveButton.setOnAction(e -> saveGame.exportGameFile());
+        file.getItems().add(saveButton);
+        saveButton.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+
+        //todo "save as"
+
+        MenuItem exitGame = new MenuItem("Exit");
+        exitGame.setOnAction(e -> Platform.exit());
+        file.getItems().add(new SeparatorMenuItem());
+        file.getItems().add(exitGame);
+        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
+
+        MenuItem changeSettings = new MenuItem("Change Settings");
+        changeSettings.setOnAction(e -> {
+            SettingsDialog settingsDialog = new SettingsDialog(gameScreenController);
+            Optional<ButtonType> result = settingsDialog.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK){
+                gameScreenController.changeGameModel();
+            }
+        });
+        game.getItems().add(changeSettings);
 
         MenuItem howToPlay = new MenuItem("How to play");
         Alert howToPlayDialog = new Alert(Alert.AlertType.INFORMATION);
         howToPlayDialog.setTitle("How to play GO");
         howToPlayDialog.setHeaderText(null);
-        howToPlayDialog.setContentText("https://de.wikipedia.org/wiki/Go-Regeln");
+        howToPlayDialog.setContentText("""
+        Controls:
+        Move Stone:     Mouse, WASD or Arrow Keys
+        Place Stone:     Left Mouse Button, Enter, Spacebar
+        Place Marker:   Right Mouse Button
+        
+        Rules:
+        Capture other stones by surrounding them.
+        Gain territory control for points.
+        The player with the most points wins!
+        """);
+
         howToPlay.setOnAction(e -> howToPlayDialog.showAndWait());
-        about.getItems().add(howToPlay);
+        help.getItems().add(howToPlay);
+
+        MenuItem showTutorials = new MenuItem("Show Tutorials");
+        showTutorials.setOnAction(e -> gameScreenController.changeToTutorialSettingScreen());
+        help.getItems().add(showTutorials);
 
         MenuItem aboutUs = new MenuItem("About us");
         Alert aboutUsDialog = new Alert(Alert.AlertType.INFORMATION);
         aboutUsDialog.setTitle("About us");
-        aboutUsDialog.setHeaderText("Go Game - PR SE SS2023");
-        aboutUsDialog.setContentText("Group 5: \nDominik Niederberger, Felix Stadler, Simon Ulmer");
+        aboutUsDialog.setHeaderText("Go Game - PR SE SS2023 - Group 5");
+        aboutUsDialog.setContentText("Made by: \nDominik Niederberger, Felix Stadler, Simon Ulmer");
         aboutUs.setOnAction(e -> aboutUsDialog.showAndWait());
-        about.getItems().add(aboutUs);
+        help.getItems().add(aboutUs);
 
-        menuBar.getMenus().add(game);
-        menuBar.getMenus().add(file);
-        menuBar.getMenus().add(about);
         pane.setTop(menuBar);
     }
 

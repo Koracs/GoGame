@@ -1,6 +1,8 @@
 package com.gogame;
 
 
+import com.gogame.controller.GameScreenController;
+import com.gogame.model.GoBoardModel;
 import com.gogame.view.*;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -8,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -16,6 +19,7 @@ import javafx.stage.StageStyle;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Objects;
 
 
 public class Main extends Application {
@@ -23,11 +27,14 @@ public class Main extends Application {
     public void start(Stage stage) {
         Thread.setDefaultUncaughtExceptionHandler(Main::handleException);
 
-        StartScreenView startScreenView = new StartScreenView();
-        Scene scene = new Scene(startScreenView.getPane(), 500, 500);
+        GameScreenView gameScreenView = new GameScreenView(new GoBoardModel(19,0,0));
+        Scene scene = new Scene(gameScreenView.getPane());
         scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-        //scene.setOnKeyPressed(KeyHandler::handleKeyPressed);
         stage.setScene(scene);
+
+        BorderPane root = (BorderPane) stage.getScene().getRoot();
+        root.getCenter().requestFocus();
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
         stage.setTitle("Go Game");
 
         stage.show();

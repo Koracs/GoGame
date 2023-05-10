@@ -22,7 +22,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class GoBoardView extends Pane implements GameListener{ //todo interface for views? (registerView())
+public class GoBoardView extends Pane implements GameListener{
     //region Fields
     // Pane of this class
     private final GoBoardController controller;
@@ -34,17 +34,14 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
     private int currentRow;
     private int currentCol;
 
-    private final boolean[][] marked;
+    private boolean[][] marked;
     //endregion
 
     // Constructor
     public GoBoardView(GoBoardModel model) {
-        this.boardSize = model.getSize();
         this.model = model;
         controller = new GoBoardController(model, this);
-
-        fields = model.getFields();
-        marked = new boolean[model.getSize()][model.getSize()];
+        initView();
 
         setPrefSize(600,600);
         
@@ -59,6 +56,12 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
 
         model.addGameListener(this);
         draw();
+    }
+
+    public void initView(){
+        this.boardSize = model.getSize();
+        fields = model.getFields();
+        marked = new boolean[model.getSize()][model.getSize()];
     }
 
     //region Getter/Setter
@@ -251,7 +254,13 @@ public class GoBoardView extends Pane implements GameListener{ //todo interface 
         };
 
         Circle circle = new Circle(centerX, centerY, radius);
-        circle.setFill(stone.getColor());
+
+        Color color = switch(stone) {
+            case BLACK,PRESET -> Color.BLACK;
+            case WHITE -> Color.WHITE;
+            default -> Color.TRANSPARENT;
+        };
+        circle.setFill(color);
 
         return circle;
     }

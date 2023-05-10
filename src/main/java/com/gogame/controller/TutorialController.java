@@ -1,9 +1,10 @@
 package com.gogame.controller;
 
 import com.gogame.model.GoBoardModel;
-import com.gogame.view.StartScreenView;
+import com.gogame.view.GameScreenView;
 import com.gogame.view.TutorialView;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -32,11 +33,14 @@ public class TutorialController {
     public void changeSceneToStartScreen() {
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
-        StartScreenView nextView = new StartScreenView();
+        GameScreenView nextView = new GameScreenView(new GoBoardModel(19,0,0));
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
+
+            BorderPane root = (BorderPane) stage.getScene().getRoot();
+            root.getCenter().requestFocus();
         }
     }
 }

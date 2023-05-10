@@ -14,9 +14,9 @@ public class GoBoardModel {
 
     // Model variables
     private static final int[] sizes = new int[]{9, 13, 19};
-    private final double komi;
-    private final int handicap;
-    private final int size;
+    private double komi;
+    private int handicap;
+    private int size;
     private int handicapCount;
     private Stone currentPlayer;
     private GameState gameState;
@@ -422,6 +422,13 @@ public class GoBoardModel {
         }
     }
 
+    public void changeSettings(int size, double komi, int handicap){
+        this.size = size;
+        this.komi = komi;
+        this.handicap = handicap;
+        reset();
+    }
+
     public void pass() {
         if (prevPassed) {
             // Player in previous round passed - game ends
@@ -554,7 +561,7 @@ public class GoBoardModel {
     }
 
     public void playerResigned() {
-        gameState = currentPlayer == Stone.BLACK ? GameState.WHITE_WON : GameState.BLACK_WON;
+        gameEnds();
     }
 
     public void printModel() {
