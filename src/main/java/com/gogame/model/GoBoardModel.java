@@ -49,6 +49,21 @@ public class GoBoardModel {
         initHandicapFields();
     }
 
+    private void initModel() {
+        fields = new GoField[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                fields[row][col] = new GoField(row, col);
+            }
+        }
+
+        currentPlayer = Stone.BLACK;
+        pointsBlack = 0;
+        pointsWhite = komi;
+        capturedByBlack = 0;
+        capturedByWhite = 0;
+    }
+
     private void initHandicapFields() {
         int[] handicapFields = new int[0];
         switch (size) {
@@ -98,21 +113,6 @@ public class GoBoardModel {
 
     public double getPointsBlack() {
         return pointsBlack;
-    }
-
-    private void initModel() {
-        fields = new GoField[size][size];
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                fields[row][col] = new GoField(row, col);
-            }
-        }
-
-        currentPlayer = Stone.BLACK;
-        pointsBlack = 0;
-        pointsWhite = komi;
-        capturedByBlack = 0;
-        capturedByWhite = 0;
     }
 
 
@@ -517,7 +517,7 @@ public class GoBoardModel {
         }
     }
 
-    private void removeDeadStones() {
+    private void removeDeadStones() { //ToDo implement
 
     }
 
@@ -564,6 +564,7 @@ public class GoBoardModel {
         gameEnds();
     }
 
+    /*
     public void printModel() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -577,14 +578,17 @@ public class GoBoardModel {
             System.out.println();
         }
     }
+     */
 
     public void addGameListener(GameListener l) {
         listeners.add(l);
     }
 
+    /*
     public void removeGameListener(GameListener l) {
         listeners.remove(l);
     }
+     */
 
     public List<GameListener> getGameListeners() {
         return this.listeners;
