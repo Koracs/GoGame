@@ -2,6 +2,7 @@ package com.gogame.view;
 
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
+import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.Stone;
 import javafx.scene.control.TextField;
@@ -18,7 +19,10 @@ public class GameStateField extends TextField implements GameListener {
     @Override
     public void moveCompleted(GameEvent event) {
         GoBoardModel model = (GoBoardModel) event.getSource();
-        String lastPlayer = model.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
+        String lastPlayer;
+        if(model.getGameState() == GameState.PLACE_HANDICAP) lastPlayer = "Black";
+        else lastPlayer = model.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
+
         this.setText("Player " + lastPlayer + " placed at: " + event.getColLetter()
                           + " " + event.getRowLetter() + ". " + event.getState().toString());
     }
@@ -30,7 +34,10 @@ public class GameStateField extends TextField implements GameListener {
 
     @Override
     public void playerPassed(GameEvent event) {
-        this.setText(event.getState().toString());
+        GoBoardModel model = (GoBoardModel) event.getSource();
+        String player = model.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
+
+        this.setText(event.getState().toString() + " " + player + " player's turn.");
     }
 
     @Override

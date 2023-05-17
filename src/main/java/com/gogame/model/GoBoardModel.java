@@ -190,11 +190,12 @@ public class GoBoardModel {
             fields[row][col].setStone(currentPlayer);
             handicapCount -= 1;
 
+            if (handicapCount == 0) switchPlayer();
+
             for (GameListener listener : listeners) {
                 listener.moveCompleted(new GameEvent(this, gameState, row, col));
             }
 
-            if (handicapCount == 0) switchPlayer();
         }
     }
 

@@ -119,7 +119,7 @@ public class GameScreenView extends View {
         Button resignButton = new Button("Resign");
         resignButton.setFocusTraversable(false);
         resignButton.setOnMouseClicked(e -> {
-            goBoardModel.playerResigned();
+            goBoardController.resign();
         });
 
         gameplayButtons.setPadding(new Insets(30));
@@ -129,101 +129,7 @@ public class GameScreenView extends View {
         gameplayButtons.getChildren().add(passButton);
         gameplayButtons.getChildren().add(resignButton);
 
-        // Buttons to import/export games
-        MenuBar menuBar = new MenuBar();
-        Menu file = new Menu("_File");
-
-        Menu game = new Menu("_Game");
-        Menu help = new Menu("_Help");
-        menuBar.getMenus().add(file);
-        menuBar.getMenus().add(game);
-        menuBar.getMenus().add(help);
-
-        MenuItem newGame = new MenuItem("New Game");
-        newGame.setOnAction(e -> goBoardController.resetModel());
-        file.getItems().add(newGame);
-        newGame.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
-
-
-        MenuItem loadGame = new MenuItem("Open Game");
-        loadGame.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-            fileChooser.getExtensionFilters().add(extensionFilter);
-            File selectedFile = fileChooser.showOpenDialog(this.getPane().getScene().getWindow());
-            if(selectedFile != null) {
-                saveGame.importGameFile(selectedFile.getAbsolutePath(), false);
-                goBoardView.autosize();
-            }
-        });
-        file.getItems().add(loadGame);
-
-        MenuItem saveButton = new MenuItem("Save Game");
-        saveButton.setOnAction(e -> {
-            File newFile = new File(System.getProperty("user.dir"));
-            saveGame.exportGameFile(newFile);
-        });
-        file.getItems().add(saveButton);
-        saveButton.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
-
-        MenuItem saveAsButton = new MenuItem("SaveAs Game");
-        saveAsButton.setOnAction(e -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setInitialFileName("mySaveGame.txt");
-            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt"));
-            File selectedFile = chooser.showSaveDialog(this.getPane().getScene().getWindow());
-            saveGame.exportGameFile(selectedFile);
-        });
-        file.getItems().add(saveAsButton);
-
-        MenuItem exitGame = new MenuItem("Exit");
-        exitGame.setOnAction(e -> Platform.exit());
-        file.getItems().add(new SeparatorMenuItem());
-        file.getItems().add(exitGame);
-        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
-
-        MenuItem changeSettings = new MenuItem("Change Settings");
-        changeSettings.setOnAction(e -> {
-            SettingsDialog settingsDialog = new SettingsDialog(gameScreenController);
-            Optional<ButtonType> result = settingsDialog.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK){
-                gameScreenController.changeGameModel();
-            }
-        });
-        game.getItems().add(changeSettings);
-
-        MenuItem howToPlay = new MenuItem("How to play");
-        Alert howToPlayDialog = new Alert(Alert.AlertType.INFORMATION);
-        howToPlayDialog.setTitle("How to play GO");
-        howToPlayDialog.setHeaderText(null);
-        howToPlayDialog.setContentText("""
-        Controls:
-        Move Stone:     Mouse, WASD or Arrow Keys
-        Place Stone:     Left Mouse Button, Enter, Spacebar
-        Place Marker:   Right Mouse Button
-        
-        Rules:
-        Capture other stones by surrounding them.
-        Gain territory control for points.
-        The player with the most points wins!
-        """);
-
-        howToPlay.setOnAction(e -> howToPlayDialog.showAndWait());
-        help.getItems().add(howToPlay);
-
-        MenuItem showTutorials = new MenuItem("Show Tutorials");
-        showTutorials.setOnAction(e -> gameScreenController.changeToTutorialSettingScreen());
-        help.getItems().add(showTutorials);
-
-        MenuItem aboutUs = new MenuItem("About us");
-        Alert aboutUsDialog = new Alert(Alert.AlertType.INFORMATION);
-        aboutUsDialog.setTitle("About us");
-        aboutUsDialog.setHeaderText("Go Game - PR SE SS2023 - Group 5");
-        aboutUsDialog.setContentText("Made by: \nDominik Niederberger, Felix Stadler, Simon Ulmer");
-        //aboutUsDialog.initOwner(); TODO pass Stage?
-        aboutUs.setOnAction(e -> aboutUsDialog.showAndWait());
-        help.getItems().add(aboutUs);
-
+        GameMenuBar menuBar = new GameMenuBar(goBoardController,gameScreenController,saveGame);
         pane.setTop(menuBar);
     }
 

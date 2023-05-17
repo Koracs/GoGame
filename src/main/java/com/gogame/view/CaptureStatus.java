@@ -15,8 +15,8 @@ public class CaptureStatus extends FlowPane implements GameListener {
 
     private static final Label labelWhite = new Label("Captured \nby White: ");
     private static final Label labelBlack = new Label("Captured \nby Black: ");
-    private static final Text capturedByWhite = new Text("0");
-    private static final Text capturedByBlack = new Text("0");
+    private final Text capturedByWhite = new Text("0");
+    private final Text capturedByBlack = new Text("0");
 
     public CaptureStatus(GoBoardModel model){
         model.addGameListener(this);
