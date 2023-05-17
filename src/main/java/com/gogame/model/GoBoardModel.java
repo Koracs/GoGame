@@ -156,7 +156,6 @@ public class GoBoardModel {
      * @param col Column of the board
      */
     public void makeMove(int row, int col) {
-        // Set passed to false
         prevPassed = false;
 
         if (gameState == GameState.PLACE_HANDICAP) {
@@ -245,15 +244,6 @@ public class GoBoardModel {
             }
             neighbours.clear();
         }
-
-        //center
-        findNeighboursOfSameColor(row, col, neighbours, currentPlayer);
-        if (!chainHasLiberties(neighbours)) {
-            neighbours.forEach(e -> addCapturePoints(e.getStone()));
-            //allNeighbours.addAll(neighbours);
-            neighbours.forEach(GoField::removeStone);
-        }
-        neighbours.clear();
     }
 
     /**
@@ -458,10 +448,6 @@ public class GoBoardModel {
     }
 
     private void calculateScores() {
-        //todo implement remove dead stones
-        removeDeadStones();
-
-        //todo implement counter for capture stones
         pointsBlack += capturedByBlack;
         pointsWhite += capturedByWhite;
 
@@ -513,10 +499,6 @@ public class GoBoardModel {
                 }
             }
         }
-    }
-
-    private void removeDeadStones() { //ToDo implement
-
     }
 
     private void findEmptyArea(int row, int col, List<Integer> area) {

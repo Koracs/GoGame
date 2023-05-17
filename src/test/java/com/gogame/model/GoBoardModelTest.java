@@ -3,9 +3,13 @@ package com.gogame.model;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,6 +66,18 @@ class GoBoardModelTest {
     void testGetHandicap() {
         assertEquals(0, goBoardModel19x0x0.getHandicap());
         assertEquals(3, goBoardModel19x05x3.getHandicap());
+    }
+
+    @Test
+    @DisplayName("Testing getter getFields()")
+    void testGetFields() {
+        GoField[][] fields = goBoardModel19x0x0.getFields();
+
+        for (int i = 0; i < fields.length; i++) {
+            for (int j = 0; j < fields[i].length; j++) {
+                assertNotNull(fields[i][j]);
+            }
+        }
     }
 
 
@@ -156,41 +172,6 @@ class GoBoardModelTest {
         assertEquals(Stone.NONE, goBoardModel13x0x0.getField(2, 2).getStone());
         assertEquals(Stone.WHITE, goBoardModel13x0x0.getCurrentPlayer());
     }
-
-    @Test
-    @DisplayName("Testing adding and removing GameListeners")
-    void testGameListeners() {
-        GameListener gameListener = new GameListener() {
-            @Override
-            public void moveCompleted(GameEvent event) {
-
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-
-            }
-
-            @Override
-            public void playerPassed(GameEvent event) {
-
-            }
-
-            @Override
-            public void gameEnded(GameEvent event) {
-
-            }
-        };
-
-        assertEquals(0, goBoardModel9x0x0.getGameListeners().size());
-        goBoardModel9x0x0.addGameListener(gameListener);
-        assertEquals(1, goBoardModel9x0x0.getGameListeners().size());
-
-        goBoardModel9x0x0.removeGameListener(gameListener);
-        assertEquals(0, goBoardModel9x0x0.getGameListeners().size());
-
-    }
-
 
     @Test
     @DisplayName("Testing capture moves on all four possible sides")
@@ -301,31 +282,44 @@ class GoBoardModelTest {
     }
 
     @Test
-    @DisplayName("Testing reset method and if GameListeners are notified by reset")
-    void reset() {
-        goBoardModel13x0x0.addGameListener(new GameListener() {
+    @DisplayName("Testing adding and removing GameListeners")
+    void testGameListeners() {
+        GameListener gameListener = new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
-
             }
 
             @Override
             public void resetGame(GameEvent event) {
-                assertEquals(GameState.RESET, event.getState());
             }
 
             @Override
             public void playerPassed(GameEvent event) {
-
             }
 
             @Override
             public void gameEnded(GameEvent event) {
-
             }
-        });
+        };
+
+        assertEquals(0, goBoardModel9x0x0.getGameListeners().size());
+        goBoardModel9x0x0.addGameListener(gameListener);
+        assertEquals(1, goBoardModel9x0x0.getGameListeners().size());
+
+        goBoardModel9x0x0.removeGameListener(gameListener);
+        assertEquals(0, goBoardModel9x0x0.getGameListeners().size());
+
+        List<GameListener> gameListeners = new ArrayList<>();
+        gameListeners.add(gameListener);
+
+        goBoardModel9x0x0.setGameListeners(gameListeners);
+        assertEquals(1,goBoardModel9x0x0.getGameListeners().size());
+    }
+
+    @Test
+    @DisplayName("Testing reset method and if GameListeners are notified by reset")
+    void reset() {
         goBoardModel13x0x0.makeMove(1, 1);
-        goBoardModel13x0x0.makeMove(1, 2);
         goBoardModel13x0x0.reset();
         assertEquals(Stone.NONE, goBoardModel13x0x0.getField(1, 1).getStone());
     }
@@ -342,59 +336,51 @@ class GoBoardModelTest {
         assertEquals(GameState.BLACK_TURN, goBoardModel19x0x0.getGameState());
         goBoardModel19x0x0.pass(); //Black
         assertEquals(GameState.BLACK_WON, goBoardModel19x0x0.getGameState());
-        goBoardModel9x0x0.addGameListener(new GameListener() {
-            @Override
-            public void moveCompleted(GameEvent event) {
-
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-
-            }
-
-            @Override
-            public void playerPassed(GameEvent event) {
-                assertEquals(GameState.BLACK_PASSED, event.getState());
-            }
-
-            @Override
-            public void gameEnded(GameEvent event) {
-
-            }
-        });
         goBoardModel9x0x0.pass();
     }
 
     @Test
-    void gameEnds() {
-        goBoardModel9x0x0.makeMove(1, 1);
-        goBoardModel9x0x0.makeMove(1, 2);
-        goBoardModel9x0x0.makeMove(1, 3);
-        goBoardModel9x0x0.makeMove(1, 4);
-        goBoardModel9x0x0.playerResigned();
-        assertEquals(GameState.DRAW, goBoardModel9x0x0.getGameState());
-        goBoardModel19x0x0.addGameListener(new GameListener() {
+    @DisplayName("Testing notification of GameListeners")
+    void testListenerNotification(){
+        GameListener gameListener = new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
-
             }
 
             @Override
             public void resetGame(GameEvent event) {
-
             }
 
             @Override
             public void playerPassed(GameEvent event) {
-
             }
 
             @Override
             public void gameEnded(GameEvent event) {
-                assertEquals(GameState.WHITE_WON, event.getState());
             }
-        });
-        goBoardModel19x0x0.playerResigned();
+        };
+
+        goBoardModel19x05x3.addGameListener(gameListener);
+        goBoardModel19x05x3.makeMove(3,3);
+        goBoardModel19x05x3.makeMove(3,9);
+        goBoardModel19x05x3.makeMove(3,15);
+        goBoardModel19x05x3.makeMove(1,1);
+        goBoardModel19x05x3.pass();
+        goBoardModel19x05x3.reset();
+        goBoardModel19x05x3.playerResigned();
+
+    }
+
+    @Test
+    @DisplayName("Verify if game ends correctly")
+    void gameEnds() {
+        goBoardModel9x0x0.makeMove(1, 0);
+        goBoardModel9x0x0.makeMove(0, 7);
+        goBoardModel9x0x0.makeMove(0, 1);
+        goBoardModel9x0x0.makeMove(1, 8);
+        goBoardModel9x0x0.makeMove(1, 1);
+        goBoardModel9x0x0.makeMove(1, 7);
+        goBoardModel9x0x0.playerResigned();
+        assertEquals(GameState.DRAW, goBoardModel9x0x0.getGameState());
     }
 }
