@@ -23,6 +23,8 @@ import java.util.Optional;
 
 public class GameScreenView extends View {
     //region Fields
+    private final String DOWNLOADS_PATH = "\\Downloads\\gameData.txt";
+
     private GoBoardModel goBoardModel;
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
@@ -147,6 +149,17 @@ public class GameScreenView extends View {
 
         MenuItem loadGame = new MenuItem("Open Game");
         loadGame.setOnAction(e -> {
+            // Ask if the current game should be stored
+            Alert save = new Alert(Alert.AlertType.CONFIRMATION);
+            save.setTitle("Save game");
+            save.setHeaderText("Would you like to save the current game?");
+            Optional<ButtonType> result = save.showAndWait();
+
+            if(result.isPresent() && result.get() == ButtonType.OK) {
+                File newFile = new File(System.getProperty("user.home") + DOWNLOADS_PATH);
+                saveGame.exportGameFile(newFile);
+            }
+
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
             fileChooser.getExtensionFilters().add(extensionFilter);
@@ -160,7 +173,7 @@ public class GameScreenView extends View {
 
         MenuItem saveButton = new MenuItem("Save Game");
         saveButton.setOnAction(e -> {
-            File newFile = new File(System.getProperty("user.dir"));
+            File newFile = new File(System.getProperty("user.home") + DOWNLOADS_PATH);
             saveGame.exportGameFile(newFile);
         });
         file.getItems().add(saveButton);
