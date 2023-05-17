@@ -220,6 +220,7 @@ public class GameScreenView extends View {
         aboutUsDialog.setTitle("About us");
         aboutUsDialog.setHeaderText("Go Game - PR SE SS2023 - Group 5");
         aboutUsDialog.setContentText("Made by: \nDominik Niederberger, Felix Stadler, Simon Ulmer");
+        //aboutUsDialog.initOwner(); TODO pass Stage?
         aboutUs.setOnAction(e -> aboutUsDialog.showAndWait());
         help.getItems().add(aboutUs);
 
