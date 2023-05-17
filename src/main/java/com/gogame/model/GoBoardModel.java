@@ -14,9 +14,9 @@ public class GoBoardModel {
 
     // Model variables
     private static final int[] sizes = new int[]{9, 13, 19};
-    private double komi;
-    private int handicap;
-    private int size;
+    private final double komi;
+    private final int handicap;
+    private final int size;
     private int handicapCount;
     private Stone currentPlayer;
     private GameState gameState;
@@ -37,6 +37,10 @@ public class GoBoardModel {
 
 
     public GoBoardModel(int size, double komi, int handicap) {
+        if (size <= 0) throw new IllegalArgumentException("Size must be a positive value");
+        if (komi < 0.0) throw new IllegalArgumentException("Komi must be a non-negative value.");
+        if (handicap < 0) throw new IllegalArgumentException("Handicap must be a non-negative integer.");
+
         this.size = size;
         this.komi = komi;
         this.handicap = handicap;
@@ -59,7 +63,7 @@ public class GoBoardModel {
 
         currentPlayer = Stone.BLACK;
         pointsBlack = 0;
-        pointsWhite = komi;
+        pointsWhite = 0;
         capturedByBlack = 0;
         capturedByWhite = 0;
     }
@@ -422,12 +426,6 @@ public class GoBoardModel {
         }
     }
 
-    public void changeSettings(int size, double komi, int handicap){
-        this.size = size;
-        this.komi = komi;
-        this.handicap = handicap;
-        reset();
-    }
 
     public void pass() {
         if (prevPassed) {
@@ -564,7 +562,7 @@ public class GoBoardModel {
         gameEnds();
     }
 
-    /*
+
     public void printModel() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -577,18 +575,18 @@ public class GoBoardModel {
             }
             System.out.println();
         }
+        System.out.println();
     }
-     */
 
     public void addGameListener(GameListener l) {
         listeners.add(l);
     }
 
-    /*
+
     public void removeGameListener(GameListener l) {
         listeners.remove(l);
     }
-     */
+
 
     public List<GameListener> getGameListeners() {
         return this.listeners;

@@ -90,7 +90,7 @@ public class WinScreenDialog extends Alert {
         capturedByBlack.setFont(TEXT_FONT);
         gridPane.add(capturedByBlack, 2, 1);
 
-        Text territoryByWhite = new Text(String.valueOf(model.getPointsWhite() - model.getCapturedByWhite() - model.getKomi()));
+        Text territoryByWhite = new Text(String.valueOf(model.getPointsWhite() - model.getCapturedByWhite()));
         GridPane.setHalignment(territoryByWhite, HPos.CENTER);
         territoryByWhite.setFont(TEXT_FONT);
         gridPane.add(territoryByWhite, 1, 2);

@@ -8,17 +8,12 @@ public class GoField {
     private boolean wasPreset;
 
 
-    public GoField(int row, int col){
+    public GoField(int row, int col) {
+        if (row < 0 || col < 0) throw new IllegalArgumentException("Row and column must be non-negative.");
         this.row = row;
         this.col = col;
         this.stone = Stone.NONE;
         wasPreset = false;
-    }
-    public GoField(int row, int col,Stone stone){
-        this.row = row;
-        this.col = col;
-        this.stone = stone;
-        wasPreset = (stone == Stone.PRESET);
     }
 
     public int getRow() {
@@ -35,7 +30,7 @@ public class GoField {
     }
 
     public boolean isEmpty() {
-        return this.stone == Stone.NONE||this.stone == Stone.PRESET;
+        return this.stone == Stone.NONE || this.stone == Stone.PRESET;
     }
 
     public boolean isPreset() {
@@ -43,16 +38,17 @@ public class GoField {
     }
 
 
-    public boolean isNoEnemy(Stone otherStone){
-        return this.isEmpty() || stone == otherStone;
-    }
-
     public void setStone(Stone stone) {
-        if(!wasPreset) wasPreset = (stone == Stone.PRESET);
+        if (stone == Stone.NONE) {
+            removeStone();
+            return;
+        }
+        if (!wasPreset) wasPreset = (stone == Stone.PRESET);
         this.stone = stone;
     }
-    public void removeStone(){
-        if(wasPreset) this.stone = Stone.PRESET;
+
+    public void removeStone() {
+        if (wasPreset) this.stone = Stone.PRESET;
         else this.stone = Stone.NONE;
     }
 
