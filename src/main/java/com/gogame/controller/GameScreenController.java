@@ -6,6 +6,7 @@ import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
 import com.gogame.view.GameScreenView;
 import com.gogame.view.TutorialSettingsView;
+import com.gogame.view.TutorialView;
 import com.gogame.view.WinScreenDialog;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBar;
@@ -29,6 +30,7 @@ public class GameScreenController implements GameListener {
     private boolean komiActive;
     private boolean handicapActive;
 
+    private String selectedTutorial;
     private File currentFile;
     //endregion
 
@@ -92,6 +94,10 @@ public class GameScreenController implements GameListener {
         return model;
     }
 
+    public void setSelectedTutorial(String tutorial) {
+        this.selectedTutorial = tutorial;
+    }
+
     public File getCurrentFile() { return currentFile;}
 
     public void setViewModel(GoBoardModel model) {
@@ -115,17 +121,6 @@ public class GameScreenController implements GameListener {
         }
     }
 
-    public void changeToTutorialSettingScreen() {
-        TutorialSettingsView nextView = new TutorialSettingsView();
-        Scene s = view.getPane().getScene();
-        Window w = s.getWindow();
-        if(w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            stage.setScene(scene);
-        }
-    }
-
     public void changeGameModel() {
         GameScreenView nextView = new GameScreenView(initGoBoardModel());
         Scene s = view.getPane().getScene();
@@ -138,6 +133,18 @@ public class GameScreenController implements GameListener {
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();
+        }
+    }
+
+    public void changeSceneToTutorialScene() {
+        TutorialView nextView = new TutorialView(selectedTutorial);
+
+        Scene s = view.getPane().getScene();
+        Window w = s.getWindow();
+        if (w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane());
+            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            stage.setScene(scene);
         }
     }
 
@@ -171,7 +178,7 @@ public class GameScreenController implements GameListener {
 
     @Override
     public void resetGame(GameEvent event) {
-
+        currentFile = null;
     }
 
     @Override

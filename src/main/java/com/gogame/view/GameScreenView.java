@@ -31,6 +31,7 @@ public class GameScreenView extends View {
 
     private BorderPane pane;
 
+    private final GameMenuBar menuBar;
     private final GameStateField gameState;
     private final CaptureStatus captureStatus;
     //endregion
@@ -39,13 +40,15 @@ public class GameScreenView extends View {
         gameScreenController = new GameScreenController(this, model);
 
         goBoardModel = model;
-        goBoardView = new GoBoardView(model);
+        goBoardView = new GoBoardView(goBoardModel);
         goBoardController = goBoardView.getController();
 
-        gameState = new GameStateField(model);
-        captureStatus = new CaptureStatus(model);
-
         saveGame = new SaveGame(goBoardController, gameScreenController);
+
+        menuBar = new GameMenuBar(goBoardController,gameScreenController,saveGame);
+        captureStatus = new CaptureStatus(goBoardModel);
+        gameState = new GameStateField(goBoardModel);
+
 
         //eventHandler for placing stones
         EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
@@ -98,6 +101,7 @@ public class GameScreenView extends View {
     @Override
     protected void drawScene() {
         pane = new BorderPane();
+        pane.setTop(menuBar);
         pane.setCenter(goBoardView);
 
         VBox interactionField = new VBox();
@@ -125,9 +129,6 @@ public class GameScreenView extends View {
         gameplayButtons.setAlignment(Pos.CENTER);
         gameplayButtons.getChildren().add(passButton);
         gameplayButtons.getChildren().add(resignButton);
-
-        GameMenuBar menuBar = new GameMenuBar(goBoardController,gameScreenController,saveGame);
-        pane.setTop(menuBar);
     }
 
     @Override

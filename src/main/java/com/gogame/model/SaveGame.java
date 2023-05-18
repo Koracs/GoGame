@@ -143,7 +143,7 @@ public class SaveGame {
     }
 
     private boolean readData(String filePath) throws IOException {
-        if(filePath != null || filePath.equals("")) {
+        if(filePath == null || filePath.equals("")) {
             return false;
         }
 

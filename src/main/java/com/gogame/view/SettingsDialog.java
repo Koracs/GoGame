@@ -19,6 +19,7 @@ public class SettingsDialog extends Alert {
         super(Alert.AlertType.CONFIRMATION);
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
+        stage.getScene().getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
 
         setHeaderText(null);
         setGraphic(null);

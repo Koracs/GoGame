@@ -36,8 +36,8 @@ public class GameMenuBar extends MenuBar {
         newGame.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
 
 
-        MenuItem loadGame = new MenuItem("_Open Game");
-        loadGame.setOnAction(e -> {
+        MenuItem openGame = new MenuItem("_Open Game");
+        openGame.setOnAction(e -> {
             askForSave();
 
             FileChooser fileChooser = new FileChooser();
@@ -49,8 +49,9 @@ public class GameMenuBar extends MenuBar {
                 // todo goBoardView.autosize();
             }
         });
-        file.getItems().add(loadGame);
+        file.getItems().add(openGame);
         file.getItems().add(new SeparatorMenuItem());
+        openGame.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 
         MenuItem saveButton = new MenuItem("_Save Game");
         saveButton.setOnAction(e -> {
@@ -68,7 +69,10 @@ public class GameMenuBar extends MenuBar {
 
 
         MenuItem exitGame = new MenuItem("_Exit");
-        exitGame.setOnAction(e -> Platform.exit());
+        exitGame.setOnAction(e -> {
+            askForSave();
+            Platform.exit();
+        });
         file.getItems().add(new SeparatorMenuItem());
         file.getItems().add(exitGame);
         exitGame.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
@@ -110,7 +114,10 @@ public class GameMenuBar extends MenuBar {
         help.getItems().add(howToPlay);
 
         MenuItem showTutorials = new MenuItem("Show _Tutorials");
-        showTutorials.setOnAction(e -> gameScreenController.changeToTutorialSettingScreen());
+        showTutorials.setOnAction(e -> {
+            askForSave();
+            showTutorials();
+        });
         help.getItems().add(showTutorials);
 
         MenuItem aboutUs = new MenuItem("_About us");
@@ -154,6 +161,15 @@ public class GameMenuBar extends MenuBar {
         Optional<ButtonType> result = settingsDialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             gameScreenController.changeGameModel();
+        }
+    }
+
+    private void showTutorials() {
+        TutorialDialog tutorialDialog = new TutorialDialog(gameScreenController);
+        Optional<ButtonType> result = tutorialDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            gameScreenController.changeSceneToTutorialScene();
+
         }
     }
 }
