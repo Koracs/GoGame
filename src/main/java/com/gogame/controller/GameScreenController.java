@@ -5,7 +5,6 @@ import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
 import com.gogame.view.GameScreenView;
-import com.gogame.view.TutorialSettingsView;
 import com.gogame.view.TutorialView;
 import com.gogame.view.WinScreenDialog;
 import javafx.scene.Scene;
@@ -113,6 +112,10 @@ public class GameScreenController implements GameListener {
                 handicapActive ? handicap : 0);
     }
 
+    public GoBoardModel initModelFromFile() {
+        return new GoBoardModel(0,0,0); //todo
+    }
+
     public void showWinScreen() {
         WinScreenDialog winScreenDialog = new WinScreenDialog(model);
         Optional<ButtonType> result = winScreenDialog.showAndWait();
@@ -130,6 +133,20 @@ public class GameScreenController implements GameListener {
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Go Game");
+
+            BorderPane root = (BorderPane) stage.getScene().getRoot();
+            root.getCenter().requestFocus();
+        }
+    }
+    public void changeGameModel(GoBoardModel model) {
+        GameScreenView nextView = new GameScreenView(model);
+        Scene s = view.getPane().getScene();
+        Window w = s.getWindow();
+        if(w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle("Go Game"+ currentFile.getName());
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();
@@ -173,7 +190,6 @@ public class GameScreenController implements GameListener {
 
     @Override
     public void moveCompleted(GameEvent event) {
-
     }
 
     @Override
@@ -183,7 +199,6 @@ public class GameScreenController implements GameListener {
 
     @Override
     public void playerPassed(GameEvent event) {
-
     }
 
     @Override

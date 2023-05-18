@@ -100,7 +100,5 @@ public class GoBoardController {
         view.setMarking(row, col);
         view.draw();
     }
-
-
     //endregion
 }

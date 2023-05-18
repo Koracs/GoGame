@@ -1,9 +1,6 @@
 package com.gogame.view;
 
 import com.gogame.controller.GameScreenController;
-import com.gogame.controller.TutorialSettingsController;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -60,7 +57,7 @@ public class TutorialDialog extends Alert {
 
         tutorialGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
             String tutorialPath = TUTORIAL_DIRECTORY + tutorialGroup.getSelectedToggle().toString().split("'")[1] +".txt";
-            controller.setSelectedTutorial(tutorialPath);
+            this.controller.setSelectedTutorial(tutorialPath);
         });
 
         getDialogPane().setContent(pane);

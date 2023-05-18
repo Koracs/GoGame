@@ -99,7 +99,7 @@ public class TutorialView extends View{
         restartButton.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
 
         MenuItem tutorialScreenButton = new MenuItem("Tutorial screen");
-        tutorialScreenButton.setOnAction(e -> tutorialController.changeSceneToTutorialScreen());
+        //todo tutorialScreenButton.setOnAction(e -> tutorialController.changeSceneToTutorialScreen());
         game.getItems().add(tutorialScreenButton);
 
         MenuItem gameScreenButton = new MenuItem("Game screen");

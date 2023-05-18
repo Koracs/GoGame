@@ -2,7 +2,6 @@ package com.gogame.controller;
 
 import com.gogame.model.GoBoardModel;
 import com.gogame.view.GameScreenView;
-import com.gogame.view.TutorialSettingsView;
 import com.gogame.view.TutorialView;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -30,20 +29,6 @@ public class TutorialController {
     public void deleteMove() {
         saveGame.loadGradually(false);
     }*/
-
-    public void changeSceneToTutorialScreen() {
-        Scene s = view.getPane().getScene();
-        Window w = s.getWindow();
-        TutorialSettingsView nextView = new TutorialSettingsView();
-        if(w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            stage.setScene(scene);
-
-            BorderPane root = (BorderPane) stage.getScene().getRoot();
-            root.getCenter().requestFocus();
-        }
-    }
 
     public void changeSceneToStartScreen() {
         Scene s = view.getPane().getScene();
