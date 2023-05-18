@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Optional;
 
 public class GameMenuBar extends MenuBar {
+    private final String DOWNLOADS_PATH = "\\Downloads\\gameData.txt";
     public GameMenuBar(GoBoardController goBoardController, GameScreenController gameScreenController, SaveGame saveGame){
         Menu file = new Menu("_File");
 
@@ -31,6 +32,18 @@ public class GameMenuBar extends MenuBar {
 
         MenuItem loadGame = new MenuItem("_Open Game");
         loadGame.setOnAction(e -> {
+            // Ask if the current game should be stored
+            Alert save = new Alert(Alert.AlertType.CONFIRMATION);
+            save.setTitle("Save game");
+            save.setHeaderText("Would you like to save the current game?");
+            Optional<ButtonType> result = save.showAndWait();
+
+            if(result.isPresent() && result.get() == ButtonType.OK) {
+                File newFile = new File(System.getProperty("user.home") + DOWNLOADS_PATH);
+                saveGame.exportGameFile(newFile);
+            }
+
+
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
             fileChooser.getExtensionFilters().add(extensionFilter);
@@ -45,7 +58,7 @@ public class GameMenuBar extends MenuBar {
 
         MenuItem saveButton = new MenuItem("_Save Game");
         saveButton.setOnAction(e -> {
-            File newFile = new File(System.getProperty("user.dir"));
+            File newFile = new File(System.getProperty("user.home") + DOWNLOADS_PATH);
             saveGame.exportGameFile(newFile);
         });
         file.getItems().add(saveButton);
