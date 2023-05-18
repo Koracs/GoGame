@@ -89,9 +89,6 @@ public class GameScreenView extends View {
             }
         });
 
-        /*if (!importGame.equals("")) {
-            saveGame.importGameFile(importGame);
-        }*/
     }
 
     public void setModel(GoBoardModel goBoardModel) {

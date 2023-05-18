@@ -2,6 +2,7 @@ package com.gogame.controller;
 
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
+import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
 import com.gogame.view.GameScreenView;
 import com.gogame.view.TutorialSettingsView;
@@ -12,6 +13,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public class GameScreenController implements GameListener {
@@ -23,6 +28,8 @@ public class GameScreenController implements GameListener {
     private double komi;
     private boolean komiActive;
     private boolean handicapActive;
+
+    private File currentFile;
     //endregion
 
     // Constructor
@@ -85,6 +92,8 @@ public class GameScreenController implements GameListener {
         return model;
     }
 
+    public File getCurrentFile() { return currentFile;}
+
     public void setViewModel(GoBoardModel model) {
         this.model = model;
         this.view.setModel(model);
@@ -125,9 +134,33 @@ public class GameScreenController implements GameListener {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
+            stage.setTitle("Go Game");
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();
+        }
+    }
+
+    public void createSaveFile(File file) {
+        currentFile = file;
+        try {
+            List<GameEvent> moves = model.getHistory().getEvents();
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(model.getSize() + ";" + model.getHandicap() + ";" + model.getKomi() + System.lineSeparator());
+            for (GameEvent event : moves) {
+                String move;
+                if (event.getState() == GameState.BLACK_PASSED || event.getState() == GameState.WHITE_PASSED)
+                    move = event.getState().toString();
+                else
+                    move = event.getRow() + ";" + event.getCol() + "- " + event.getState();
+
+                fileWriter.write(move + System.lineSeparator());
+            }
+            fileWriter.close();
+            Window w = view.getPane().getScene().getWindow();
+            if(w instanceof Stage stage) stage.setTitle("Go Game - " + currentFile.getName());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

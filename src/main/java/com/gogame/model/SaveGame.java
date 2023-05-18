@@ -35,12 +35,6 @@ public class SaveGame {
         this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
     }
 
-    public SaveGame(GoBoardController goBoardController) {
-        this.goBoardController = goBoardController;
-        this.gameScreenController = null;
-        this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
-    }
-
     public SaveGame(String path) {
         this.filePath = path;
         this.goBoardController = null;
