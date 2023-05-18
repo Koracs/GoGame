@@ -401,12 +401,17 @@ public class GoBoardModel {
         return false;
     }
 
-
-    public void switchPlayer() {
+    /**
+     * Private function to switch the current player and also set the game state to the current player
+     */
+    private void switchPlayer() {
         currentPlayer = getOtherPlayer();
         gameState = currentPlayer == Stone.BLACK ? GameState.BLACK_TURN : GameState.WHITE_TURN;
     }
 
+    /**
+     * Reset the current game - clear the game field array and also the UI game field with the listener
+     */
     public void reset() {
         gameState = GameState.RESET;
         initModel();
@@ -417,7 +422,9 @@ public class GoBoardModel {
         }
     }
 
-
+    /**
+     * Current player passed. Check if the previous player also passed (game ends) and continue game (switch player)
+     */
     public void pass() {
         if (prevPassed) {
             // Player in previous round passed - game ends
@@ -434,6 +441,9 @@ public class GoBoardModel {
         prevPassed = true;
     }
 
+    /**
+     * Game ended (both players passed or one player resigned). Calculate the current score and set the game state to display the winner
+     */
     private void gameEnds() {
         calculateScores();
 
@@ -448,6 +458,9 @@ public class GoBoardModel {
         }
     }
 
+    /**
+     * Calculate the score for both players - score = captured stones + stones on game field + captured areas
+     */
     private void calculateScores() {
         pointsBlack += capturedByBlack;
         pointsWhite += capturedByWhite;
@@ -461,6 +474,11 @@ public class GoBoardModel {
                     pointsWhite++;
                 }
             }
+        }
+
+        // When no stone is played -> do not count area
+        if(pointsWhite == 0 && pointsBlack == 0) {
+            return;
         }
 
         // Initialize visited array
@@ -502,6 +520,13 @@ public class GoBoardModel {
         }
     }
 
+    /**
+     * Determine the empty (no white or black stone) area starting from the transfered row and column
+     *
+     * @param row Row of the board
+     * @param col Column of the board
+     * @param area One dimensional store of the empty tiles
+     */
     private void findEmptyArea(int row, int col, List<Integer> area) {
         if (row < 0 || row >= size || col < 0 || col >= size) {
             return;
@@ -522,6 +547,14 @@ public class GoBoardModel {
         findEmptyArea(row, col - 1, area);
     }
 
+    /**
+     * Determine if a tile is not surrounded by stones of the other player
+     *
+     * @param row Row of the board
+     * @param col Column of the board
+     * @param stone Stone of the current player
+     * @return True, if it is only surrounded by stones of the same color or empty tiles
+     */
     private boolean isSurrounded(int row, int col, Stone stone) {
         boolean isSurrounded = true;
         isSurrounded &= checkNeighbours(row + 1, col, stone);
@@ -531,6 +564,14 @@ public class GoBoardModel {
         return isSurrounded;
     }
 
+    /**
+     * Determine if this tile is the same color or empty
+     *
+     * @param row Row of the board
+     * @param col Column of the board
+     * @param stone Checked stone color
+     * @return True if on the current tile is no stone or a stone of the same color as well as if the tile is outside the game area
+     */
     private boolean checkNeighbours(int row, int col, Stone stone) {
         if (row < 0 || row >= size || col < 0 || col >= size) {
             return true;
@@ -541,11 +582,16 @@ public class GoBoardModel {
         return false;
     }
 
+    /**
+     * On player resigned - check for the score
+     */
     public void playerResigned() {
         gameEnds();
     }
 
-
+    /**
+     * Function to display the game field on the console
+     */
     public void printModel() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -560,7 +606,9 @@ public class GoBoardModel {
         }
         System.out.println();
     }
+    //endregion
 
+    //region Listeners
     public void addGameListener(GameListener l) {
         listeners.add(l);
     }
