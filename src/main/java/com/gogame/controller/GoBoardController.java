@@ -84,6 +84,9 @@ public class GoBoardController {
     public void passPlayer() {
         model.pass();
     }
+    public void resign() {
+        model.playerResigned();
+    }
 
     public void makeMove(int row, int col) {
         model.makeMove(row, col);
