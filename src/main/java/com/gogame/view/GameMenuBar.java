@@ -79,10 +79,12 @@ public class GameMenuBar extends MenuBar {
 
         MenuItem pass = new MenuItem("_Pass");
         pass.setOnAction(e -> goBoardController.passPlayer());
+        pass.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
         game.getItems().add(pass);
 
         MenuItem resign = new MenuItem("_Resign");
         resign.setOnAction(e -> goBoardController.resign());
+        resign.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
         game.getItems().add(resign);
         game.getItems().add(new SeparatorMenuItem());
 
@@ -91,6 +93,7 @@ public class GameMenuBar extends MenuBar {
             askForSave();
             changeSettings();
         });
+        changeSettings.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         game.getItems().add(changeSettings);
 
 
