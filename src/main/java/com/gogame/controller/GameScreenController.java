@@ -4,6 +4,7 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
+import com.gogame.savegame.SaveGameInitiator;
 import com.gogame.view.GameScreenView;
 import com.gogame.view.TutorialView;
 import com.gogame.view.WinScreenDialog;
@@ -85,15 +86,19 @@ public class GameScreenController implements GameListener {
     public void changeHandicapActive() {
         this.handicapActive = !this.handicapActive;
     }
+
     public GameScreenView getView() {
         return view;
     }
+
     public GoBoardModel getModel() {
         return model;
     }
 
 
-    public File getCurrentFile() { return currentFile;}
+    public File getCurrentFile() {
+        return currentFile;
+    }
 
     public void setViewModel(GoBoardModel model) {
         this.model = model;
@@ -102,47 +107,44 @@ public class GameScreenController implements GameListener {
     //endregion
 
     //region Methods
-    public GoBoardModel initGoBoardModel() {
+    private GoBoardModel initGoBoardModel() {
         return new GoBoardModel(boardSize,
                 komiActive ? komi : 0,
                 handicapActive ? handicap : 0);
     }
 
     public GoBoardModel initModelFromFile() {
-        return new GoBoardModel(0,0,0); //todo
+        return new GoBoardModel(0, 0, 0); //todo
     }
 
     public void showWinScreen() {
         WinScreenDialog winScreenDialog = new WinScreenDialog(model);
         Optional<ButtonType> result = winScreenDialog.showAndWait();
-        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE){
-            model.reset();
+        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+            //todo reset not intened any longer. maybe prohbit interaction?
         }
     }
 
     public void changeGameModel() {
-        GameScreenView nextView = new GameScreenView(initGoBoardModel());
-        Scene s = view.getPane().getScene();
-        Window w = s.getWindow();
-        if(w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Go Game");
-
-            BorderPane root = (BorderPane) stage.getScene().getRoot();
-            root.getCenter().requestFocus();
-        }
+        currentFile = null;
+        changeGameModel(initGoBoardModel());
     }
-    public void changeGameModel(GoBoardModel model) {
+
+    public void changeGameModel(File file) {
+        currentFile = file;
+        SaveGameInitiator s = new SaveGameInitiator();
+        changeGameModel(s.createModel(file.getAbsolutePath()));
+    }
+
+    private void changeGameModel(GoBoardModel model) {
         GameScreenView nextView = new GameScreenView(model);
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
-        if(w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+        if (w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
-            stage.setTitle("Go Game"+ currentFile.getName());
+            stage.setTitle("Go Game" + currentFile.getName());
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();
@@ -163,22 +165,11 @@ public class GameScreenController implements GameListener {
 
     public void createSaveFile(File file) {
         currentFile = file;
+        SaveGameInitiator s = new SaveGameInitiator(model);
         try {
-            List<GameEvent> moves = model.getHistory().getEvents();
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(model.getSize() + ";" + model.getHandicap() + ";" + model.getKomi() + System.lineSeparator());
-            for (GameEvent event : moves) {
-                String move;
-                if (event.getState() == GameState.BLACK_PASSED || event.getState() == GameState.WHITE_PASSED)
-                    move = event.getState().toString();
-                else
-                    move = event.getRow() + ";" + event.getCol() + "- " + event.getState();
-
-                fileWriter.write(move + System.lineSeparator());
-            }
-            fileWriter.close();
+            s.createSaveFile(file);
             Window w = view.getPane().getScene().getWindow();
-            if(w instanceof Stage stage) stage.setTitle("Go Game - " + currentFile.getName());
+            if (w instanceof Stage stage) stage.setTitle("Go Game - " + currentFile.getName());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

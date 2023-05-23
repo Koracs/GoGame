@@ -45,8 +45,7 @@ public class GameMenuBar extends MenuBar {
             fileChooser.getExtensionFilters().add(extensionFilter);
             File selectedFile = fileChooser.showOpenDialog(this.getScene().getWindow());
             if (selectedFile != null) {
-                saveGame.importGameFile(selectedFile.getAbsolutePath(), false);
-                // todo goBoardView.autosize();
+                gameScreenController.changeGameModel(selectedFile);
             }
         });
         file.getItems().add(openGame);
