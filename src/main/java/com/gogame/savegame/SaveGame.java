@@ -1,7 +1,8 @@
-package com.gogame.model;
+package com.gogame.savegame;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
+import com.gogame.model.GoBoardModel;
 import javafx.scene.control.Alert;
 import javafx.stage.*;
 

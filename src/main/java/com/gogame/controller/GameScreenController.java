@@ -29,7 +29,6 @@ public class GameScreenController implements GameListener {
     private boolean komiActive;
     private boolean handicapActive;
 
-    private String selectedTutorial;
     private File currentFile;
     //endregion
 
@@ -93,9 +92,6 @@ public class GameScreenController implements GameListener {
         return model;
     }
 
-    public void setSelectedTutorial(String tutorial) {
-        this.selectedTutorial = tutorial;
-    }
 
     public File getCurrentFile() { return currentFile;}
 
@@ -153,7 +149,7 @@ public class GameScreenController implements GameListener {
         }
     }
 
-    public void changeSceneToTutorialScene() {
+    public void changeSceneToTutorialScene(String selectedTutorial) {
         TutorialView nextView = new TutorialView(selectedTutorial);
 
         Scene s = view.getPane().getScene();

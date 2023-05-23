@@ -3,6 +3,7 @@ package com.gogame.model;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
+import com.gogame.savegame.MoveHistory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

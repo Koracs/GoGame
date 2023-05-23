@@ -5,8 +5,7 @@ import com.gogame.controller.GoBoardController;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
-import com.gogame.model.SaveGame;
-import javafx.application.Platform;
+import com.gogame.savegame.SaveGame;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -16,9 +15,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 
-import java.io.File;
 import java.util.Optional;
 
 public class GameScreenView extends View {

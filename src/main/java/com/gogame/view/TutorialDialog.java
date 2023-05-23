@@ -23,12 +23,12 @@ import java.util.Objects;
 
 public class TutorialDialog extends Alert {
     private static final String TUTORIAL_DIRECTORY = "src/main/resources/tutorials/";
-    private final GameScreenController controller;
     private final List<String> tutorials;
 
-    public TutorialDialog(GameScreenController controller) {
+    private String tutorialPath;
+
+    public TutorialDialog() {
         super(AlertType.CONFIRMATION);
-        this.controller = controller;
         tutorials = getTutorials();
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
@@ -56,8 +56,7 @@ public class TutorialDialog extends Alert {
         }
 
         tutorialGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
-            String tutorialPath = TUTORIAL_DIRECTORY + tutorialGroup.getSelectedToggle().toString().split("'")[1] +".txt";
-            this.controller.setSelectedTutorial(tutorialPath);
+            tutorialPath = TUTORIAL_DIRECTORY + tutorialGroup.getSelectedToggle().toString().split("'")[1] +".txt";
         });
 
         getDialogPane().setContent(pane);
@@ -79,5 +78,9 @@ public class TutorialDialog extends Alert {
             throw new RuntimeException(e);
         }
         return tutorials;
+    }
+
+    public String getTutorialPath() {
+        return tutorialPath;
     }
 }

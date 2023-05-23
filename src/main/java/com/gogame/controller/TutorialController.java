@@ -21,15 +21,6 @@ public class TutorialController {
         //this.saveGame = new SaveGame(controller, null); //todo im View anlegen?
     }
 
-    /*
-    public void loadMove() {
-        saveGame.loadGradually(true);
-    }
-
-    public void deleteMove() {
-        saveGame.loadGradually(false);
-    }*/
-
     public void changeSceneToStartScreen() {
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
@@ -41,6 +32,18 @@ public class TutorialController {
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();
+        }
+    }
+
+    public void changeSceneToTutorialScene(String selectedTutorial) {
+        TutorialView nextView = new TutorialView(selectedTutorial);
+
+        Scene s = view.getPane().getScene();
+        Window w = s.getWindow();
+        if (w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane());
+            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            stage.setScene(scene);
         }
     }
 }

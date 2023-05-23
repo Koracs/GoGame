@@ -1,7 +1,8 @@
-package com.gogame.model;
+package com.gogame.savegame;
 
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
+import com.gogame.model.GoBoardModel;
 
 import java.util.ArrayList;
 import java.util.List;

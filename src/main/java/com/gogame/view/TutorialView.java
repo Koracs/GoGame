@@ -3,7 +3,7 @@ package com.gogame.view;
 import com.gogame.controller.GoBoardController;
 import com.gogame.controller.TutorialController;
 import com.gogame.model.GoBoardModel;
-import com.gogame.model.SaveGame;
+import com.gogame.savegame.SaveGame;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +14,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+
+import java.util.Optional;
 
 public class TutorialView extends View{
 
@@ -88,32 +90,41 @@ public class TutorialView extends View{
 
         // Buttons to import/export games
         MenuBar menuBar = new MenuBar();
-        Menu game = new Menu("Game");
+        Menu file = new Menu("_File");
 
-        MenuItem restartButton = new MenuItem("Restart tutorial");
+        MenuItem restartButton = new MenuItem("_Restart Tutorial");
         restartButton.setOnAction(e -> {
             goBoardController.resetModel();
             saveGame.setIndex(1);
         });
-        game.getItems().add(restartButton);
+        file.getItems().add(restartButton);
         restartButton.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
 
-        MenuItem tutorialScreenButton = new MenuItem("Tutorial screen");
-        //todo tutorialScreenButton.setOnAction(e -> tutorialController.changeSceneToTutorialScreen());
-        game.getItems().add(tutorialScreenButton);
+        MenuItem tutorialScreenButton = new MenuItem("Show _Tutorials");
+        tutorialScreenButton.setOnAction(e -> showTutorials());
+        file.getItems().add(tutorialScreenButton);
 
-        MenuItem gameScreenButton = new MenuItem("Game screen");
+        MenuItem gameScreenButton = new MenuItem("_Game Screen");
         gameScreenButton.setOnAction(e -> tutorialController.changeSceneToStartScreen());
-        game.getItems().add(gameScreenButton);
+        file.getItems().add(gameScreenButton);
 
-        MenuItem exitGame = new MenuItem("Exit");
+        MenuItem exitGame = new MenuItem("_Exit");
         exitGame.setOnAction(e -> Platform.exit());
-        game.getItems().add(new SeparatorMenuItem());
-        game.getItems().add(exitGame);
+        file.getItems().add(new SeparatorMenuItem());
+        file.getItems().add(exitGame);
         exitGame.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
 
-        menuBar.getMenus().add(game);
+        menuBar.getMenus().add(file);
 
         pane.setTop(menuBar);
+    }
+
+    private void showTutorials() {
+        TutorialDialog tutorialDialog = new TutorialDialog();
+        Optional<ButtonType> result = tutorialDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            tutorialController.changeSceneToTutorialScene(tutorialDialog.getTutorialPath());
+
+        }
     }
 }

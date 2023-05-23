@@ -1,4 +1,4 @@
-package com.gogame.model;
+package com.gogame.savegame;
 
 public class SaveGameInitiator {
     //region Constants
