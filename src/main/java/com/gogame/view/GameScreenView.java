@@ -2,10 +2,7 @@ package com.gogame.view;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
-import com.gogame.listener.GameEvent;
-import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
-import com.gogame.savegame.SaveGame;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -16,15 +13,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
-import java.util.Optional;
-
 public class GameScreenView extends View {
     //region Fields
     private GoBoardModel goBoardModel;
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
     private final GoBoardView goBoardView;
-    private final SaveGame saveGame;
 
     private BorderPane pane;
 
@@ -40,9 +34,7 @@ public class GameScreenView extends View {
         goBoardView = new GoBoardView(goBoardModel);
         goBoardController = goBoardView.getController();
 
-        saveGame = new SaveGame(goBoardController, gameScreenController);
-
-        menuBar = new GameMenuBar(goBoardController,gameScreenController,saveGame);
+        menuBar = new GameMenuBar(goBoardController,gameScreenController);
         captureStatus = new CaptureStatus(goBoardModel);
         gameState = new GameStateField(goBoardModel);
 
@@ -67,28 +59,6 @@ public class GameScreenView extends View {
 
 
         drawScene();
-
-        goBoardModel.addGameListener(new GameListener() {
-            @Override
-            public void moveCompleted(GameEvent event) {
-                saveGame.storeData(event.getRow() + ";" + event.getCol() + "- " + event.getState() + "\n");
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-                saveGame.resetData();
-            }
-
-            @Override
-            public void playerPassed(GameEvent event) {
-                saveGame.storeData(event.getState().toString() + "\n");
-            }
-
-            @Override
-            public void gameEnded(GameEvent event) {
-            }
-        });
-
     }
 
     public void setModel(GoBoardModel goBoardModel) {

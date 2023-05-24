@@ -2,7 +2,6 @@ package com.gogame.view;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
-import com.gogame.savegame.SaveGame;
 import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -17,7 +16,7 @@ public class GameMenuBar extends MenuBar {
 
     private final GameScreenController gameScreenController;
 
-    public GameMenuBar(GoBoardController goBoardController, GameScreenController gameScreenController, SaveGame saveGame) {
+    public GameMenuBar(GoBoardController goBoardController, GameScreenController gameScreenController) {
         this.gameScreenController = gameScreenController;
 
         Menu file = new Menu("_File");
@@ -170,7 +169,7 @@ public class GameMenuBar extends MenuBar {
         TutorialDialog tutorialDialog = new TutorialDialog();
         Optional<ButtonType> result = tutorialDialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            gameScreenController.changeSceneToTutorialScene(tutorialDialog.getTutorialPath());
+            gameScreenController.changeSceneToTutorialScene(tutorialDialog.getSelectedTutorial());
 
         }
     }

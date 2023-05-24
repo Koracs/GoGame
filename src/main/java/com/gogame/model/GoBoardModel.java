@@ -450,7 +450,7 @@ public class GoBoardModel {
     /**
      * Game ended (both players passed or one player resigned). Calculate the current score and set the game state to display the winner
      */
-    private void gameEnds() {
+    public void gameEnds() {
         calculateScores();
 
         if (pointsBlack == pointsWhite) {

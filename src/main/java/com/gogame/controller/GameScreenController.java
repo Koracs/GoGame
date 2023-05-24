@@ -2,9 +2,8 @@ package com.gogame.controller;
 
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
-import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
-import com.gogame.savegame.SaveGameInitiator;
+import com.gogame.savegame.SaveGameHandler;
 import com.gogame.view.GameScreenView;
 import com.gogame.view.TutorialView;
 import com.gogame.view.WinScreenDialog;
@@ -15,9 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 public class GameScreenController implements GameListener {
@@ -113,11 +110,7 @@ public class GameScreenController implements GameListener {
                 handicapActive ? handicap : 0);
     }
 
-    public GoBoardModel initModelFromFile() {
-        return new GoBoardModel(0, 0, 0); //todo
-    }
-
-    public void showWinScreen() {
+    private void showWinScreen() {
         WinScreenDialog winScreenDialog = new WinScreenDialog(model);
         Optional<ButtonType> result = winScreenDialog.showAndWait();
         if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
@@ -132,8 +125,8 @@ public class GameScreenController implements GameListener {
 
     public void changeGameModel(File file) {
         currentFile = file;
-        SaveGameInitiator s = new SaveGameInitiator();
-        changeGameModel(s.createModel(file.getAbsolutePath()));
+        SaveGameHandler s = new SaveGameHandler(file);
+        changeGameModel(s.createGameModel());
     }
 
     private void changeGameModel(GoBoardModel model) {
@@ -151,8 +144,10 @@ public class GameScreenController implements GameListener {
         }
     }
 
-    public void changeSceneToTutorialScene(String selectedTutorial) {
-        TutorialView nextView = new TutorialView(selectedTutorial);
+    public void changeSceneToTutorialScene(File selectedTutorial) {
+        currentFile = selectedTutorial;
+        SaveGameHandler saveGame = new SaveGameHandler(selectedTutorial);
+        TutorialView nextView = new TutorialView(saveGame);
 
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
@@ -160,14 +155,14 @@ public class GameScreenController implements GameListener {
             Scene scene = new Scene(nextView.getPane());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
+            stage.setTitle("Go Game" + currentFile.getName());
         }
     }
 
     public void createSaveFile(File file) {
         currentFile = file;
-        SaveGameInitiator s = new SaveGameInitiator(model);
         try {
-            s.createSaveFile(file);
+            SaveGameHandler.createSaveFile(model,file);
             Window w = view.getPane().getScene().getWindow();
             if (w instanceof Stage stage) stage.setTitle("Go Game - " + currentFile.getName());
         } catch (IOException e) {

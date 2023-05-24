@@ -10,7 +10,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
+@Deprecated
 public class SaveGame {
     //region Constants
     private final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";

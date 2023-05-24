@@ -3,7 +3,7 @@ package com.gogame.view;
 import com.gogame.controller.GoBoardController;
 import com.gogame.controller.TutorialController;
 import com.gogame.model.GoBoardModel;
-import com.gogame.savegame.SaveGame;
+import com.gogame.savegame.SaveGameHandler;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,27 +17,25 @@ import javafx.scene.layout.*;
 
 import java.util.Optional;
 
-public class TutorialView extends View{
+public class TutorialView extends View {
 
     private final GoBoardModel goBoardModel;
     private final TutorialController tutorialController;
     private final GoBoardController goBoardController;
 
     private final GoBoardView goBoardView;
-    private final SaveGame saveGame;
     private BorderPane pane;
 
     private final GameStateField gameState;
     private final CaptureStatus captureStatus;
 
 
-    public TutorialView(String selectedTutorial) {
-        this.saveGame = new SaveGame(selectedTutorial);
-        this.goBoardModel = saveGame.importFileData();
+    public TutorialView(SaveGameHandler saveGame) {
+        this.tutorialController = new TutorialController(this, saveGame);
+
+        this.goBoardModel = saveGame.createTutorialModel();
         this.goBoardView = new GoBoardView(goBoardModel);
         this.goBoardController = goBoardView.getController();
-        this.tutorialController = new TutorialController(this, goBoardModel, goBoardController);
-        saveGame.initSaveGame(goBoardController);
 
         gameState = new GameStateField(goBoardModel);
         captureStatus = new CaptureStatus(goBoardModel);
@@ -70,14 +68,14 @@ public class TutorialView extends View{
         imageView.setFitWidth(35);
         imageView.setFitHeight(35);
         backButton.setGraphic(imageView);
-        backButton.setOnMouseClicked(e -> saveGame.loadGradually(false));
+        backButton.setOnMouseClicked(e -> tutorialController.lastMove());
         Button forwardButton = new Button("");
         image = new Image(getClass().getResourceAsStream("/pictures/right-arrow.png"));
         imageView = new ImageView(image);
         imageView.setFitWidth(35);
         imageView.setFitHeight(35);
         forwardButton.setGraphic(imageView);
-        forwardButton.setOnMouseClicked(e -> saveGame.loadGradually(true));
+        forwardButton.setOnMouseClicked(e -> tutorialController.nextMove());
 
         interactionButtons.setPadding(new Insets(30));
         interactionButtons.setPrefWidth(20);
@@ -94,8 +92,7 @@ public class TutorialView extends View{
 
         MenuItem restartButton = new MenuItem("_Restart Tutorial");
         restartButton.setOnAction(e -> {
-            goBoardController.resetModel();
-            saveGame.setIndex(1);
+            tutorialController.resetTutorial();
         });
         file.getItems().add(restartButton);
         restartButton.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
@@ -123,7 +120,7 @@ public class TutorialView extends View{
         TutorialDialog tutorialDialog = new TutorialDialog();
         Optional<ButtonType> result = tutorialDialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            tutorialController.changeSceneToTutorialScene(tutorialDialog.getTutorialPath());
+            tutorialController.changeSceneToTutorialScene(tutorialDialog.getSelectedTutorial());
 
         }
     }

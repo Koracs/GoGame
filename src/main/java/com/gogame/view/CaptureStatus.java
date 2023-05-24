@@ -4,12 +4,9 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
-
-import java.util.Timer;
 
 public class CaptureStatus extends FlowPane implements GameListener {
 
