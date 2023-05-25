@@ -1,7 +1,8 @@
-package com.gogame.model;
+package com.gogame.savegame;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
+import com.gogame.model.GoBoardModel;
 import javafx.scene.control.Alert;
 import javafx.stage.*;
 
@@ -9,7 +10,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
+@Deprecated
 public class SaveGame {
     //region Constants
     private final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";
@@ -32,12 +33,6 @@ public class SaveGame {
     public SaveGame(GoBoardController goBoardController, GameScreenController gameScreenController) {
         this.goBoardController = goBoardController;
         this.gameScreenController = gameScreenController;
-        this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
-    }
-
-    public SaveGame(GoBoardController goBoardController) {
-        this.goBoardController = goBoardController;
-        this.gameScreenController = null;
         this.gameDataStorage = new StringBuilder(goBoardController.getSize() + ";" + goBoardController.getHandicap() + ";" + goBoardController.getKomi() + "\n");
     }
 
@@ -149,7 +144,7 @@ public class SaveGame {
     }
 
     private boolean readData(String filePath) throws IOException {
-        if(filePath != null || filePath.equals("")) {
+        if(filePath == null || filePath.equals("")) {
             return false;
         }
 

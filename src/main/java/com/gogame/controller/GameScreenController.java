@@ -3,8 +3,9 @@ package com.gogame.controller;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
+import com.gogame.savegame.SaveGameHandler;
 import com.gogame.view.GameScreenView;
-import com.gogame.view.TutorialSettingsView;
+import com.gogame.view.TutorialView;
 import com.gogame.view.WinScreenDialog;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBar;
@@ -12,6 +13,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 public class GameScreenController implements GameListener {
@@ -23,6 +26,8 @@ public class GameScreenController implements GameListener {
     private double komi;
     private boolean komiActive;
     private boolean handicapActive;
+
+    private File currentFile;
     //endregion
 
     // Constructor
@@ -78,11 +83,18 @@ public class GameScreenController implements GameListener {
     public void changeHandicapActive() {
         this.handicapActive = !this.handicapActive;
     }
+
     public GameScreenView getView() {
         return view;
     }
+
     public GoBoardModel getModel() {
         return model;
+    }
+
+
+    public File getCurrentFile() {
+        return currentFile;
     }
 
     public void setViewModel(GoBoardModel model) {
@@ -92,58 +104,83 @@ public class GameScreenController implements GameListener {
     //endregion
 
     //region Methods
-    public GoBoardModel initGoBoardModel() {
+    private GoBoardModel initGoBoardModel() {
         return new GoBoardModel(boardSize,
                 komiActive ? komi : 0,
                 handicapActive ? handicap : 0);
     }
 
-    public void showWinScreen() {
+    private void showWinScreen() {
         WinScreenDialog winScreenDialog = new WinScreenDialog(model);
         Optional<ButtonType> result = winScreenDialog.showAndWait();
-        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE){
-            model.reset();
-        }
-    }
-
-    public void changeToTutorialSettingScreen() {
-        TutorialSettingsView nextView = new TutorialSettingsView();
-        Scene s = view.getPane().getScene();
-        Window w = s.getWindow();
-        if(w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-            stage.setScene(scene);
+        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+            //todo reset not intened any longer. maybe prohbit interaction?
         }
     }
 
     public void changeGameModel() {
-        GameScreenView nextView = new GameScreenView(initGoBoardModel());
+        currentFile = null;
+        changeGameModel(initGoBoardModel());
+    }
+
+    public void changeGameModel(File file) {
+        currentFile = file;
+        SaveGameHandler s = new SaveGameHandler(file);
+        changeGameModel(s.createGameModel());
+    }
+
+    private void changeGameModel(GoBoardModel model) {
+        GameScreenView nextView = new GameScreenView(model);
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
-        if(w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
+        if (w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
+            stage.setTitle("Go Game" + currentFile.getName());
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();
         }
     }
 
+    public void changeSceneToTutorialScene(File selectedTutorial) {
+        currentFile = selectedTutorial;
+        SaveGameHandler saveGame = new SaveGameHandler(selectedTutorial);
+        TutorialView nextView = new TutorialView(saveGame);
+
+        Scene s = view.getPane().getScene();
+        Window w = s.getWindow();
+        if (w instanceof Stage stage) {
+            Scene scene = new Scene(nextView.getPane());
+            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle("Go Game" + currentFile.getName());
+        }
+    }
+
+    public void createSaveFile(File file) {
+        currentFile = file;
+        try {
+            SaveGameHandler.createSaveFile(model,file);
+            Window w = view.getPane().getScene().getWindow();
+            if (w instanceof Stage stage) stage.setTitle("Go Game - " + currentFile.getName());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void moveCompleted(GameEvent event) {
-
     }
 
     @Override
     public void resetGame(GameEvent event) {
-
+        currentFile = null;
     }
 
     @Override
     public void playerPassed(GameEvent event) {
-
     }
 
     @Override

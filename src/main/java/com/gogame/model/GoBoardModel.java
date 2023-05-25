@@ -3,6 +3,7 @@ package com.gogame.model;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
+import com.gogame.savegame.MoveHistory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,9 +11,6 @@ import java.util.List;
 
 public class GoBoardModel {
     //region Fields
-    // MVC variables
-
-    // Model variables
     private static final int[] sizes = new int[]{9, 13, 19};
     private final double komi;
     private final int handicap;
@@ -33,6 +31,8 @@ public class GoBoardModel {
     private final List<GameListener> listeners;
 
     private GoField lastCapture;
+
+    private MoveHistory moveHistory;
     //endregion
 
 
@@ -44,10 +44,12 @@ public class GoBoardModel {
         this.size = size;
         this.komi = komi;
         this.handicap = handicap;
+
         currentPlayer = Stone.BLACK;
         listeners = new LinkedList<>();
         gameState = GameState.GAME_START;
         prevPassed = false;
+        moveHistory = new MoveHistory(this);
 
         initModel();
         initHandicapFields();
@@ -143,6 +145,10 @@ public class GoBoardModel {
 
     public int getCapturedByBlack() {
         return capturedByBlack;
+    }
+
+    public MoveHistory getHistory() {
+        return moveHistory;
     }
 
     //endregion
@@ -444,7 +450,7 @@ public class GoBoardModel {
     /**
      * Game ended (both players passed or one player resigned). Calculate the current score and set the game state to display the winner
      */
-    private void gameEnds() {
+    public void gameEnds() {
         calculateScores();
 
         if (pointsBlack == pointsWhite) {

@@ -7,13 +7,13 @@ import java.util.EventObject;
 
 public class GameEvent extends EventObject {
 
-    private GameState state;
+    private final GameState state;
 
     private int row;
     private int col;
 
 
-    public GameEvent(GoBoardModel source, GameState state){ //todo add game interface?
+    public GameEvent(GoBoardModel source, GameState state){
         super(source);
         this.state = state;
     }

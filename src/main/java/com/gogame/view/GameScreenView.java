@@ -2,11 +2,7 @@ package com.gogame.view;
 
 import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
-import com.gogame.listener.GameEvent;
-import com.gogame.listener.GameListener;
 import com.gogame.model.GoBoardModel;
-import com.gogame.model.SaveGame;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -16,10 +12,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-
-import java.io.File;
-import java.util.Optional;
 
 public class GameScreenView extends View {
     //region Fields
@@ -27,10 +19,10 @@ public class GameScreenView extends View {
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
     private final GoBoardView goBoardView;
-    private final SaveGame saveGame;
 
     private BorderPane pane;
 
+    private final GameMenuBar menuBar;
     private final GameStateField gameState;
     private final CaptureStatus captureStatus;
     //endregion
@@ -39,13 +31,13 @@ public class GameScreenView extends View {
         gameScreenController = new GameScreenController(this, model);
 
         goBoardModel = model;
-        goBoardView = new GoBoardView(model);
+        goBoardView = new GoBoardView(goBoardModel);
         goBoardController = goBoardView.getController();
 
-        gameState = new GameStateField(model);
-        captureStatus = new CaptureStatus(model);
+        menuBar = new GameMenuBar(goBoardController,gameScreenController);
+        captureStatus = new CaptureStatus(goBoardModel);
+        gameState = new GameStateField(goBoardModel);
 
-        saveGame = new SaveGame(goBoardController, gameScreenController);
 
         //eventHandler for placing stones
         EventHandler<MouseEvent> clickHandler = goBoardController::mouseClicked;
@@ -67,31 +59,6 @@ public class GameScreenView extends View {
 
 
         drawScene();
-
-        goBoardModel.addGameListener(new GameListener() {
-            @Override
-            public void moveCompleted(GameEvent event) {
-                saveGame.storeData(event.getRow() + ";" + event.getCol() + "- " + event.getState() + "\n");
-            }
-
-            @Override
-            public void resetGame(GameEvent event) {
-                saveGame.resetData();
-            }
-
-            @Override
-            public void playerPassed(GameEvent event) {
-                saveGame.storeData(event.getState().toString() + "\n");
-            }
-
-            @Override
-            public void gameEnded(GameEvent event) {
-            }
-        });
-
-        /*if (!importGame.equals("")) {
-            saveGame.importGameFile(importGame);
-        }*/
     }
 
     public void setModel(GoBoardModel goBoardModel) {
@@ -101,6 +68,7 @@ public class GameScreenView extends View {
     @Override
     protected void drawScene() {
         pane = new BorderPane();
+        pane.setTop(menuBar);
         pane.setCenter(goBoardView);
 
         VBox interactionField = new VBox();
@@ -128,9 +96,6 @@ public class GameScreenView extends View {
         gameplayButtons.setAlignment(Pos.CENTER);
         gameplayButtons.getChildren().add(passButton);
         gameplayButtons.getChildren().add(resignButton);
-
-        GameMenuBar menuBar = new GameMenuBar(goBoardController,gameScreenController,saveGame);
-        pane.setTop(menuBar);
     }
 
     @Override
