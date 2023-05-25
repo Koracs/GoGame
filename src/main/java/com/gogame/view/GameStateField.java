@@ -23,7 +23,7 @@ public class GameStateField extends TextField implements GameListener {
         if(model.getGameState() == GameState.PLACE_HANDICAP) lastPlayer = "Black";
         else lastPlayer = model.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
 
-        this.setText("Player " + lastPlayer + " placed at: " + event.getColLetter()
+        this.setText(lastPlayer + " placed at: " + event.getColLetter()
                           + " " + event.getRowLetter() + ". " + event.getState().toString());
     }
 
@@ -37,7 +37,7 @@ public class GameStateField extends TextField implements GameListener {
         GoBoardModel model = (GoBoardModel) event.getSource();
         String player = model.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
 
-        this.setText(event.getState().toString() + " " + player + " player's turn.");
+        this.setText(event.getState().toString() + " " + player + "'s turn.");
     }
 
     @Override

@@ -18,6 +18,7 @@ public class GoBoardModel {
     private int handicapCount;
     private Stone currentPlayer;
     private GameState gameState;
+    private boolean playerResigned;
 
     private int capturedByWhite;
     private int capturedByBlack;
@@ -64,6 +65,7 @@ public class GoBoardModel {
         }
 
         currentPlayer = Stone.BLACK;
+        playerResigned = false;
         pointsBlack = 0;
         pointsWhite = 0;
         capturedByBlack = 0;
@@ -149,6 +151,14 @@ public class GoBoardModel {
 
     public MoveHistory getHistory() {
         return moveHistory;
+    }
+
+    public boolean isPlayerResigned() {
+        return playerResigned;
+    }
+
+    public void setPlayerResigned(boolean playerResigned) {
+        this.playerResigned = playerResigned;
     }
 
     //endregion
@@ -434,7 +444,7 @@ public class GoBoardModel {
     public void pass() {
         if (prevPassed) {
             // Player in previous round passed - game ends
-            gameEnds();
+            gameEnds(false);
             return;
         }
 
@@ -449,15 +459,28 @@ public class GoBoardModel {
 
     /**
      * Game ended (both players passed or one player resigned). Calculate the current score and set the game state to display the winner
+     *
+     * @param playerResigned Check if one player resigned
      */
-    public void gameEnds() {
+    public void gameEnds(boolean playerResigned) {
+        this.playerResigned = playerResigned;
         calculateScores();
 
-        if (pointsBlack == pointsWhite) {
-            gameState = GameState.DRAW;
+        if(playerResigned) {
+            if(currentPlayer == Stone.BLACK) {
+                gameState = GameState.WHITE_WON;
+            } else {
+                gameState = GameState.BLACK_WON;
+            }
+
         } else {
-            gameState = pointsWhite > pointsBlack ? GameState.WHITE_WON : GameState.BLACK_WON;
+            if (pointsBlack == pointsWhite) {
+                gameState = GameState.DRAW;
+            } else {
+                gameState = pointsWhite > pointsBlack ? GameState.WHITE_WON : GameState.BLACK_WON;
+            }
         }
+
 
         for (GameListener listener : listeners) {
             listener.gameEnded(new GameEvent(this, gameState));
@@ -592,7 +615,7 @@ public class GoBoardModel {
      * On player resigned - check for the score
      */
     public void playerResigned() {
-        gameEnds();
+        gameEnds(true);
     }
 
     /**

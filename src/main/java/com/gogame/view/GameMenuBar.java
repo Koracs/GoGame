@@ -154,7 +154,9 @@ public class GameMenuBar extends MenuBar {
         chooser.setInitialFileName("mySaveGame.txt");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt"));
         File selectedFile = chooser.showSaveDialog(this.getScene().getWindow());
-        gameScreenController.createSaveFile(selectedFile);
+        if(selectedFile != null) {
+            gameScreenController.createSaveFile(selectedFile);
+        }
     }
 
     private void changeSettings() {

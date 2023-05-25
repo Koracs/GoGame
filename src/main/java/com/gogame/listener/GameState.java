@@ -4,12 +4,12 @@ public enum GameState {
 
     GAME_START("Game started."),
     PLACE_HANDICAP("Place handicap stones."),
-    BLACK_TURN("Black player's turn."),
-    BLACK_PASSED("Black player passed."),
-    BLACK_WON("Black player won!"),
-    WHITE_TURN("White player's turn."),
-    WHITE_PASSED("White player passed."),
-    WHITE_WON("White player won!"),
+    BLACK_TURN("Black's turn."),
+    BLACK_PASSED("Black passed."),
+    BLACK_WON("Black won!"),
+    WHITE_TURN("White's turn."),
+    WHITE_PASSED("White passed."),
+    WHITE_WON("White won!"),
     DRAW("Draw!"),
     RESET("Game was reset.");
 

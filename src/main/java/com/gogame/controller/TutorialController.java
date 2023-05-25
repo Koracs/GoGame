@@ -69,7 +69,7 @@ public class TutorialController {
 
     private void showWinScreen() {
         GoBoardModel model = saveGame.getModel();
-        model.gameEnds();
+        model.gameEnds(false);
         WinScreenDialog winScreenDialog = new WinScreenDialog(model);
         Optional<ButtonType> result = winScreenDialog.showAndWait();
         if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
