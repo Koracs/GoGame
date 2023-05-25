@@ -19,6 +19,7 @@ public class GoBoardModel {
     private Stone currentPlayer;
     private GameState gameState;
     private boolean playerResigned;
+    private boolean gameEnded;
 
     private int capturedByWhite;
     private int capturedByBlack;
@@ -46,7 +47,6 @@ public class GoBoardModel {
         this.komi = komi;
         this.handicap = handicap;
 
-        currentPlayer = Stone.BLACK;
         listeners = new LinkedList<>();
         gameState = GameState.GAME_START;
         prevPassed = false;
@@ -66,6 +66,7 @@ public class GoBoardModel {
 
         currentPlayer = Stone.BLACK;
         playerResigned = false;
+        gameEnded = false;
         pointsBlack = 0;
         pointsWhite = 0;
         capturedByBlack = 0;
@@ -172,6 +173,9 @@ public class GoBoardModel {
      * @param col Column of the board
      */
     public void makeMove(int row, int col) {
+        if (gameEnded)
+            return;
+
         prevPassed = false;
 
         if (gameState == GameState.PLACE_HANDICAP) {
@@ -442,6 +446,9 @@ public class GoBoardModel {
      * Current player passed. Check if the previous player also passed (game ends) and continue game (switch player)
      */
     public void pass() {
+        if (gameEnded)
+            return;
+
         if (prevPassed) {
             // Player in previous round passed - game ends
             gameEnds(false);
@@ -464,6 +471,10 @@ public class GoBoardModel {
      */
     public void gameEnds(boolean playerResigned) {
         this.playerResigned = playerResigned;
+        this.gameEnded = true;
+        this.pointsBlack = 0;
+        this.pointsWhite = 0;
+
         calculateScores();
 
         if(playerResigned) {
@@ -615,6 +626,9 @@ public class GoBoardModel {
      * On player resigned - check for the score
      */
     public void playerResigned() {
+        if (gameEnded)
+            return;
+
         gameEnds(true);
     }
 

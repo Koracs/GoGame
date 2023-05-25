@@ -33,6 +33,7 @@ public class GoBoardView extends Pane implements GameListener{
     private Circle hover;
     private int currentRow;
     private int currentCol;
+    private boolean gameEnded;
 
     private boolean[][] marked;
     //endregion
@@ -62,6 +63,7 @@ public class GoBoardView extends Pane implements GameListener{
         this.boardSize = model.getSize();
         fields = model.getFields();
         marked = new boolean[model.getSize()][model.getSize()];
+        gameEnded = false;
     }
 
     //region Getter/Setter
@@ -95,12 +97,14 @@ public class GoBoardView extends Pane implements GameListener{
 
     @Override
     public void moveCompleted(GameEvent event) {
-        draw();
+        if(!gameEnded)
+            draw();
     }
 
     @Override
     public void resetGame(GameEvent event) {
         draw();
+        this.gameEnded = false;
     }
 
     @Override
@@ -110,7 +114,8 @@ public class GoBoardView extends Pane implements GameListener{
 
     @Override
     public void gameEnded(GameEvent event) {
-
+        drawGameEnd();
+        this.gameEnded = true;
     }
 
     public void draw() {
@@ -119,9 +124,22 @@ public class GoBoardView extends Pane implements GameListener{
         drawCoordinates();
         drawStones();
         drawMarkings();
+
+        if(gameEnded)
+            drawGameEnd();
+    }
+
+    private void drawGameEnd() {
+        Rectangle rectangle = new Rectangle(0, 0, (boardSize + 1) * tileSize, (boardSize + 1) * tileSize);
+        rectangle.setFill(Color.valueOf("#808080"));
+        rectangle.setOpacity(0.5);
+        getChildren().add(rectangle);
     }
 
     public void moveHoverMouse(MouseEvent e) {
+        if(gameEnded)
+            return;
+
         try {
             currentRow = controller.getNearestRow(e.getY());
             currentCol = controller.getNearestCol(e.getX());
@@ -132,6 +150,9 @@ public class GoBoardView extends Pane implements GameListener{
     }
 
     public void moveHoverKeyboard(KeyEvent e) {
+        if(gameEnded)
+            return;
+
         switch (e.getCode()) {
             case W, UP -> {
                 if (currentRow >= 1) currentRow -= 1;
@@ -151,6 +172,9 @@ public class GoBoardView extends Pane implements GameListener{
     }
 
     public void setStoneKeyboard() {
+        if(gameEnded)
+            return;
+
         controller.makeMove(currentRow, currentCol);
         drawHover();
     }
@@ -267,6 +291,8 @@ public class GoBoardView extends Pane implements GameListener{
 
 
     public void setMarking(int row, int col) {
+        if(gameEnded)
+            return;
         marked[row][col] = !marked[row][col];
     }
     private void drawMarkings() {

@@ -10,10 +10,12 @@ import java.util.List;
 public class MoveHistory implements GameListener {
 
     private List<GameEvent> events;
+    private boolean gameEnded;
 
     public MoveHistory(GoBoardModel model) {
         model.addGameListener(this);
         events = new ArrayList<>();
+        gameEnded = false;
     }
 
     public MoveHistory() {
@@ -30,21 +32,24 @@ public class MoveHistory implements GameListener {
 
     @Override
     public void moveCompleted(GameEvent event) {
-        events.add(event);
+        if(!gameEnded)
+            events.add(event);
     }
 
     @Override
     public void resetGame(GameEvent event) {
         events.clear();
+        gameEnded = false;
     }
 
     @Override
     public void playerPassed(GameEvent event) {
-        events.add(event);
+        if(!gameEnded)
+            events.add(event);
     }
 
     @Override
     public void gameEnded(GameEvent event) {
-        events.add(event);
+        gameEnded = true;
     }
 }
