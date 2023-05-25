@@ -137,7 +137,11 @@ public class GameScreenController implements GameListener {
             Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
-            stage.setTitle("Go Game" + currentFile.getName());
+            if(currentFile == null) {
+                stage.setTitle("Go Game");
+            } else {
+                stage.setTitle("Go Game - " + currentFile.getName());
+            }
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();

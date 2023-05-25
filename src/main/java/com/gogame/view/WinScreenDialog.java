@@ -28,10 +28,20 @@ public class WinScreenDialog extends Alert {
         super(AlertType.INFORMATION);
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
+        stage.getScene().getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+
+
+
 
         setHeaderText(null);
         setGraphic(null);
-        setTitle("Game Ended!");
+
+        if(model.isPlayerResigned()) {
+            setTitle("Game Ended! - Player resigned");
+        } else {
+            setTitle("Game Ended!");
+        }
+
 
         /*ButtonType newGame = new ButtonType("New Game", ButtonBar.ButtonData.OK_DONE);
         ButtonType close = new ButtonType("Go back", ButtonBar.ButtonData.CANCEL_CLOSE);
