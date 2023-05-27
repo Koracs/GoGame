@@ -14,26 +14,25 @@ public class GoBoardModel {
     private static final int[] sizes = new int[]{9, 13, 19};
     private final double komi;
     private final int handicap;
-    private final int size;
     private int handicapCount;
+    private final int size;
+    private GoField[][] fields;
     private Stone currentPlayer;
     private GameState gameState;
     private boolean playerResigned;
+    private boolean prevPassed;
 
     private int capturedByWhite;
     private int capturedByBlack;
-    private boolean prevPassed;
-
     private double pointsWhite;
     private double pointsBlack;
 
-    private GoField[][] fields;
     private boolean[][] visited;
     private final List<GameListener> listeners;
 
     private GoField lastCapture;
 
-    private MoveHistory moveHistory;
+    private final MoveHistory moveHistory;
     //endregion
 
 
@@ -464,6 +463,8 @@ public class GoBoardModel {
      */
     public void gameEnds(boolean playerResigned) {
         this.playerResigned = playerResigned;
+        this.pointsBlack = 0;
+        this.pointsWhite = 0;
         calculateScores();
 
         if(playerResigned) {

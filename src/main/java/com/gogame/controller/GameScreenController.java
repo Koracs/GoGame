@@ -20,7 +20,7 @@ import java.util.Optional;
 public class GameScreenController implements GameListener {
     //region Fields
     private final GameScreenView view;
-    private GoBoardModel model;
+    private final GoBoardModel model;
     private int boardSize;
     private int handicap;
     private double komi;
@@ -84,23 +84,10 @@ public class GameScreenController implements GameListener {
         this.handicapActive = !this.handicapActive;
     }
 
-    public GameScreenView getView() {
-        return view;
-    }
-
-    public GoBoardModel getModel() {
-        return model;
-    }
-
-
     public File getCurrentFile() {
         return currentFile;
     }
 
-    public void setViewModel(GoBoardModel model) {
-        this.model = model;
-        this.view.setModel(model);
-    }
     //endregion
 
     //region Methods

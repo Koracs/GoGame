@@ -9,8 +9,8 @@ import javafx.scene.input.MouseEvent;
 public class GoBoardController {
     //region Fields
     // MVC variables
-    private GoBoardModel model;
-    private GoBoardView view;
+    private final GoBoardModel model;
+    private final GoBoardView view;
     //endregion
 
     // Constructor
@@ -19,44 +19,7 @@ public class GoBoardController {
         this.view = view;
     }
 
-    //region Getter/Setter
-    public void setModel(GoBoardModel model) {
-        this.model = model;
-    }
-
-    public void setViewModel(GoBoardModel model) {
-        this.model = model;
-        this.view.setModel(model);
-    }
-
-    public void setView(GoBoardView view) {
-        this.view = view;
-    }
-
-    public int getSize() {
-        return model.getSize();
-    }
-
-    public int getHandicap() {
-        return model.getHandicap();
-    }
-
-    public double getKomi() {
-        return model.getKomi();
-    }
-
-    public GoBoardView getView() {
-        return view;
-    }
-
-    public GoBoardModel getModel() {
-        return model;
-    }
-
-    //endregion
-
     //region Methods
-
     public void mouseClicked(MouseEvent e){
         if(e.getButton() == MouseButton.PRIMARY) placeStone(e);
         else if(e.getButton() == MouseButton.SECONDARY) placeMarking(e);

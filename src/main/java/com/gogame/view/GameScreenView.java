@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 
 public class GameScreenView extends View {
     //region Fields
-    private GoBoardModel goBoardModel;
+    private final GoBoardModel goBoardModel;
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
     private final GoBoardView goBoardView;
@@ -59,10 +59,6 @@ public class GameScreenView extends View {
 
 
         drawScene();
-    }
-
-    public void setModel(GoBoardModel goBoardModel) {
-        this.goBoardModel = goBoardModel;
     }
 
     @Override

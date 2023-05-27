@@ -24,11 +24,10 @@ import javafx.scene.text.Text;
 
 public class GoBoardView extends Pane implements GameListener{
     //region Fields
-    // Pane of this class
     private final GoBoardController controller;
     private int boardSize;
     private double tileSize;
-    private GoBoardModel model;
+    private final GoBoardModel model;
     private GoField[][] fields;
     private Circle hover;
     private int currentRow;
@@ -44,7 +43,7 @@ public class GoBoardView extends Pane implements GameListener{
         initView();
 
         setPrefSize(600,600);
-        
+
         widthProperty().addListener(e -> {
             setScale();
             draw();
@@ -61,20 +60,10 @@ public class GoBoardView extends Pane implements GameListener{
     public void initView(){
         this.boardSize = model.getSize();
         fields = model.getFields();
-        marked = new boolean[model.getSize()][model.getSize()];
+        marked = new boolean[boardSize][boardSize];
     }
 
     //region Getter/Setter
-
-    public void setModel(GoBoardModel model) {
-        this.model = model;
-    }
-
-    public void setBoardSize(int boardSize) {
-        this.boardSize = boardSize;
-    }
-
-
     public void setScale() {
         double scale = Math.min(getWidth(), getHeight());
         this.tileSize = scale / (boardSize + 1);
@@ -110,7 +99,8 @@ public class GoBoardView extends Pane implements GameListener{
 
     @Override
     public void gameEnded(GameEvent event) {
-
+        getChildren().remove(hover);
+        this.setDisable(true);
     }
 
     public void draw() {
@@ -219,7 +209,6 @@ public class GoBoardView extends Pane implements GameListener{
         coordinate.setTranslateY(y);
         coordinate.setMinWidth(tileSize);
         coordinate.setMinHeight(tileSize);
-        //coordinate.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
         Text text; //add Number or Character depending on position
         if (y == 0 || y == (boardSize * tileSize)) {
