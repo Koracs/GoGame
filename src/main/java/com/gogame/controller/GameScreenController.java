@@ -26,7 +26,6 @@ public class GameScreenController implements GameListener {
     private double komi;
     private boolean komiActive;
     private boolean handicapActive;
-
     private File currentFile;
     //endregion
 
@@ -99,10 +98,7 @@ public class GameScreenController implements GameListener {
 
     private void showWinScreen() {
         WinScreenDialog winScreenDialog = new WinScreenDialog(model);
-        Optional<ButtonType> result = winScreenDialog.showAndWait();
-        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-            //todo reset not intened any longer. maybe prohbit interaction?
-        }
+        winScreenDialog.showAndWait();
     }
 
     public void changeGameModel() {
@@ -124,11 +120,8 @@ public class GameScreenController implements GameListener {
             Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
-            if(currentFile == null) {
-                stage.setTitle("Go Game");
-            } else {
-                stage.setTitle("Go Game - " + currentFile.getName());
-            }
+            if(currentFile == null) stage.setTitle("Go Game");
+            else stage.setTitle("Go Game - " + currentFile.getName());
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();

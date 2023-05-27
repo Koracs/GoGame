@@ -82,9 +82,7 @@ public class GameScreenView extends View {
 
         Button resignButton = new Button("Resign");
         resignButton.setFocusTraversable(false);
-        resignButton.setOnMouseClicked(e -> {
-            goBoardController.resign();
-        });
+        resignButton.setOnMouseClicked(e -> goBoardController.resign());
 
         gameplayButtons.setPadding(new Insets(30));
         gameplayButtons.setHgap(10);
