@@ -11,6 +11,8 @@ public class GoBoardController {
     // MVC variables
     private final GoBoardModel model;
     private final GoBoardView view;
+
+    private boolean drawMoveHistory;
     //endregion
 
     // Constructor
@@ -61,6 +63,15 @@ public class GoBoardController {
         if (row < 0 || col < 0 || row >= model.getSize() || col >= model.getSize()) return;
 
         view.setMarking(row, col);
+    }
+
+    public boolean isDrawMoveHistory() {
+        return drawMoveHistory;
+    }
+
+    public void setDrawMoveHistory(boolean drawMoveHistory) {
+        this.drawMoveHistory = drawMoveHistory;
+        view.draw();
     }
     //endregion
 }

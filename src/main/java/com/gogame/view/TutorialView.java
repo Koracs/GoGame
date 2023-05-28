@@ -90,6 +90,7 @@ public class TutorialView extends View {
         // Buttons to import/export games
         MenuBar menuBar = new MenuBar();
         Menu file = new Menu("_File");
+        Menu game = new Menu("_Game");
 
         MenuItem restartButton = new MenuItem("_Restart Tutorial");
         restartButton.setOnAction(e -> {
@@ -100,19 +101,39 @@ public class TutorialView extends View {
 
         MenuItem tutorialScreenButton = new MenuItem("Show _Tutorials");
         tutorialScreenButton.setOnAction(e -> showTutorials());
+        tutorialScreenButton.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN));
         file.getItems().add(tutorialScreenButton);
 
         MenuItem gameScreenButton = new MenuItem("_Game Screen");
         gameScreenButton.setOnAction(e -> tutorialController.changeSceneToStartScreen());
         file.getItems().add(gameScreenButton);
+        file.getItems().add(new SeparatorMenuItem());
 
         MenuItem exitGame = new MenuItem("E_xit");
         exitGame.setOnAction(e -> Platform.exit());
-        file.getItems().add(new SeparatorMenuItem());
-        file.getItems().add(exitGame);
         exitGame.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
+        file.getItems().add(exitGame);
+
+
+        MenuItem lastMove = new MenuItem("_Last Move");
+        lastMove.setOnAction(e -> tutorialController.lastMove());
+        lastMove.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN));
+        game.getItems().add(lastMove);
+
+        MenuItem nextMove = new MenuItem("_Next Move");
+        nextMove.setOnAction(e -> tutorialController.nextMove());
+        nextMove.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN));
+        game.getItems().add(nextMove);
+        game.getItems().add(new SeparatorMenuItem());
+
+        CheckMenuItem showMoveHistory = new CheckMenuItem("Show Move _History");
+        showMoveHistory.setOnAction(e -> goBoardController.setDrawMoveHistory(showMoveHistory.isSelected()));
+        showMoveHistory.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
+        game.getItems().add(showMoveHistory);
+
 
         menuBar.getMenus().add(file);
+        menuBar.getMenus().add(game);
 
         pane.setTop(menuBar);
     }

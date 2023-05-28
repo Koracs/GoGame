@@ -86,6 +86,13 @@ public class GameMenuBar extends MenuBar {
         game.getItems().add(resign);
         game.getItems().add(new SeparatorMenuItem());
 
+
+        CheckMenuItem showMoveHistory = new CheckMenuItem("Show Move _History");
+        showMoveHistory.setOnAction(e -> goBoardController.setDrawMoveHistory(showMoveHistory.isSelected()));
+        showMoveHistory.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
+        game.getItems().add(showMoveHistory);
+        game.getItems().add(new SeparatorMenuItem());
+
         MenuItem changeSettings = new MenuItem("_Change Settings");
         changeSettings.setOnAction(e -> {
             askForSave();
@@ -119,6 +126,7 @@ public class GameMenuBar extends MenuBar {
             askForSave();
             showTutorials();
         });
+        showTutorials.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN));
         help.getItems().add(showTutorials);
 
         MenuItem aboutUs = new MenuItem("_About us");
