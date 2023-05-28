@@ -39,11 +39,6 @@ public class WinScreenDialog extends Alert {
             setTitle("Game Ended!");
         }
 
-
-        /*ButtonType newGame = new ButtonType("New Game", ButtonBar.ButtonData.OK_DONE);
-        ButtonType close = new ButtonType("Go back", ButtonBar.ButtonData.CANCEL_CLOSE);
-        getButtonTypes().setAll(newGame,close);
-        */
         BorderPane winScreenPane = new BorderPane();
 
         Text winText = new Text(model.getGameState().toString());

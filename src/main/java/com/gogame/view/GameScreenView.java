@@ -56,7 +56,7 @@ public class GameScreenView extends View {
                 case SPACE, ENTER:
                     goBoardView.setStoneKeyboard();
                     break;
-                case E:
+                case E, M:
                     goBoardView.setMarkingKeyboard();
                 default:
                     goBoardView.moveHoverKeyboard(keyEvent);

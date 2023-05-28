@@ -103,7 +103,7 @@ public class GameMenuBar extends MenuBar {
                 Controls:
                 Move Stone:     Mouse, WASD or Arrow Keys
                 Place Stone:     Left Mouse Button, Enter, Spacebar
-                Place Marker:   Right Mouse Button
+                Place Marker:   Right Mouse Button, E, M
                         
                 Rules:
                 Capture other stones by surrounding them.
