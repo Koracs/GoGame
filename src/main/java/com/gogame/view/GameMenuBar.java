@@ -66,14 +66,14 @@ public class GameMenuBar extends MenuBar {
         saveAsButton.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
 
 
-        MenuItem exitGame = new MenuItem("_Exit");
+        MenuItem exitGame = new MenuItem("E_xit");
         exitGame.setOnAction(e -> {
             askForSave();
             Platform.exit();
         });
         file.getItems().add(new SeparatorMenuItem());
         file.getItems().add(exitGame);
-        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
+        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
 
         MenuItem pass = new MenuItem("_Pass");
         pass.setOnAction(e -> goBoardController.passPlayer());
@@ -131,6 +131,7 @@ public class GameMenuBar extends MenuBar {
     }
 
     private void askForSave() {
+        if(gameScreenController.isFileSaved()) return;
         Alert save = new Alert(Alert.AlertType.CONFIRMATION);
         save.setTitle("Save Game?");
         save.setHeaderText("Would you like to save the current game?");

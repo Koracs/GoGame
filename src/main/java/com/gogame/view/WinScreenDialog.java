@@ -30,9 +30,6 @@ public class WinScreenDialog extends Alert {
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
         stage.getScene().getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
 
-
-
-
         setHeaderText(null);
         setGraphic(null);
 

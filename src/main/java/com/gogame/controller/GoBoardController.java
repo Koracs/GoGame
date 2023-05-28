@@ -61,7 +61,6 @@ public class GoBoardController {
         if (row < 0 || col < 0 || row >= model.getSize() || col >= model.getSize()) return;
 
         view.setMarking(row, col);
-        view.draw();
     }
     //endregion
 }

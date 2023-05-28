@@ -57,14 +57,14 @@ public class GoBoardView extends Pane implements GameListener{
         draw();
     }
 
-    public void initView(){
+    private void initView(){
         this.boardSize = model.getSize();
         fields = model.getFields();
         marked = new boolean[boardSize][boardSize];
     }
 
     //region Getter/Setter
-    public void setScale() {
+    private void setScale() {
         double scale = Math.min(getWidth(), getHeight());
         this.tileSize = scale / (boardSize + 1);
     }
@@ -103,7 +103,7 @@ public class GoBoardView extends Pane implements GameListener{
         this.setDisable(true);
     }
 
-    public void draw() {
+    private void draw() {
         getChildren().clear();
         drawBoard();
         drawCoordinates();
@@ -257,6 +257,12 @@ public class GoBoardView extends Pane implements GameListener{
 
     public void setMarking(int row, int col) {
         marked[row][col] = !marked[row][col];
+        draw();
+    }
+
+    public void setMarkingKeyboard() {
+        marked[currentRow][currentCol] = !marked[currentRow][currentCol];
+        draw();
     }
     private void drawMarkings() {
         for (int row = 0; row < marked.length; row++) {

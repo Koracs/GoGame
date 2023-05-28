@@ -58,6 +58,7 @@ public class TutorialView extends View {
         FlowPane interactionButtons = new FlowPane();
         interactionField.getChildren().add(captureStatus);
         interactionField.getChildren().add(interactionButtons);
+        VBox.setVgrow(interactionButtons, Priority.ALWAYS);
         pane.setLeft(interactionField);
 
 
@@ -79,8 +80,8 @@ public class TutorialView extends View {
 
         interactionButtons.setPadding(new Insets(30));
         interactionButtons.setPrefWidth(20);
-        interactionButtons.setHgap(10);
-        interactionButtons.setVgap(10);
+        interactionButtons.setHgap(15);
+        interactionButtons.setVgap(15);
         interactionButtons.setAlignment(Pos.CENTER);
 
         interactionButtons.getChildren().add(backButton);
@@ -105,11 +106,11 @@ public class TutorialView extends View {
         gameScreenButton.setOnAction(e -> tutorialController.changeSceneToStartScreen());
         file.getItems().add(gameScreenButton);
 
-        MenuItem exitGame = new MenuItem("_Exit");
+        MenuItem exitGame = new MenuItem("E_xit");
         exitGame.setOnAction(e -> Platform.exit());
         file.getItems().add(new SeparatorMenuItem());
         file.getItems().add(exitGame);
-        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
+        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
 
         menuBar.getMenus().add(file);
 

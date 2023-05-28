@@ -1,7 +1,6 @@
 package com.gogame;
 
 
-import com.gogame.controller.GameScreenController;
 import com.gogame.model.GoBoardModel;
 import com.gogame.view.*;
 import javafx.application.Application;
@@ -12,10 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -27,7 +23,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         Thread.setDefaultUncaughtExceptionHandler(Main::handleException);
 
-        GameScreenView gameScreenView = new GameScreenView(new GoBoardModel(19,0,0));
+        GameScreenView gameScreenView = new GameScreenView(getDefaultModel());
         Scene scene = new Scene(gameScreenView.getPane());
         scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
         stage.setScene(scene);
@@ -39,7 +35,11 @@ public class Main extends Application {
 
         stage.show();
         stage.setMinHeight(500);
-        stage.setMinWidth(500);
+        stage.setMinWidth(575);
+    }
+
+    public static GoBoardModel getDefaultModel() {
+        return new GoBoardModel(19,0,0);
     }
 
 
