@@ -157,10 +157,6 @@ public class GoBoardModel {
         return playerResigned;
     }
 
-    public void setPlayerResigned(boolean playerResigned) {
-        this.playerResigned = playerResigned;
-    }
-
     //endregion
 
     /**
@@ -643,19 +639,12 @@ public class GoBoardModel {
     public void addGameListener(GameListener l) {
         listeners.add(l);
     }
-
-
     public void removeGameListener(GameListener l) {
         listeners.remove(l);
     }
 
-
     public List<GameListener> getGameListeners() {
         return this.listeners;
-    }
-
-    public void setGameListeners(List<GameListener> listeners) { //todo rename to addGameListeners?
-        this.listeners.addAll(listeners);
     }
     //endregion
 }
