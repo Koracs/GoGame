@@ -4,6 +4,7 @@ import com.gogame.controller.*;
 
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
+import com.gogame.listener.GameState;
 import com.gogame.model.GoBoardModel;
 import com.gogame.model.GoField;
 import com.gogame.model.Stone;
@@ -22,13 +23,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.util.List;
+
 public class GoBoardView extends Pane implements GameListener{
     //region Fields
-    // Pane of this class
     private final GoBoardController controller;
     private int boardSize;
     private double tileSize;
-    private GoBoardModel model;
+    private final GoBoardModel model;
     private GoField[][] fields;
     private Circle hover;
     private int currentRow;
@@ -44,7 +46,7 @@ public class GoBoardView extends Pane implements GameListener{
         initView();
 
         setPrefSize(600,600);
-        
+
         widthProperty().addListener(e -> {
             setScale();
             draw();
@@ -58,24 +60,14 @@ public class GoBoardView extends Pane implements GameListener{
         draw();
     }
 
-    public void initView(){
+    private void initView(){
         this.boardSize = model.getSize();
         fields = model.getFields();
-        marked = new boolean[model.getSize()][model.getSize()];
+        marked = new boolean[boardSize][boardSize];
     }
 
     //region Getter/Setter
-
-    public void setModel(GoBoardModel model) {
-        this.model = model;
-    }
-
-    public void setBoardSize(int boardSize) {
-        this.boardSize = boardSize;
-    }
-
-
-    public void setScale() {
+    private void setScale() {
         double scale = Math.min(getWidth(), getHeight());
         this.tileSize = scale / (boardSize + 1);
     }
@@ -110,7 +102,8 @@ public class GoBoardView extends Pane implements GameListener{
 
     @Override
     public void gameEnded(GameEvent event) {
-
+        getChildren().remove(hover);
+        this.setDisable(true);
     }
 
     public void draw() {
@@ -119,6 +112,7 @@ public class GoBoardView extends Pane implements GameListener{
         drawCoordinates();
         drawStones();
         drawMarkings();
+        if(controller.isDrawMoveHistory())drawMoveHistory();
     }
 
     public void moveHoverMouse(MouseEvent e) {
@@ -219,7 +213,6 @@ public class GoBoardView extends Pane implements GameListener{
         coordinate.setTranslateY(y);
         coordinate.setMinWidth(tileSize);
         coordinate.setMinHeight(tileSize);
-        //coordinate.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
         Text text; //add Number or Character depending on position
         if (y == 0 || y == (boardSize * tileSize)) {
@@ -268,12 +261,18 @@ public class GoBoardView extends Pane implements GameListener{
 
     public void setMarking(int row, int col) {
         marked[row][col] = !marked[row][col];
+        draw();
+    }
+
+    public void setMarkingKeyboard() {
+        marked[currentRow][currentCol] = !marked[currentRow][currentCol];
+        draw();
     }
     private void drawMarkings() {
         for (int row = 0; row < marked.length; row++) {
             for (int col = 0; col < marked[row].length; col++) {
                 if(marked[row][col]){
-                    Circle marking = new Circle((col + 1) * tileSize,(row + 1) * tileSize, tileSize/4);
+                    Circle marking = new Circle((col + 1) * tileSize,(row + 1) * tileSize, tileSize/3.5);
                     marking.setFill(Color.TRANSPARENT);
 
                     if(fields[row][col].getStone() == Stone.BLACK) marking.setStroke(Color.WHITE);
@@ -283,5 +282,38 @@ public class GoBoardView extends Pane implements GameListener{
             }
         }
     }
+
+    private void drawMoveHistory() {
+        List<GameEvent> events = model.getHistory().getEvents();
+        events = events.stream() //filter out passes from moves
+                .filter(e -> e.getState() != GameState.WHITE_PASSED)
+                .filter(e -> e.getState() != GameState.BLACK_PASSED)
+                .toList();
+        Group moves = new Group();
+
+        for (int i = 0; i < events.size(); i++) {
+            GameEvent event = events.get(i);
+            double x = (event.getCol() + 1) * tileSize - (tileSize / 2);
+            double y = (event.getRow() + 1) * tileSize - (tileSize / 2);
+
+            StackPane coordinate = new StackPane();
+            coordinate.setAlignment(Pos.CENTER);
+            coordinate.setTranslateX(x);
+            coordinate.setTranslateY(y);
+            coordinate.setMinWidth(tileSize);
+            coordinate.setMinHeight(tileSize);
+
+            Text text = new Text(x, y, String.valueOf(i+1));
+            if(fields[event.getRow()][event.getCol()].getStone() == Stone.BLACK) text.setFill(Color.WHITE);
+
+            text.setFont(Font.font(tileSize / 2.5));
+            coordinate.getChildren().add(text);
+            moves.getChildren().add(coordinate);
+
+        }
+
+        getChildren().add(moves);
+    }
+
     //endregion
 }

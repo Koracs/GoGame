@@ -9,19 +9,11 @@ import java.util.List;
 
 public class MoveHistory implements GameListener {
 
-    private List<GameEvent> events;
+    private final List<GameEvent> events;
 
     public MoveHistory(GoBoardModel model) {
         model.addGameListener(this);
         events = new ArrayList<>();
-    }
-
-    public MoveHistory() {
-        events = new ArrayList<>();
-    }
-
-    public void addListener(GoBoardModel model) {
-        model.addGameListener(this);
     }
 
     public List<GameEvent> getEvents() {

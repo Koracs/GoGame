@@ -11,11 +11,14 @@ import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+
+import java.io.File;
 
 public class GameScreenView extends View {
     //region Fields
-    private GoBoardModel goBoardModel;
+    private final GoBoardModel goBoardModel;
     private final GameScreenController gameScreenController;
     private final GoBoardController goBoardController;
     private final GoBoardView goBoardView;
@@ -27,8 +30,8 @@ public class GameScreenView extends View {
     private final CaptureStatus captureStatus;
     //endregion
 
-    public GameScreenView(GoBoardModel model) {
-        gameScreenController = new GameScreenController(this, model);
+    public GameScreenView(GoBoardModel model, File file) {
+        gameScreenController = new GameScreenController(this, model, file);
 
         goBoardModel = model;
         goBoardView = new GoBoardView(goBoardModel);
@@ -52,17 +55,19 @@ public class GameScreenView extends View {
             switch (keyEvent.getCode()) {
                 case SPACE, ENTER:
                     goBoardView.setStoneKeyboard();
+                    break;
+                case E, M:
+                    goBoardView.setMarkingKeyboard();
                 default:
                     goBoardView.moveHoverKeyboard(keyEvent);
             }
         });
 
-
         drawScene();
     }
 
-    public void setModel(GoBoardModel goBoardModel) {
-        this.goBoardModel = goBoardModel;
+    public GameScreenView(GoBoardModel model) {
+        this(model,null);
     }
 
     @Override
@@ -75,6 +80,7 @@ public class GameScreenView extends View {
         FlowPane gameplayButtons = new FlowPane(Orientation.VERTICAL);
         interactionField.getChildren().add(captureStatus);
         interactionField.getChildren().add(gameplayButtons);
+        VBox.setVgrow(gameplayButtons, Priority.ALWAYS);
         pane.setLeft(interactionField);
 
         pane.setBottom(gameState);
@@ -86,9 +92,7 @@ public class GameScreenView extends View {
 
         Button resignButton = new Button("Resign");
         resignButton.setFocusTraversable(false);
-        resignButton.setOnMouseClicked(e -> {
-            goBoardController.resign();
-        });
+        resignButton.setOnMouseClicked(e -> goBoardController.resign());
 
         gameplayButtons.setPadding(new Insets(30));
         gameplayButtons.setHgap(10);

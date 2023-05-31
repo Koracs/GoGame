@@ -14,26 +14,25 @@ public class GoBoardModel {
     private static final int[] sizes = new int[]{9, 13, 19};
     private final double komi;
     private final int handicap;
-    private final int size;
     private int handicapCount;
+    private final int size;
+    private GoField[][] fields;
     private Stone currentPlayer;
     private GameState gameState;
     private boolean playerResigned;
+    private boolean prevPassed;
 
     private int capturedByWhite;
     private int capturedByBlack;
-    private boolean prevPassed;
-
     private double pointsWhite;
     private double pointsBlack;
 
-    private GoField[][] fields;
     private boolean[][] visited;
     private final List<GameListener> listeners;
 
     private GoField lastCapture;
 
-    private MoveHistory moveHistory;
+    private final MoveHistory moveHistory;
     //endregion
 
 
@@ -44,6 +43,7 @@ public class GoBoardModel {
 
         this.size = size;
         this.komi = komi;
+        if(size == 9 && handicap > 5) handicap = 5;
         this.handicap = handicap;
 
         currentPlayer = Stone.BLACK;
@@ -155,10 +155,6 @@ public class GoBoardModel {
 
     public boolean isPlayerResigned() {
         return playerResigned;
-    }
-
-    public void setPlayerResigned(boolean playerResigned) {
-        this.playerResigned = playerResigned;
     }
 
     //endregion
@@ -464,6 +460,8 @@ public class GoBoardModel {
      */
     public void gameEnds(boolean playerResigned) {
         this.playerResigned = playerResigned;
+        this.pointsBlack = 0;
+        this.pointsWhite = 0;
         calculateScores();
 
         if(playerResigned) {
@@ -641,19 +639,12 @@ public class GoBoardModel {
     public void addGameListener(GameListener l) {
         listeners.add(l);
     }
-
-
     public void removeGameListener(GameListener l) {
         listeners.remove(l);
     }
 
-
     public List<GameListener> getGameListeners() {
         return this.listeners;
-    }
-
-    public void setGameListeners(List<GameListener> listeners) { //todo rename to addGameListeners?
-        this.listeners.addAll(listeners);
     }
     //endregion
 }

@@ -8,30 +8,27 @@ import com.gogame.view.GameScreenView;
 import com.gogame.view.TutorialView;
 import com.gogame.view.WinScreenDialog;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 public class GameScreenController implements GameListener {
     //region Fields
     private final GameScreenView view;
-    private GoBoardModel model;
+    private final GoBoardModel model;
     private int boardSize;
     private int handicap;
     private double komi;
     private boolean komiActive;
     private boolean handicapActive;
-
     private File currentFile;
+    private boolean isFileSaved;
     //endregion
 
     // Constructor
-    public GameScreenController(GameScreenView view, GoBoardModel model) {
+    public GameScreenController(GameScreenView view, GoBoardModel model, File file) {
         model.addGameListener(this);
         this.view = view;
         this.model = model;
@@ -40,6 +37,8 @@ public class GameScreenController implements GameListener {
         this.handicap = 0;
         this.komiActive = false;
         this.handicapActive = false;
+        currentFile = file;
+        this.isFileSaved = true;
     }
 
     //region Getter/Setter
@@ -84,22 +83,12 @@ public class GameScreenController implements GameListener {
         this.handicapActive = !this.handicapActive;
     }
 
-    public GameScreenView getView() {
-        return view;
-    }
-
-    public GoBoardModel getModel() {
-        return model;
-    }
-
-
     public File getCurrentFile() {
         return currentFile;
     }
 
-    public void setViewModel(GoBoardModel model) {
-        this.model = model;
-        this.view.setModel(model);
+    public boolean isFileSaved() {
+        return isFileSaved;
     }
     //endregion
 
@@ -112,36 +101,28 @@ public class GameScreenController implements GameListener {
 
     private void showWinScreen() {
         WinScreenDialog winScreenDialog = new WinScreenDialog(model);
-        Optional<ButtonType> result = winScreenDialog.showAndWait();
-        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-            //todo reset not intened any longer. maybe prohbit interaction?
-        }
+        winScreenDialog.showAndWait();
     }
 
     public void changeGameModel() {
-        currentFile = null;
-        changeGameModel(initGoBoardModel());
+        changeGameModel(initGoBoardModel(), null);
     }
 
     public void changeGameModel(File file) {
-        currentFile = file;
         SaveGameHandler s = new SaveGameHandler(file);
-        changeGameModel(s.createGameModel());
+        changeGameModel(s.createGameModel(), file);
     }
 
-    private void changeGameModel(GoBoardModel model) {
-        GameScreenView nextView = new GameScreenView(model);
+    private void changeGameModel(GoBoardModel model, File file) {
+        GameScreenView nextView = new GameScreenView(model, file);
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         if (w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
-            if(currentFile == null) {
-                stage.setTitle("Go Game");
-            } else {
-                stage.setTitle("Go Game - " + currentFile.getName());
-            }
+            if(file == null) stage.setTitle("Go Game");
+            else stage.setTitle("Go Game - " + file.getName());
 
             BorderPane root = (BorderPane) stage.getScene().getRoot();
             root.getCenter().requestFocus();
@@ -156,15 +137,16 @@ public class GameScreenController implements GameListener {
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         if (w instanceof Stage stage) {
-            Scene scene = new Scene(nextView.getPane());
+            Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
-            stage.setTitle("Go Game" + currentFile.getName());
+            stage.setTitle("Go Game Tutorial - " + currentFile.getName());
         }
     }
 
     public void createSaveFile(File file) {
         currentFile = file;
+        isFileSaved = true;
         try {
             SaveGameHandler.createSaveFile(model,file);
             Window w = view.getPane().getScene().getWindow();
@@ -176,11 +158,13 @@ public class GameScreenController implements GameListener {
 
     @Override
     public void moveCompleted(GameEvent event) {
+        isFileSaved = false;
     }
 
     @Override
     public void resetGame(GameEvent event) {
         currentFile = null;
+        isFileSaved = false;
     }
 
     @Override
