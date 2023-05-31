@@ -16,6 +16,9 @@ import javafx.scene.layout.VBox;
 
 import java.io.File;
 
+/**
+ * The GameScreenView acts as the main interaction class for the user. It represents the starting point of the game
+ */
 public class GameScreenView extends View {
     //region Fields
     private final GoBoardModel goBoardModel;
@@ -30,6 +33,11 @@ public class GameScreenView extends View {
     private final CaptureStatus captureStatus;
     //endregion
 
+    /**
+     * Constructs a GameScreenView that is used as the main interaction point of the game
+     * @param model GoBoardModel to be interacted with
+     * @param file File that stores the Models information as a save game.
+     */
     public GameScreenView(GoBoardModel model, File file) {
         gameScreenController = new GameScreenController(this, model, file);
 
@@ -66,6 +74,10 @@ public class GameScreenView extends View {
         drawScene();
     }
 
+    /**
+     * Constructs a GameScreenView that is used as the main interaction point of the game
+     * @param model GoBoardModel to be interacted with
+     */
     public GameScreenView(GoBoardModel model) {
         this(model,null);
     }

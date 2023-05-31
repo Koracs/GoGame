@@ -19,6 +19,9 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.Optional;
 
+/**
+ * The TutorialView acts as the interaction class for tutorials.
+ */
 public class TutorialView extends View {
 
     private final GoBoardModel goBoardModel;
@@ -32,6 +35,10 @@ public class TutorialView extends View {
     private final CaptureStatus captureStatus;
 
 
+    /**
+     * Constructs a new TutorialView. This view includes a GoBoardView, a GameState and a CaptureStatus UI element
+     * @param saveGame SaveGameHandler with the corresponding tutorial.
+     */
     public TutorialView(SaveGameHandler saveGame) {
         this.tutorialController = new TutorialController(this, saveGame);
 
@@ -50,6 +57,9 @@ public class TutorialView extends View {
         return this.pane;
     }
 
+    /**
+     * Draws the Scene used to display the current tutorial and its information.
+     */
     @Override
     protected void drawScene() {
         pane = new BorderPane();
@@ -155,6 +165,10 @@ public class TutorialView extends View {
         pane.setTop(menuBar);
     }
 
+    /**
+     * Shows the tutorials dialog and allows the user to select a tutorial. If the user confirms the selection,
+     * the scene is changed to the tutorial scene corresponding to the selected tutorial.
+     */
     private void showTutorials() {
         TutorialDialog tutorialDialog = new TutorialDialog();
         Optional<ButtonType> result = tutorialDialog.showAndWait();

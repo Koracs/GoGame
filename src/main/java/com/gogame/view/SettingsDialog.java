@@ -13,11 +13,19 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
+/**
+ * A dialog window for game settings. Allows the user to configure the game settings such as board size, komi, and handicap.
+ * The Settings are saved in the corresponding GameScreenController.
+ */
 public class SettingsDialog extends Alert {
 
     private final GameScreenController controller;
     private final Spinner<Integer> handicapSetting;
 
+    /**
+     * Constructs a new SettingsDialog with the given GameScreenController.
+     * @param controller The GameScreenController associated with the game screen.
+     */
     public SettingsDialog(GameScreenController controller){
         super(Alert.AlertType.CONFIRMATION);
         this.controller = controller;
@@ -97,6 +105,10 @@ public class SettingsDialog extends Alert {
         getDialogPane().setContent(AlertPane);
     }
 
+    /**
+     * Changes the handicap spinner based on the current board size. The maximum handicap value is determined by the board size.
+     * This method is called when the board size is changed, and it updates the handicap spinner accordingly.
+     */
     private void changeHandicapSpinner() {
         int maxHandicap = controller.getBoardSize() == 9 ? 5 : 9;
         System.out.println(maxHandicap);

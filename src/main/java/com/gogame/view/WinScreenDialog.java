@@ -15,12 +15,19 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
+/**
+ * The WinScreenDialog displays the Result of a game of go. It shows the points of each player after the game has ended.
+ */
 public class WinScreenDialog extends Alert {
     private final Font LABEL_FONT = Font.font("Verdana", 15);
     private final Font LABEL_FONT_BOLD = Font.font("Verdana", FontWeight.BOLD, 15);
     private final Font TEXT_FONT = Font.font("Verdana", 18);
     private final Font TEXT_FONT_BOLD = Font.font("Verdana", FontWeight.BOLD, 18);
 
+    /**
+     * Constructs a WinScreenDialog for the corresponding model.
+     * @param model The GoBoardModel to be associated with the win screen.
+     */
     public WinScreenDialog(GoBoardModel model) {
         super(AlertType.INFORMATION);
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();

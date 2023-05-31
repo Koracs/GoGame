@@ -39,6 +39,14 @@ public class SaveGameHandler {
     }
 
     /**
+     * Returns the corresponding GoBoardModel
+     * @return GoBoardModel of the SaveGameHandler
+     */
+    public GoBoardModel getModel() {
+        return model;
+    }
+
+    /**
      * Creates a GoBoardModel to be used with gameplay interaction
      * @return Model is returned at latest state of moves
      */
