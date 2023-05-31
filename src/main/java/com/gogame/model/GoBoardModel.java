@@ -43,7 +43,9 @@ public class GoBoardModel {
 
         this.size = size;
         this.komi = komi;
-        if(size == 9 && handicap > 5) handicap = 5;
+
+        if(handicap > 9 && (size == 19 || size == 13)) handicap = 9;
+        else if(size == 9 && handicap > 5) handicap = 5;
         this.handicap = handicap;
 
         currentPlayer = Stone.BLACK;
@@ -54,6 +56,10 @@ public class GoBoardModel {
 
         initModel();
         initHandicapFields();
+    }
+
+    public static GoBoardModel getDefaultModel() {
+        return new GoBoardModel(19,0,0);
     }
 
     private void initModel() {

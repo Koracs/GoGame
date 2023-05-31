@@ -27,7 +27,7 @@ public class TutorialController {
     public void changeSceneToStartScreen() {
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
-        GameScreenView nextView = new GameScreenView(Main.getDefaultModel());
+        GameScreenView nextView = new GameScreenView(GoBoardModel.getDefaultModel());
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());

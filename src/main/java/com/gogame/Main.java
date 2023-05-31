@@ -23,7 +23,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         Thread.setDefaultUncaughtExceptionHandler(Main::handleException);
 
-        GameScreenView gameScreenView = new GameScreenView(getDefaultModel());
+        GameScreenView gameScreenView = new GameScreenView(GoBoardModel.getDefaultModel());
         Scene scene = new Scene(gameScreenView.getPane());
         scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
         stage.setScene(scene);
@@ -38,9 +38,6 @@ public class Main extends Application {
         stage.setMinWidth(575);
     }
 
-    public static GoBoardModel getDefaultModel() {
-        return new GoBoardModel(19,0,0);
-    }
 
 
     private static void handleException(Thread t, Throwable e) {
