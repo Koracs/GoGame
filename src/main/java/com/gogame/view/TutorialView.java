@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 
@@ -49,11 +50,21 @@ public class TutorialView extends View {
         gameState = new GameStateField(goBoardModel);
         captureStatus = new CaptureStatus(goBoardModel);
 
+        //eventHandler for keyboard interaction
+        goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case A, LEFT -> tutorialController.lastMove();
+                case D, RIGHT -> tutorialController.nextMove();
+            }
+        });
+
         drawScene();
     }
 
     @Override
     public BorderPane getPane() {
+        pane.setFocusTraversable(true);
+        pane.getCenter().requestFocus();
         return this.pane;
     }
 
@@ -82,6 +93,7 @@ public class TutorialView extends View {
         imageView.setFitHeight(35);
         backButton.setGraphic(imageView);
         backButton.setOnMouseClicked(e -> tutorialController.lastMove());
+        backButton.setFocusTraversable(false);
         Button forwardButton = new Button("");
         image = new Image(getClass().getResourceAsStream("/pictures/right-arrow.png"));
         imageView = new ImageView(image);
@@ -89,6 +101,7 @@ public class TutorialView extends View {
         imageView.setFitHeight(35);
         forwardButton.setGraphic(imageView);
         forwardButton.setOnMouseClicked(e -> tutorialController.nextMove());
+        forwardButton.setFocusTraversable(false);
 
         interactionButtons.setPadding(new Insets(30));
         interactionButtons.setPrefWidth(20);
@@ -144,12 +157,12 @@ public class TutorialView extends View {
 
         MenuItem lastMove = new MenuItem("_Last Move");
         lastMove.setOnAction(e -> tutorialController.lastMove());
-        lastMove.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN));
+        lastMove.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN));
         game.getItems().add(lastMove);
 
         MenuItem nextMove = new MenuItem("_Next Move");
         nextMove.setOnAction(e -> tutorialController.nextMove());
-        nextMove.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN));
+        nextMove.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
         game.getItems().add(nextMove);
         game.getItems().add(new SeparatorMenuItem());
 

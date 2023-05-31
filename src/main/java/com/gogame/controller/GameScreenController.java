@@ -217,6 +217,9 @@ public class GameScreenController implements GameListener {
             scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Go Game Tutorial - " + currentFile.getName());
+
+            BorderPane root = (BorderPane) stage.getScene().getRoot();
+            root.getCenter().requestFocus();
         }
     }
 
