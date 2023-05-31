@@ -10,6 +10,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The GoBoardModel represents a board for the game of Go
+ * It stores information about the game settings and handles the logic of the game
+ */
 public class GoBoardModel {
     //region Fields
     private static final int[] sizes = new int[]{9, 13, 19};
@@ -37,6 +41,13 @@ public class GoBoardModel {
     //endregion
 
 
+    /**
+     * Constructs a GoBoardModel with the given game settings
+     * @param size SIze of the board. Standard settings are: 19,13 and 9
+     * @param komi Komi setting for the game. Must be non-negative
+     * @param handicap Handicap setting for the game. Must be non-negative
+     * @throws IllegalArgumentException if any values are negative.
+     */
     public GoBoardModel(int size, double komi, int handicap) {
         if (size <= 0) throw new IllegalArgumentException("Size must be a positive value");
         if (komi < 0.0) throw new IllegalArgumentException("Komi must be a non-negative value.");
@@ -56,10 +67,17 @@ public class GoBoardModel {
         initHandicapFields();
     }
 
+    /**
+     * Returns a default instance of the GoBoardModel with a board size of 19x19 and initial komi / handicap values of 0.
+     * @return The default GoBoardModel instance.
+     */
     public static GoBoardModel getDefaultModel() {
         return new GoBoardModel(19,0,0);
     }
 
+    /**
+     * initializes the model on creation or reset. Resets the fields and the points of each player
+     */
     private void initModel() {
         fields = new GoField[size][size];
         for (int row = 0; row < size; row++) {
@@ -76,6 +94,10 @@ public class GoBoardModel {
         capturedByWhite = 0;
     }
 
+    /**
+     * initializes the handicap fields based on three different presets (19, 13 and 9).
+     * Begins the placing of handicap stones
+     */
     private void initHandicapFields() {
         int[] handicapFields = new int[0];
         switch (size) {
@@ -102,64 +124,123 @@ public class GoBoardModel {
 
     //region Getter/Setter
 
+    /**
+     * Returns an array of available preset board sizes.
+     * @return An array of available board sizes.
+     */
     public static int[] getSizes() {
         return sizes;
     }
 
+    /**
+     * Returns the handicap value of the board.
+     * @return The handicap value.
+     */
     public int getHandicap() {
         return handicap;
     }
 
+    /**
+     * Returns the komi value of the board.
+     * @return The komi value.
+     */
     public double getKomi() {
         return komi;
     }
 
+    /**
+     * Returns the current player's stone color.
+     * @return The current player's stone color.
+     */
     public Stone getCurrentPlayer() {
         return this.currentPlayer;
     }
-
+    /**
+     * Returns the stone color of the other player.
+     * @return The stone color of the other player.
+     */
     private Stone getOtherPlayer() {
         return currentPlayer == Stone.BLACK ? Stone.WHITE : Stone.BLACK;
     }
 
+    /**
+     * Returns the total points scored by the white player.
+     * @return The total points scored by the white player.
+     */
     public double getPointsWhite() {
         return pointsWhite;
     }
 
+    /**
+     * Returns the total points scored by the black player.
+     * @return The total points scored by the black player.
+     */
     public double getPointsBlack() {
         return pointsBlack;
     }
 
-
+    /**
+     * Returns the size of the board.
+     * @return The size of the board.
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * Returns a 2D array of GoField objects representing the board fields.
+     * @return The 2D array of GoField objects representing the board fields.
+     */
     public GoField[][] getFields() {
         return fields;
     }
 
+    /**
+     * Returns the GoField object at the specified row and column indices.
+     * @param row The row index.
+     * @param col The column index.
+     * @return The GoField object at the specified row and column indices.
+     */
     public GoField getField(int row, int col) {
         return fields[row][col];
     }
 
+    /**
+     * Returns the current game state.
+     * @return The current game state.
+     */
     public GameState getGameState() {
         return gameState;
     }
 
-
+    /**
+     * Returns the number of stones captured by the white player.
+     * @return The number of stones captured by the white player.
+     */
     public int getCapturedByWhite() {
         return capturedByWhite;
     }
 
+    /**
+     * Returns the number of stones captured by the black player.
+     * @return The number of stones captured by the black player.
+     */
     public int getCapturedByBlack() {
         return capturedByBlack;
     }
 
+    /**
+     * Returns the move history of the game.
+     * @return The move history of the game.
+     */
     public MoveHistory getHistory() {
         return moveHistory;
     }
 
+    /**
+     * Checks if a player has resigned.
+     * @return True if a player has resigned, false otherwise.
+     */
     public boolean isPlayerResigned() {
         return playerResigned;
     }
@@ -640,13 +721,26 @@ public class GoBoardModel {
     //endregion
 
     //region Listeners
+    /**
+     * Adds a GameListener to the list of listeners.
+     * @param l The GameListener to be added.
+     */
     public void addGameListener(GameListener l) {
         listeners.add(l);
     }
+
+    /**
+     * Removes a GameListener from the list of listeners.
+     * @param l The GameListener to be removed.
+     */
     public void removeGameListener(GameListener l) {
         listeners.remove(l);
     }
 
+    /**
+     * Returns a list of all registered GameListeners.
+     * @return A list of GameListeners.
+     */
     public List<GameListener> getGameListeners() {
         return this.listeners;
     }

@@ -84,7 +84,6 @@ public class GoBoardView extends Pane implements GameListener{
 
 
     //region Methods
-
     @Override
     public void moveCompleted(GameEvent event) {
         draw();

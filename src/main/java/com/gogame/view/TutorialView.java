@@ -14,7 +14,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.util.Optional;
 
 public class TutorialView extends View {
@@ -99,6 +101,21 @@ public class TutorialView extends View {
         file.getItems().add(restartButton);
         restartButton.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
 
+        MenuItem openGame = new MenuItem("_Open Own Tutorial");
+        openGame.setOnAction(e -> {
+
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extensionFilter);
+            File selectedFile = fileChooser.showOpenDialog(this.pane.getScene().getWindow());
+            if (selectedFile != null) {
+                tutorialController.changeTutorial(selectedFile);
+            }
+        });
+        file.getItems().add(openGame);
+        file.getItems().add(new SeparatorMenuItem());
+        openGame.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+
         MenuItem tutorialScreenButton = new MenuItem("Show _Tutorials");
         tutorialScreenButton.setOnAction(e -> showTutorials());
         tutorialScreenButton.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN));
@@ -141,8 +158,8 @@ public class TutorialView extends View {
     private void showTutorials() {
         TutorialDialog tutorialDialog = new TutorialDialog();
         Optional<ButtonType> result = tutorialDialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            tutorialController.changeSceneToTutorialScene(tutorialDialog.getSelectedTutorial());
+        if (result.isPresent() && result.get() == ButtonType.OK && tutorialDialog.getSelectedTutorial() != null) {
+            tutorialController.changeTutorial(tutorialDialog.getSelectedTutorial());
 
         }
     }

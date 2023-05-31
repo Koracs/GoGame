@@ -179,7 +179,7 @@ public class GameMenuBar extends MenuBar {
     private void showTutorials() {
         TutorialDialog tutorialDialog = new TutorialDialog();
         Optional<ButtonType> result = tutorialDialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK && tutorialDialog.getSelectedTutorial() != null) {
             gameScreenController.changeSceneToTutorialScene(tutorialDialog.getSelectedTutorial());
 
         }
