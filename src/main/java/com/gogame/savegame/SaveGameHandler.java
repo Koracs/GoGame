@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * The SaveGameHandler class handles the implementation of save files and the loading / saving of game data to files.
+ */
 public class SaveGameHandler {
     //region Constants
     private final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";
@@ -33,10 +36,6 @@ public class SaveGameHandler {
     public SaveGameHandler(File file) {
         moveLines = new ArrayList<>();
         this.file = file;
-    }
-
-    public GoBoardModel getModel() {
-        return model;
     }
 
     /**
@@ -64,6 +63,10 @@ public class SaveGameHandler {
         return model;
     }
 
+    /**
+     * Reads the file data of the given file at construction
+     * @throws IOException if there are errors detected in the file
+     */
     private void readFileData() throws IOException {
         Pattern metaFataPattern = Pattern.compile(METADATA_REGEX);
         Pattern passPattern = Pattern.compile(PASS_REGEX);
@@ -97,17 +100,29 @@ public class SaveGameHandler {
         reader.close();
     }
 
+    /**
+     * simulates all Moves that are saved in the File
+     */
     private void simulateMoves() {
         for (int i = 0; i < moveLines.size(); i++) {
             simulateMove(i);
         }
     }
+
+    /**
+     * Simulates moves until a given point / line in the file
+     * @param moves number of moves to simulate from zero
+     */
     private void simulateMoves(int moves) {
         for (int i = 0; i < moves; i++) {
             simulateMove(i);
         }
     }
 
+    /**
+     * Simulates a move with the given move number
+     * @param moveNumber Move to be simulated
+     */
     private void simulateMove(int moveNumber) {
         String[] move = moveLines.get(moveNumber).split(";");
 
@@ -139,6 +154,9 @@ public class SaveGameHandler {
         return true;
     }
 
+    /**
+     * Resets the game model and sets the current move to zero
+     */
     public void resetMoves() {
         model.reset();
         currentMove = 0;

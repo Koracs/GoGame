@@ -17,7 +17,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Objects;
 
-
+/**
+ * Stating class of the Application. Launches the game view with a default model.
+ */
 public class Main extends Application {
     @Override
     public void start(Stage stage) {
@@ -38,8 +40,11 @@ public class Main extends Application {
         stage.setMinWidth(575);
     }
 
-
-
+    /**
+     * Displays uncaught exceptions in the application through an error dialog.
+     * @param t The thread in which the exception occurred.
+     * @param e The Throwable object representing the exception.
+     */
     private static void handleException(Thread t, Throwable e) {
         if (Platform.isFxApplicationThread()) {
             e.printStackTrace();
