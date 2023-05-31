@@ -116,11 +116,14 @@ public class TutorialView extends View {
         MenuBar menuBar = new MenuBar();
         Menu file = new Menu("_File");
         Menu game = new Menu("_Game");
+        Menu help = new Menu("_Help");
+
+        menuBar.getMenus().add(file);
+        menuBar.getMenus().add(game);
+        menuBar.getMenus().add(help);
 
         MenuItem restartButton = new MenuItem("_Restart Tutorial");
-        restartButton.setOnAction(e -> {
-            tutorialController.resetTutorial();
-        });
+        restartButton.setOnAction(e -> tutorialController.resetTutorial());
         file.getItems().add(restartButton);
         restartButton.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
 
@@ -171,9 +174,31 @@ public class TutorialView extends View {
         showMoveHistory.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
         game.getItems().add(showMoveHistory);
 
+        MenuItem howToPlay = new MenuItem("_How to use");
+        Alert howToPlayDialog = new Alert(Alert.AlertType.INFORMATION);
+        howToPlayDialog.setTitle("How to use tutorials");
+        howToPlayDialog.setHeaderText(null);
+        howToPlayDialog.setContentText("""
+                Controls:
+                Show next move: D, Right-Arrow
+                Show last move: A, Left-Arrow
+                
+                Restart: CTRL+R
+                """);
 
-        menuBar.getMenus().add(file);
-        menuBar.getMenus().add(game);
+        howToPlay.setOnAction(e -> howToPlayDialog.showAndWait());
+        help.getItems().add(howToPlay);
+
+
+        MenuItem aboutUs = new MenuItem("_About us");
+        Alert aboutUsDialog = new Alert(Alert.AlertType.INFORMATION);
+        aboutUsDialog.setTitle("About us");
+        aboutUsDialog.setHeaderText("Go Game - PR SE SS2023 - Group 5");
+        aboutUsDialog.setContentText("Made by: \nDominik Niederberger, Felix Stadler, Simon Ulmer");
+        aboutUs.setOnAction(e -> aboutUsDialog.showAndWait());
+        help.getItems().add(aboutUs);
+
+
 
         pane.setTop(menuBar);
     }
