@@ -6,6 +6,7 @@ import com.gogame.listener.GameState;
 import com.gogame.savegame.MoveHistory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,9 +44,6 @@ public class GoBoardModel {
 
         this.size = size;
         this.komi = komi;
-
-        if(handicap > 9 && (size == 19 || size == 13)) handicap = 9;
-        else if(size == 9 && handicap > 5) handicap = 5;
         this.handicap = handicap;
 
         currentPlayer = Stone.BLACK;
@@ -93,9 +91,12 @@ public class GoBoardModel {
                 fields[row][col].setStone(Stone.PRESET);
             }
         }
+
         if (handicap > 0) {
             gameState = GameState.PLACE_HANDICAP;
-            handicapCount = handicap;
+            //checks that the handicap does not exceed the maximum placeable handicap stones
+            int maxHandicap = (int) Arrays.stream(fields).flatMap(Arrays::stream).filter(GoField::isPreset).count();
+            handicapCount = Math.min(handicap, maxHandicap);
         }
     }
 
@@ -609,10 +610,7 @@ public class GoBoardModel {
         if (row < 0 || row >= size || col < 0 || col >= size) {
             return true;
         }
-        if (fields[row][col].isEmpty() || fields[row][col].getStone() == stone) {
-            return true;
-        }
-        return false;
+        return fields[row][col].isEmpty() || fields[row][col].getStone() == stone;
     }
 
     /**
