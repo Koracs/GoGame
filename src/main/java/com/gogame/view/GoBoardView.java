@@ -25,6 +25,9 @@ import javafx.scene.text.Text;
 
 import java.util.List;
 
+/**
+ * The GoBoardView represents the Board of the Go Game itself. It is used to display the current state of the game fields.
+ */
 public class GoBoardView extends Pane implements GameListener{
     //region Fields
     private final GoBoardController controller;
@@ -39,7 +42,10 @@ public class GoBoardView extends Pane implements GameListener{
     private boolean[][] marked;
     //endregion
 
-    // Constructor
+    /**
+     * Constructs a GoBoardView for the specified GoBoardModel and adds itself to the models listeners.
+     * @param model The GoBoardModel to be associated with the GoBoardView.
+     */
     public GoBoardView(GoBoardModel model) {
         this.model = model;
         controller = new GoBoardController(model, this);
@@ -60,6 +66,9 @@ public class GoBoardView extends Pane implements GameListener{
         draw();
     }
 
+    /**
+     * Initializes the view of the go board
+     */
     private void initView(){
         this.boardSize = model.getSize();
         fields = model.getFields();
@@ -67,15 +76,27 @@ public class GoBoardView extends Pane implements GameListener{
     }
 
     //region Getter/Setter
+
+    /**
+     * Sets the scale of the go board to display its size according to the Nodes size.
+     */
     private void setScale() {
         double scale = Math.min(getWidth(), getHeight());
         this.tileSize = scale / (boardSize + 1);
     }
 
+    /**
+     * Returns the current scale of the board
+     * @return The size of one tile of the board.
+     */
     public double getScale() {
         return this.tileSize;
     }
 
+    /**
+     * Returns the controller that is created by this view.
+     * @return The GoBoardController used by this view.
+     */
     public GoBoardController getController() {
         return this.controller;
     }
@@ -84,7 +105,6 @@ public class GoBoardView extends Pane implements GameListener{
 
 
     //region Methods
-
     @Override
     public void moveCompleted(GameEvent event) {
         draw();
@@ -100,12 +120,19 @@ public class GoBoardView extends Pane implements GameListener{
 
     }
 
+    /**
+     * Disables interaction with the go board when the game ends
+     * @param event Event that contains information about the current game
+     */
     @Override
     public void gameEnded(GameEvent event) {
         getChildren().remove(hover);
         this.setDisable(true);
     }
 
+    /**
+     * Draws the go board and all its components. Also draws the move history if it should be displayed.
+     */
     public void draw() {
         getChildren().clear();
         drawBoard();
@@ -115,6 +142,11 @@ public class GoBoardView extends Pane implements GameListener{
         if(controller.isDrawMoveHistory())drawMoveHistory();
     }
 
+    /**
+     * Handles the movement of the hover using the mouse. Updates the current row and column based on the mouse position
+     * and redraws the hover.
+     * @param e The MouseEvent containing information about the mouse movement.
+     */
     public void moveHoverMouse(MouseEvent e) {
         try {
             currentRow = controller.getNearestRow(e.getY());
@@ -125,6 +157,11 @@ public class GoBoardView extends Pane implements GameListener{
         }
     }
 
+    /**
+     * Handles the movement of the hover using the keyboard. Updates the current row and column based on the keyboard input
+     * and redraws the hover.
+     * @param e The KeyEvent containing information about the keyboard input.
+     */
     public void moveHoverKeyboard(KeyEvent e) {
         switch (e.getCode()) {
             case W, UP -> {
@@ -144,11 +181,21 @@ public class GoBoardView extends Pane implements GameListener{
         drawHover();
     }
 
+    /**
+     * Sets the stone on the current hovered position using the keyboard. Makes a move at the current row and column using
+     * the controller and redraws the hover.
+     */
     public void setStoneKeyboard() {
         controller.makeMove(currentRow, currentCol);
         drawHover();
     }
 
+    /**
+     * Draws the hover circle on the current hovered position.
+     * The color of the hover circle is determined based on the state of the field at the current row and column.
+     * If the field is empty, the hover color corresponds to the current player. If the field is occupied, the hover color is
+     * set to red.
+     */
     private void drawHover() {
         if (currentRow < 0 || currentCol < 0 || currentRow >= boardSize || currentCol >= boardSize) {
             return;
@@ -168,6 +215,9 @@ public class GoBoardView extends Pane implements GameListener{
         getChildren().add(hover);
     }
 
+    /**
+     * Draws the board of the game.
+     */
     private void drawBoard() {
         //draw background rectangle
         Rectangle background = new Rectangle(0, 0, (boardSize + 1) * tileSize, (boardSize + 1) * tileSize);
@@ -189,6 +239,9 @@ public class GoBoardView extends Pane implements GameListener{
         }
     }
 
+    /**
+     * Draws the coordinates surrounding the board
+     */
     private void drawCoordinates() {
         Group coordinates = new Group();
         //horizontal coordinates
@@ -205,7 +258,13 @@ public class GoBoardView extends Pane implements GameListener{
         getChildren().add(coordinates);
     }
 
-
+    /**
+     * Draws a coordinate for the board.
+     * @param parent Group of all Coordinates
+     * @param value Coordinate value to be displayed
+     * @param x The X position of the coordinate
+     * @param y The Y position of the coordinate
+     */
     private void drawCoordinate(Group parent, int value, double x, double y) {
         StackPane coordinate = new StackPane();
         coordinate.setAlignment(Pos.CENTER);
@@ -225,13 +284,16 @@ public class GoBoardView extends Pane implements GameListener{
         parent.getChildren().add(coordinate);
     }
 
+    /**
+     * Draws the Stones that are placed on the board.
+     */
     private void drawStones() {
         fields = model.getFields();
         for (int row = 0; row < fields.length; row++) {
             for (int col = 0; col < fields[row].length; col++) {
                 if (fields[row][col].getStone() != Stone.NONE) {
                     Circle stone = createStone((col + 1) * tileSize,
-                            (row + 1) * tileSize, fields[row][col].getStone(), tileSize);
+                            (row + 1) * tileSize, fields[row][col].getStone());
 
                     getChildren().add(stone);
                 }
@@ -239,7 +301,14 @@ public class GoBoardView extends Pane implements GameListener{
         }
     }
 
-    private Circle createStone(double centerX, double centerY, Stone stone, double tileSize) {
+    /**
+     * Creates a Stone for the board
+     * @param centerX The X position of the stone
+     * @param centerY The Y position of the stone
+     * @param stone The Stone to be drawn
+     * @return a Circle Object representing a Stone
+     */
+    private Circle createStone(double centerX, double centerY, Stone stone) {
         double radius = switch (stone) {
             case BLACK, WHITE -> tileSize / 2.5;
             case PRESET -> tileSize / 6;
@@ -258,16 +327,30 @@ public class GoBoardView extends Pane implements GameListener{
         return circle;
     }
 
-
+    /**
+     * Sets the marking on the specified row and column of the board. Toggles the marking state of the field at the given position
+     * and redraws the board.
+     * @param row The row index of the field.
+     * @param col The column index of the field.
+     */
     public void setMarking(int row, int col) {
         marked[row][col] = !marked[row][col];
         draw();
     }
 
+    /**
+     * Sets the marking on the current hovered position using the keyboard. Toggles the marking state of the field at the
+     * current row and column and redraws the board.
+     */
     public void setMarkingKeyboard() {
         marked[currentRow][currentCol] = !marked[currentRow][currentCol];
         draw();
     }
+
+    /**
+     * Draws the markings on the board. The fill color of the marking depends on the stone color of the corresponding field.
+     * The marking stroke color is set to the opposite color of the stone.
+     */
     private void drawMarkings() {
         for (int row = 0; row < marked.length; row++) {
             for (int col = 0; col < marked[row].length; col++) {
@@ -283,6 +366,11 @@ public class GoBoardView extends Pane implements GameListener{
         }
     }
 
+    /**
+     * Draws the move history on the board. Retrieves the list of game events from the move history and filters out the
+     * passes. Represents move as a number starting from one. The fill color of the number label depends on
+     * the stone color of the field.
+     */
     private void drawMoveHistory() {
         List<GameEvent> events = model.getHistory().getEvents();
         events = events.stream() //filter out passes from moves

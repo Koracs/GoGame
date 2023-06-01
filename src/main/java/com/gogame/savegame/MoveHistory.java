@@ -7,15 +7,27 @@ import com.gogame.model.GoBoardModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The MoveHistory class keeps track of the game events and provides access to the list of events. Used for SaveGames.
+ * It implements the GameListener interface to listen for game events and update the history accordingly.
+ */
 public class MoveHistory implements GameListener {
 
     private final List<GameEvent> events;
 
+    /**
+     * Constructs a MoveHistory object for the specified GoBoardModel and add itself to the models listeners.
+     * @param model The GoBoardModel to be associated with the move history.
+     */
     public MoveHistory(GoBoardModel model) {
         model.addGameListener(this);
         events = new ArrayList<>();
     }
 
+    /**
+     * Returns the list of game events in the move history.
+     * @return The list of game events.
+     */
     public List<GameEvent> getEvents() {
         return events;
     }

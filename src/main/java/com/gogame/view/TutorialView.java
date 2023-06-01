@@ -13,10 +13,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.util.Optional;
 
+/**
+ * The TutorialView acts as the interaction class for tutorials.
+ */
 public class TutorialView extends View {
 
     private final GoBoardModel goBoardModel;
@@ -30,6 +36,10 @@ public class TutorialView extends View {
     private final CaptureStatus captureStatus;
 
 
+    /**
+     * Constructs a new TutorialView. This view includes a GoBoardView, a GameState and a CaptureStatus UI element
+     * @param saveGame SaveGameHandler with the corresponding tutorial.
+     */
     public TutorialView(SaveGameHandler saveGame) {
         this.tutorialController = new TutorialController(this, saveGame);
 
@@ -40,14 +50,27 @@ public class TutorialView extends View {
         gameState = new GameStateField(goBoardModel);
         captureStatus = new CaptureStatus(goBoardModel);
 
+        //eventHandler for keyboard interaction
+        goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case A, LEFT -> tutorialController.lastMove();
+                case D, RIGHT -> tutorialController.nextMove();
+            }
+        });
+
         drawScene();
     }
 
     @Override
     public BorderPane getPane() {
+        pane.setFocusTraversable(true);
+        pane.getCenter().requestFocus();
         return this.pane;
     }
 
+    /**
+     * Draws the Scene used to display the current tutorial and its information.
+     */
     @Override
     protected void drawScene() {
         pane = new BorderPane();
@@ -70,6 +93,7 @@ public class TutorialView extends View {
         imageView.setFitHeight(35);
         backButton.setGraphic(imageView);
         backButton.setOnMouseClicked(e -> tutorialController.lastMove());
+        backButton.setFocusTraversable(false);
         Button forwardButton = new Button("");
         image = new Image(getClass().getResourceAsStream("/pictures/right-arrow.png"));
         imageView = new ImageView(image);
@@ -77,6 +101,7 @@ public class TutorialView extends View {
         imageView.setFitHeight(35);
         forwardButton.setGraphic(imageView);
         forwardButton.setOnMouseClicked(e -> tutorialController.nextMove());
+        forwardButton.setFocusTraversable(false);
 
         interactionButtons.setPadding(new Insets(30));
         interactionButtons.setPrefWidth(20);
@@ -91,13 +116,31 @@ public class TutorialView extends View {
         MenuBar menuBar = new MenuBar();
         Menu file = new Menu("_File");
         Menu game = new Menu("_Game");
+        Menu help = new Menu("_Help");
+
+        menuBar.getMenus().add(file);
+        menuBar.getMenus().add(game);
+        menuBar.getMenus().add(help);
 
         MenuItem restartButton = new MenuItem("_Restart Tutorial");
-        restartButton.setOnAction(e -> {
-            tutorialController.resetTutorial();
-        });
+        restartButton.setOnAction(e -> tutorialController.resetTutorial());
         file.getItems().add(restartButton);
         restartButton.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
+
+        MenuItem openGame = new MenuItem("_Open Own Tutorial");
+        openGame.setOnAction(e -> {
+
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extensionFilter);
+            File selectedFile = fileChooser.showOpenDialog(this.pane.getScene().getWindow());
+            if (selectedFile != null) {
+                tutorialController.changeTutorial(selectedFile);
+            }
+        });
+        file.getItems().add(openGame);
+        file.getItems().add(new SeparatorMenuItem());
+        openGame.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 
         MenuItem tutorialScreenButton = new MenuItem("Show _Tutorials");
         tutorialScreenButton.setOnAction(e -> showTutorials());
@@ -117,12 +160,12 @@ public class TutorialView extends View {
 
         MenuItem lastMove = new MenuItem("_Last Move");
         lastMove.setOnAction(e -> tutorialController.lastMove());
-        lastMove.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN));
+        lastMove.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN));
         game.getItems().add(lastMove);
 
         MenuItem nextMove = new MenuItem("_Next Move");
         nextMove.setOnAction(e -> tutorialController.nextMove());
-        nextMove.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN));
+        nextMove.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
         game.getItems().add(nextMove);
         game.getItems().add(new SeparatorMenuItem());
 
@@ -131,18 +174,44 @@ public class TutorialView extends View {
         showMoveHistory.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
         game.getItems().add(showMoveHistory);
 
+        MenuItem howToPlay = new MenuItem("_How to use");
+        Alert howToPlayDialog = new Alert(Alert.AlertType.INFORMATION);
+        howToPlayDialog.setTitle("How to use tutorials");
+        howToPlayDialog.setHeaderText(null);
+        howToPlayDialog.setContentText("""
+                Controls:
+                Show next move: D, Right-Arrow
+                Show last move: A, Left-Arrow
+                
+                Restart: CTRL+R
+                """);
 
-        menuBar.getMenus().add(file);
-        menuBar.getMenus().add(game);
+        howToPlay.setOnAction(e -> howToPlayDialog.showAndWait());
+        help.getItems().add(howToPlay);
+
+
+        MenuItem aboutUs = new MenuItem("_About us");
+        Alert aboutUsDialog = new Alert(Alert.AlertType.INFORMATION);
+        aboutUsDialog.setTitle("About us");
+        aboutUsDialog.setHeaderText("Go Game - PR SE SS2023 - Group 5");
+        aboutUsDialog.setContentText("Made by: \nDominik Niederberger, Felix Stadler, Simon Ulmer");
+        aboutUs.setOnAction(e -> aboutUsDialog.showAndWait());
+        help.getItems().add(aboutUs);
+
+
 
         pane.setTop(menuBar);
     }
 
+    /**
+     * Shows the tutorials dialog and allows the user to select a tutorial. If the user confirms the selection,
+     * the scene is changed to the tutorial scene corresponding to the selected tutorial.
+     */
     private void showTutorials() {
         TutorialDialog tutorialDialog = new TutorialDialog();
         Optional<ButtonType> result = tutorialDialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            tutorialController.changeSceneToTutorialScene(tutorialDialog.getSelectedTutorial());
+        if (result.isPresent() && result.get() == ButtonType.OK && tutorialDialog.getSelectedTutorial() != null) {
+            tutorialController.changeTutorial(tutorialDialog.getSelectedTutorial());
 
         }
     }

@@ -17,13 +17,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Objects;
 
-
+/**
+ * Stating class of the Application. Launches the game view with a default model.
+ */
 public class Main extends Application {
     @Override
     public void start(Stage stage) {
         Thread.setDefaultUncaughtExceptionHandler(Main::handleException);
 
-        GameScreenView gameScreenView = new GameScreenView(getDefaultModel());
+        GameScreenView gameScreenView = new GameScreenView(GoBoardModel.getDefaultModel());
         Scene scene = new Scene(gameScreenView.getPane());
         scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
         stage.setScene(scene);
@@ -38,11 +40,11 @@ public class Main extends Application {
         stage.setMinWidth(575);
     }
 
-    public static GoBoardModel getDefaultModel() {
-        return new GoBoardModel(19,0,0);
-    }
-
-
+    /**
+     * Displays uncaught exceptions in the application through an error dialog.
+     * @param t The thread in which the exception occurred.
+     * @param e The Throwable object representing the exception.
+     */
     private static void handleException(Thread t, Throwable e) {
         if (Platform.isFxApplicationThread()) {
             e.printStackTrace();
