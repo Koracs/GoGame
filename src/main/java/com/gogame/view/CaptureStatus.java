@@ -8,6 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 
+/**
+ * The CaptureStatus class represents a UI component that displays the captured stones count for each player.
+ * It extends FlowPane and implements the GameListener interface to listen for game events and update the captured stones count accordingly.
+ */
 public class CaptureStatus extends FlowPane implements GameListener {
 
     private static final Label labelWhite = new Label("Captured \nby White: ");
@@ -15,6 +19,11 @@ public class CaptureStatus extends FlowPane implements GameListener {
     private final Text capturedByWhite = new Text("0");
     private final Text capturedByBlack = new Text("0");
 
+
+    /**
+     * Constructs a CaptureStatus object for the specified GoBoardModel and adds itself to the models listeners.
+     * @param model The GoBoardModel to be associated with the capture status.
+     */
     public CaptureStatus(GoBoardModel model){
         model.addGameListener(this);
         this.setPadding(new Insets(30,0,30,30));

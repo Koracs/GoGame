@@ -1,10 +1,8 @@
 package com.gogame.view;
 
-import com.gogame.controller.GameScreenController;
 import com.gogame.model.GoBoardModel;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -13,25 +11,28 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.util.Objects;
 
+/**
+ * The WinScreenDialog displays the Result of a game of go. It shows the points of each player after the game has ended.
+ */
 public class WinScreenDialog extends Alert {
     private final Font LABEL_FONT = Font.font("Verdana", 15);
     private final Font LABEL_FONT_BOLD = Font.font("Verdana", FontWeight.BOLD, 15);
     private final Font TEXT_FONT = Font.font("Verdana", 18);
     private final Font TEXT_FONT_BOLD = Font.font("Verdana", FontWeight.BOLD, 18);
 
+    /**
+     * Constructs a WinScreenDialog for the corresponding model.
+     * @param model The GoBoardModel to be associated with the win screen.
+     */
     public WinScreenDialog(GoBoardModel model) {
         super(AlertType.INFORMATION);
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
         stage.getScene().getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
-
-
-
 
         setHeaderText(null);
         setGraphic(null);
@@ -42,11 +43,6 @@ public class WinScreenDialog extends Alert {
             setTitle("Game Ended!");
         }
 
-
-        /*ButtonType newGame = new ButtonType("New Game", ButtonBar.ButtonData.OK_DONE);
-        ButtonType close = new ButtonType("Go back", ButtonBar.ButtonData.CANCEL_CLOSE);
-        getButtonTypes().setAll(newGame,close);
-        */
         BorderPane winScreenPane = new BorderPane();
 
         Text winText = new Text(model.getGameState().toString());

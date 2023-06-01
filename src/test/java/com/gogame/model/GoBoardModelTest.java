@@ -3,6 +3,7 @@ package com.gogame.model;
 import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
+import com.gogame.savegame.MoveHistory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -78,6 +79,33 @@ class GoBoardModelTest {
                 assertNotNull(fields[i][j]);
             }
         }
+    }
+
+    @Test
+    @DisplayName("Testing getter getHistory()")
+    void testGetHistory() {
+        MoveHistory history = goBoardModel9x0x0.getHistory();
+        assertEquals(0,history.getEvents().size());
+
+        goBoardModel9x0x0.makeMove(0,0);
+        history = goBoardModel9x0x0.getHistory();
+        assertEquals(1,history.getEvents().size());
+
+        goBoardModel9x0x0.reset();
+        history = goBoardModel9x0x0.getHistory();
+        assertEquals(0,history.getEvents().size());
+    }
+
+    @Test
+    @DisplayName("Testing getter isPlayerResigned()")
+    void testIsPlayerResigned() {
+        assertFalse(goBoardModel9x0x0.isPlayerResigned());
+        goBoardModel9x0x0.pass();
+        goBoardModel9x0x0.pass();
+        assertFalse(goBoardModel9x0x0.isPlayerResigned());
+
+        goBoardModel13x0x0.playerResigned();
+        assertTrue(goBoardModel13x0x0.isPlayerResigned());
     }
 
 
@@ -302,18 +330,13 @@ class GoBoardModelTest {
             }
         };
 
-        assertEquals(0, goBoardModel9x0x0.getGameListeners().size());
-        goBoardModel9x0x0.addGameListener(gameListener);
+        //Listener size is 1 at the beginning because of the Listener "MoveHistory" which is added at model construction
         assertEquals(1, goBoardModel9x0x0.getGameListeners().size());
+        goBoardModel9x0x0.addGameListener(gameListener);
+        assertEquals(2, goBoardModel9x0x0.getGameListeners().size());
 
         goBoardModel9x0x0.removeGameListener(gameListener);
-        assertEquals(0, goBoardModel9x0x0.getGameListeners().size());
-
-        List<GameListener> gameListeners = new ArrayList<>();
-        gameListeners.add(gameListener);
-
-        goBoardModel9x0x0.setGameListeners(gameListeners);
-        assertEquals(1,goBoardModel9x0x0.getGameListeners().size());
+        assertEquals(1, goBoardModel9x0x0.getGameListeners().size());
     }
 
     @Test
@@ -372,8 +395,21 @@ class GoBoardModelTest {
     }
 
     @Test
+    @DisplayName("Verify if game ends correctly with Draw")
+    void gameEndsWithDraw() {
+        goBoardModel9x0x0.makeMove(1, 0);
+        goBoardModel9x0x0.makeMove(0, 7);
+        goBoardModel9x0x0.makeMove(0, 1);
+        goBoardModel9x0x0.makeMove(1, 8);
+        goBoardModel9x0x0.makeMove(1, 1);
+        goBoardModel9x0x0.makeMove(1, 7);
+        goBoardModel9x0x0.pass();
+        goBoardModel9x0x0.pass();
+        assertEquals(GameState.DRAW, goBoardModel9x0x0.getGameState());
+    }
+    @Test
     @DisplayName("Verify if game ends correctly")
-    void gameEnds() {
+    void gameEndsWithResign() {
         goBoardModel9x0x0.makeMove(1, 0);
         goBoardModel9x0x0.makeMove(0, 7);
         goBoardModel9x0x0.makeMove(0, 1);
@@ -381,6 +417,6 @@ class GoBoardModelTest {
         goBoardModel9x0x0.makeMove(1, 1);
         goBoardModel9x0x0.makeMove(1, 7);
         goBoardModel9x0x0.playerResigned();
-        assertEquals(GameState.DRAW, goBoardModel9x0x0.getGameState());
+        assertEquals(GameState.WHITE_WON, goBoardModel9x0x0.getGameState());
     }
 }

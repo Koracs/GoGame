@@ -12,10 +12,18 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.Optional;
 
+/**
+ * The GameMenuBar is a UI MenuBar that has stores ever possible interaction with the game screen
+ */
 public class GameMenuBar extends MenuBar {
 
     private final GameScreenController gameScreenController;
 
+    /**
+     * Constructs a GameMenuBar for the corresponding GameScreenController and GoBoardController
+     * @param goBoardController GoBoardController to be interacted with
+     * @param gameScreenController GameScreenController to be interacted with
+     */
     public GameMenuBar(GoBoardController goBoardController, GameScreenController gameScreenController) {
         this.gameScreenController = gameScreenController;
 
@@ -66,14 +74,14 @@ public class GameMenuBar extends MenuBar {
         saveAsButton.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
 
 
-        MenuItem exitGame = new MenuItem("_Exit");
+        MenuItem exitGame = new MenuItem("E_xit");
         exitGame.setOnAction(e -> {
             askForSave();
             Platform.exit();
         });
         file.getItems().add(new SeparatorMenuItem());
         file.getItems().add(exitGame);
-        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
+        exitGame.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
 
         MenuItem pass = new MenuItem("_Pass");
         pass.setOnAction(e -> goBoardController.passPlayer());
@@ -84,6 +92,13 @@ public class GameMenuBar extends MenuBar {
         resign.setOnAction(e -> goBoardController.resign());
         resign.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
         game.getItems().add(resign);
+        game.getItems().add(new SeparatorMenuItem());
+
+
+        CheckMenuItem showMoveHistory = new CheckMenuItem("Show Move _History");
+        showMoveHistory.setOnAction(e -> goBoardController.setDrawMoveHistory(showMoveHistory.isSelected()));
+        showMoveHistory.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
+        game.getItems().add(showMoveHistory);
         game.getItems().add(new SeparatorMenuItem());
 
         MenuItem changeSettings = new MenuItem("_Change Settings");
@@ -103,7 +118,7 @@ public class GameMenuBar extends MenuBar {
                 Controls:
                 Move Stone:     Mouse, WASD or Arrow Keys
                 Place Stone:     Left Mouse Button, Enter, Spacebar
-                Place Marker:   Right Mouse Button
+                Place Marker:   Right Mouse Button, E, M
                         
                 Rules:
                 Capture other stones by surrounding them.
@@ -119,6 +134,7 @@ public class GameMenuBar extends MenuBar {
             askForSave();
             showTutorials();
         });
+        showTutorials.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN));
         help.getItems().add(showTutorials);
 
         MenuItem aboutUs = new MenuItem("_About us");
@@ -130,7 +146,11 @@ public class GameMenuBar extends MenuBar {
         help.getItems().add(aboutUs);
     }
 
+    /**
+     * Asks the user if the current game should be saved to a file. Does not ask if the current state is already saved
+     */
     private void askForSave() {
+        if(gameScreenController.isFileSaved()) return;
         Alert save = new Alert(Alert.AlertType.CONFIRMATION);
         save.setTitle("Save Game?");
         save.setHeaderText("Would you like to save the current game?");
@@ -141,6 +161,10 @@ public class GameMenuBar extends MenuBar {
         }
     }
 
+    /**
+     * Saves the game. If the current file is not set, prompts the user to choose a file using the save dialog.
+     * Otherwise, creates a save file with the current file.
+     */
     private void saveGame() {
         if (gameScreenController.getCurrentFile() == null) {
             saveGameAs();
@@ -149,6 +173,9 @@ public class GameMenuBar extends MenuBar {
         }
     }
 
+    /**
+     * Prompts the user to choose a file using the save dialog and creates a save file with the selected file.
+     */
     private void saveGameAs() {
         FileChooser chooser = new FileChooser();
         chooser.setInitialFileName("mySaveGame.txt");
@@ -159,6 +186,10 @@ public class GameMenuBar extends MenuBar {
         }
     }
 
+    /**
+     * Opens the settings dialog and allows the user to change the game settings. If the user confirms the changes,
+     * the game model is updated accordingly.
+     */
     private void changeSettings() {
         SettingsDialog settingsDialog = new SettingsDialog(gameScreenController);
         Optional<ButtonType> result = settingsDialog.showAndWait();
@@ -167,10 +198,14 @@ public class GameMenuBar extends MenuBar {
         }
     }
 
+    /**
+     * Shows the tutorials dialog and allows the user to select a tutorial. If the user confirms the selection,
+     * the scene is changed to the tutorial scene corresponding to the selected tutorial.
+     */
     private void showTutorials() {
         TutorialDialog tutorialDialog = new TutorialDialog();
         Optional<ButtonType> result = tutorialDialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK && tutorialDialog.getSelectedTutorial() != null) {
             gameScreenController.changeSceneToTutorialScene(tutorialDialog.getSelectedTutorial());
 
         }

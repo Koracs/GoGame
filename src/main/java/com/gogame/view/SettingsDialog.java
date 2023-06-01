@@ -13,10 +13,22 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
+/**
+ * A dialog window for game settings. Allows the user to configure the game settings such as board size, komi, and handicap.
+ * The Settings are saved in the corresponding GameScreenController.
+ */
 public class SettingsDialog extends Alert {
 
+    private final GameScreenController controller;
+    private final Spinner<Integer> handicapSetting;
+
+    /**
+     * Constructs a new SettingsDialog with the given GameScreenController.
+     * @param controller The GameScreenController associated with the game screen.
+     */
     public SettingsDialog(GameScreenController controller){
         super(Alert.AlertType.CONFIRMATION);
+        this.controller = controller;
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
         stage.getScene().getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
@@ -38,7 +50,10 @@ public class SettingsDialog extends Alert {
         for (int i : GoBoardModel.getSizes()) {
             RadioButton button = new RadioButton(i + "x" + i);
             button.setToggleGroup(boardSizeButtonGroup);
-            button.setOnMouseClicked(e -> controller.setBoardSize(i));
+            button.setOnMouseClicked(e -> {
+                controller.setBoardSize(i);
+                changeHandicapSpinner();
+            });
             hBox.getChildren().add(button);
             button.setSelected(i == controller.getBoardSize());
         }
@@ -61,22 +76,17 @@ public class SettingsDialog extends Alert {
         });
         komiSetting.setDisable(!controller.isKomiActive());
 
-        komiSetting.valueProperty().addListener((observable, oldValue, newValue) -> {
-            controller.setKomi(komiSetting.getValue());
-        });
+        komiSetting.valueProperty().addListener((observable, oldValue, newValue) -> controller.setKomi(komiSetting.getValue()));
         VBox vBoxKomi = new VBox(komiCheckBox, komiSetting);
         vBoxKomi.setSpacing(10);
         vBoxKomi.setAlignment(Pos.CENTER);
         vBox.getChildren().add(vBoxKomi);
 
 
-        // TODO: change max to 6 when small board is chosen.
         // Activate handicap and set it
         CheckBox handicapCheckBox = new CheckBox("Activate handicap");
-        Spinner<Integer> handicapSetting = new Spinner<>();
-
-        SpinnerValueFactory<Integer> valueFactoryHandicap = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 9, controller.getHandicap());
-        handicapSetting.setValueFactory(valueFactoryHandicap);
+        handicapSetting = new Spinner<>();
+        changeHandicapSpinner();
 
         handicapCheckBox.selectedProperty().addListener(e -> {
             controller.changeHandicapActive();
@@ -84,9 +94,7 @@ public class SettingsDialog extends Alert {
         });
         handicapSetting.setDisable(!controller.isHandicapActive());
 
-        handicapSetting.valueProperty().addListener((observable, oldValue, newValue) -> {
-            controller.setHandicap(handicapSetting.getValue());
-        });
+        handicapSetting.valueProperty().addListener((observable, oldValue, newValue) -> controller.setHandicap(handicapSetting.getValue()));
 
 
         VBox vBoxHandicap = new VBox(handicapCheckBox, handicapSetting);
@@ -95,5 +103,15 @@ public class SettingsDialog extends Alert {
         vBox.getChildren().add(vBoxHandicap);
 
         getDialogPane().setContent(AlertPane);
+    }
+
+    /**
+     * Changes the handicap spinner based on the current board size. The maximum handicap value is determined by the board size.
+     * This method is called when the board size is changed, and it updates the handicap spinner accordingly.
+     */
+    private void changeHandicapSpinner() {
+        int maxHandicap = controller.getBoardSize() == 9 ? 5 : 9;
+        System.out.println(maxHandicap);
+        handicapSetting.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, maxHandicap, controller.getHandicap()));
     }
 }

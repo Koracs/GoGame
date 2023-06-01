@@ -1,5 +1,8 @@
 package com.gogame.listener;
 
+/**
+ * Enum that represents the current state of the Go game
+ */
 public enum GameState {
 
     GAME_START("Game started."),
@@ -15,7 +18,7 @@ public enum GameState {
 
     private final String message;
 
-    private GameState(String message){ this.message = message;}
+    GameState(String message){ this.message = message;}
 
     public String toString(){return message;}
 }

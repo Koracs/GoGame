@@ -7,8 +7,17 @@ import com.gogame.model.GoBoardModel;
 import com.gogame.model.Stone;
 import javafx.scene.control.TextField;
 
+/**
+ * The GameStateField class represents a UI component that displays the current game state.
+ * It extends TextField and implements the GameListener interface to listen for game events
+ * and update the game state information accordingly.
+ */
 public class GameStateField extends TextField implements GameListener {
 
+    /**
+     * Constructs a GameStateField for the specified GoBoardModel and adds itself to the models listeners.
+     * @param model The GoBoardModel to be associated with the GameStateField.
+     */
     public GameStateField(GoBoardModel model){
         super(model.getGameState().toString());
         model.addGameListener(this);

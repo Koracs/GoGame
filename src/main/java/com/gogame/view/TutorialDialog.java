@@ -16,12 +16,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * A dialog window for choosing a tutorial. The dialog displays a list of available tutorials as toggle buttons,
+ * allowing the user to select a tutorial. The selected tutorial file can be retrieved using the `getSelectedTutorial()`
+ * method.
+ */
 public class TutorialDialog extends Alert {
     private static final String TUTORIAL_DIRECTORY = "src/main/resources/tutorials/";
     private Map<String, File> tutorials;
 
     private File selectedTutorial;
 
+    /**
+     * Constructs a new TutorialDialog. The dialog displays a list of available tutorials as toggle buttons.
+     * The selected tutorial file can be retrieved using the `getSelectedTutorial()` method.
+     */
     public TutorialDialog() {
         super(AlertType.CONFIRMATION);
         getTutorials();
@@ -58,7 +67,10 @@ public class TutorialDialog extends Alert {
         getDialogPane().setContent(pane);
     }
 
-
+    /**
+     * Retrieves the list of available tutorials from the tutorial directory. The tutorials are stored in a map
+     * where the tutorial name is the key and the tutorial file is the value.
+     */
     private void getTutorials() {
         Map<String, File> tutorials = new HashMap<>();
 
@@ -77,6 +89,10 @@ public class TutorialDialog extends Alert {
         this.tutorials = tutorials;
     }
 
+    /**
+     * Returns the selected tutorial file.
+     * @return The selected tutorial file, or null if no tutorial is selected.
+     */
     public File getSelectedTutorial() {
         return selectedTutorial;
     }
