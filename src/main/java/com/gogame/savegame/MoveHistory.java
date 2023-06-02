@@ -18,8 +18,11 @@ public class MoveHistory implements GameListener {
     /**
      * Constructs a MoveHistory object for the specified GoBoardModel and add itself to the models listeners.
      * @param model The GoBoardModel to be associated with the move history.
+     * @throws IllegalArgumentException if the model is null.
      */
     public MoveHistory(GoBoardModel model) {
+        if(model == null) throw new IllegalArgumentException("GoBoardModel must not be null.");
+
         model.addGameListener(this);
         events = new ArrayList<>();
     }

@@ -32,7 +32,6 @@ public class GoBoardModel {
     private double pointsWhite;
     private double pointsBlack;
 
-    private boolean[][] visited;
     private final List<GameListener> listeners;
 
     private GoField lastCapture;
@@ -49,7 +48,7 @@ public class GoBoardModel {
      * @throws IllegalArgumentException if any values are negative.
      */
     public GoBoardModel(int size, double komi, int handicap) {
-        if (size <= 0) throw new IllegalArgumentException("Size must be a positive value");
+        if (size <= 0) throw new IllegalArgumentException("Size must be a positive value.");
         if (komi < 0.0) throw new IllegalArgumentException("Komi must be a non-negative value.");
         if (handicap < 0) throw new IllegalArgumentException("Handicap must be a non-negative integer.");
 
@@ -597,7 +596,7 @@ public class GoBoardModel {
         }
 
         // Initialize visited array
-        visited = new boolean[size][size];
+        boolean[][] visited = new boolean[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 visited[i][j] = false;
@@ -611,7 +610,7 @@ public class GoBoardModel {
                     List<Integer> area = new ArrayList<>();
                     boolean isSurroundedBlack = true;
                     boolean isSurroundedWhite = true;
-                    findEmptyArea(row, col, area);
+                    findEmptyArea(row, col, area, visited);
                     for (int pos : area) {
                         int r = pos / size;
                         int c = pos % size;
@@ -642,7 +641,7 @@ public class GoBoardModel {
      * @param col Column of the board
      * @param area One dimensional store of the empty tiles
      */
-    private void findEmptyArea(int row, int col, List<Integer> area) {
+    private void findEmptyArea(int row, int col, List<Integer> area, boolean[][] visited) {
         if (row < 0 || row >= size || col < 0 || col >= size) {
             return;
         }
@@ -656,10 +655,10 @@ public class GoBoardModel {
 
         int position = row * size + col;
         area.add(position);
-        findEmptyArea(row + 1, col, area);
-        findEmptyArea(row - 1, col, area);
-        findEmptyArea(row, col + 1, area);
-        findEmptyArea(row, col - 1, area);
+        findEmptyArea(row + 1, col, area, visited);
+        findEmptyArea(row - 1, col, area, visited);
+        findEmptyArea(row, col + 1, area, visited);
+        findEmptyArea(row, col - 1, area, visited);
     }
 
     /**

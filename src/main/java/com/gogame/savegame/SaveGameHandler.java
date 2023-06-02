@@ -24,7 +24,7 @@ public class SaveGameHandler {
     private int size;
     private double komi;
     private int handicap;
-    GoBoardModel model;
+    GoBoardModel model = null;
 
     private final List<String> moveLines;
     private int currentMove;
@@ -32,8 +32,11 @@ public class SaveGameHandler {
     /**
      * Constructs a handler for save files of a GoBoardModel
      * @param file Save file with list of moves for a GoBoardModel
+     * @throws IllegalArgumentException if the file is null
      */
     public SaveGameHandler(File file) {
+        if(file == null) throw new IllegalArgumentException("File must not be null.");
+
         moveLines = new ArrayList<>();
         this.file = file;
     }
@@ -175,8 +178,13 @@ public class SaveGameHandler {
      * @param model Model with moves to be saved
      * @param file in the File to write
      * @throws IOException If an I/O error regarding File operation occurs
+     * @throws IllegalArgumentException If the model or the file is null
+     * @throws FileNotFoundException If the file path is invalid for a file
      */
-    public static void createSaveFile(GoBoardModel model, File file) throws IOException {
+    public static void createSaveFile(GoBoardModel model, File file) throws IOException, FileNotFoundException {
+        if(model == null) throw new IllegalArgumentException("Model must not be null.");
+        if(file == null) throw new IllegalArgumentException("File must not be null.");
+
         List<GameEvent> moves = model.getHistory().getEvents();
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write(model.getSize() + ";" + model.getHandicap() + ";" + model.getKomi() + System.lineSeparator());
