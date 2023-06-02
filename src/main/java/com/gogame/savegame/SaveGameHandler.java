@@ -15,17 +15,16 @@ import java.util.regex.Pattern;
 public class SaveGameHandler {
     //region Constants
     private final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";
-    private final String PASS_REGEX = "Black|White passed.";
+    private final String PASS_REGEX = "(Black|White) passed.";
     private final String MOVE_REGEX = "\\d(\\d)?;\\d(\\d)?- (White)|(Black)";
     private final String HANDICAP_REGEX = "\\d(\\d)?;\\d(\\d)?- Place handicap stones.";
     private final File file;
     //endregion
 
+    private GoBoardModel model;
     private int size;
     private double komi;
     private int handicap;
-    GoBoardModel model = null;
-
     private final List<String> moveLines;
     private int currentMove;
 
@@ -36,6 +35,7 @@ public class SaveGameHandler {
      */
     public SaveGameHandler(File file) {
         if(file == null) throw new IllegalArgumentException("File must not be null.");
+        this.model = null;
 
         moveLines = new ArrayList<>();
         this.file = file;
@@ -49,16 +49,7 @@ public class SaveGameHandler {
         return model;
     }
 
-    /**
-     * Creates a GoBoardModel to be used with gameplay interaction
-     * @return Model is returned at latest state of moves
-     */
-    public GoBoardModel createGameModel() {
-        createTutorialModel();
-        simulateMoves();
 
-        return model;
-    }
     /**
      * Creates a GoBoardModel to be used with tutorial interaction
      * @return Model is returned without played moves
@@ -70,6 +61,17 @@ public class SaveGameHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        return model;
+    }
+
+    /**
+     * Creates a GoBoardModel to be used with gameplay interaction
+     * @return Model is returned at latest state of moves
+     */
+    public GoBoardModel createGameModel() {
+        createTutorialModel();
+        simulateMoves();
 
         return model;
     }

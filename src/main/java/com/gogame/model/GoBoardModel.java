@@ -640,6 +640,7 @@ public class GoBoardModel {
      * @param row Row of the board
      * @param col Column of the board
      * @param area One dimensional store of the empty tiles
+     * @param visited array of the already visited fields
      */
     private void findEmptyArea(int row, int col, List<Integer> area, boolean[][] visited) {
         if (row < 0 || row >= size || col < 0 || col >= size) {

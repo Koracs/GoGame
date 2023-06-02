@@ -41,6 +41,16 @@ class GoBoardModelTest {
     }
 
     @Test
+    @DisplayName("Testing static method for default model")
+    void testGetDefaultModel() {
+        GoBoardModel defaultModel = GoBoardModel.getDefaultModel();
+        GoBoardModel manualModel = new GoBoardModel(19,0,0);
+        assertEquals(defaultModel.getSize(),manualModel.getSize());
+        assertEquals(defaultModel.getKomi(),manualModel.getKomi());
+        assertEquals(defaultModel.getHandicap(),manualModel.getHandicap());
+    }
+
+    @Test
     @DisplayName("Testing that correct preferred sizes are given by the Class")
     void testGetSizes() {
         int[] sizes = new int[]{9, 13, 19};

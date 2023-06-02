@@ -1,5 +1,6 @@
-package com.gogame.model;
+package com.gogame.savegame;
 
+import com.gogame.model.GoBoardModel;
 import com.gogame.savegame.MoveHistory;
 import com.gogame.savegame.SaveGameHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ public class SaveGameTest {
     private MoveHistory moveHistory;
     private GoBoardModel model;
     private final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";
-    private final String PASS_REGEX = "Black|White passed.";
+    private final String PASS_REGEX = "(Black|White) passed.";
     private final String MOVE_REGEX = "\\d(\\d)?;\\d(\\d)?- (White)|(Black)";
     private final String TUTORIAL_DIRECTORY = "src/test/resources/CanBlackLive.txt";
     private final String WRONG_TUTORIAL_DIRECTORY = "src/test/resources/CanBlackLiveWRONG.txt";
@@ -185,7 +186,7 @@ public class SaveGameTest {
             line = reader.readLine();
             assertTrue(metaFataPattern.matcher(line).matches());
             line = reader.readLine();
-            //assertTrue(passPattern.matcher(line).matches());
+            assertTrue(passPattern.matcher(line).matches());
             assertNull(reader.readLine());
         } catch (Exception ex) {
             // To check if an exception happens
@@ -219,8 +220,7 @@ public class SaveGameTest {
         assertEquals(0, moveHistory.getEvents().size());
 
         model.makeMove(0,0);
-        model.playerResigned();
-        assertEquals(2, moveHistory.getEvents().size());
+        assertEquals(1, moveHistory.getEvents().size());
     }
     //endregion
 }
