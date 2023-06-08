@@ -1,7 +1,5 @@
 package com.gogame;
 
-import com.gogame.FXApp;
-
 /**
  * Starting class of the System. Used to launch the JavaFX application.
  */
