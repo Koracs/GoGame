@@ -2,5 +2,5 @@
 8;3- White player's turn.
 8;2- Black player's turn.
 7;3- White player's turn.
-7;2- Black player's turn.
+Black player.
 6;3- White player's turn.
