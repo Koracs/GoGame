@@ -60,16 +60,12 @@ public class GameMenuBar extends MenuBar {
         openGame.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 
         MenuItem saveButton = new MenuItem("_Save Game");
-        saveButton.setOnAction(e -> {
-            saveGame();
-        });
+        saveButton.setOnAction(e -> saveGame());
         file.getItems().add(saveButton);
         saveButton.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 
         MenuItem saveAsButton = new MenuItem("Save Game as");
-        saveAsButton.setOnAction(e -> {
-            saveGameAs();
-        });
+        saveAsButton.setOnAction(e -> saveGameAs());
         file.getItems().add(saveAsButton);
         saveAsButton.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
 

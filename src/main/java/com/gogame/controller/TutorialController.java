@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * The TutorialController handles interactions between the user / view and the go board model
@@ -39,7 +40,7 @@ public class TutorialController {
         GameScreenView nextView = new GameScreenView(GoBoardModel.getDefaultModel());
         if(w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(),s.getWidth(),s.getHeight());
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Stylesheet.css")).toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Go Game");
 
@@ -53,14 +54,14 @@ public class TutorialController {
      * @param selectedTutorial File that contains information about the tutorial
      */
     public void changeTutorial(File selectedTutorial) {
-        SaveGameHandler saveGame = new SaveGameHandler(selectedTutorial);
-        TutorialView nextView = new TutorialView(saveGame);
+        SaveGameHandler newSaveGame = new SaveGameHandler(selectedTutorial);
+        TutorialView nextView = new TutorialView(newSaveGame);
 
         Scene s = view.getPane().getScene();
         Window w = s.getWindow();
         if (w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Stylesheet.css")).toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Go Game Tutorial - " + selectedTutorial.getName());
 

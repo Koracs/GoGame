@@ -1,7 +1,6 @@
 package com.gogame.listener;
 
 import com.gogame.model.GoBoardModel;
-import javafx.scene.text.Text;
 
 import java.util.EventObject;
 

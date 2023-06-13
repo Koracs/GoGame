@@ -15,6 +15,9 @@ import java.util.List;
  * It stores information about the game settings and handles the logic of the game
  */
 public class GoBoardModel {
+    // Constants
+    private static final String PRINT_MODEL = "\033[0m";
+
     //region Fields
     private static final int[] sizes = new int[]{9, 13, 19};
     private final double komi;
@@ -98,7 +101,7 @@ public class GoBoardModel {
      * Begins the placing of handicap stones
      */
     private void initHandicapFields() {
-        int[] handicapFields = new int[0];
+        int[] handicapFields;
         switch (size) {
             case 19 -> handicapFields = new int[]{3, 9, 15};
             case 13 -> handicapFields = new int[]{3, 6, 9};
@@ -106,18 +109,21 @@ public class GoBoardModel {
                 handicapFields = new int[]{2, 6};
                 fields[4][4].setStone(Stone.PRESET);
             }
+            default -> handicapFields = null;
         }
-        for (int row : handicapFields) {
-            for (int col : handicapFields) {
-                fields[row][col].setStone(Stone.PRESET);
+        if(handicapFields != null) {
+            for (int row : handicapFields) {
+                for (int col : handicapFields) {
+                    fields[row][col].setStone(Stone.PRESET);
+                }
             }
-        }
 
-        if (handicap > 0) {
-            gameState = GameState.PLACE_HANDICAP;
-            //checks that the handicap does not exceed the maximum placeable handicap stones
-            int maxHandicap = (int) Arrays.stream(fields).flatMap(Arrays::stream).filter(GoField::isPreset).count();
-            handicapCount = Math.min(handicap, maxHandicap);
+            if (handicap > 0) {
+                gameState = GameState.PLACE_HANDICAP;
+                //checks that the handicap does not exceed the maximum placeable handicap stones
+                int maxHandicap = (int) Arrays.stream(fields).flatMap(Arrays::stream).filter(GoField::isPreset).count();
+                handicapCount = Math.min(handicap, maxHandicap);
+            }
         }
     }
 
@@ -674,8 +680,8 @@ public class GoBoardModel {
      * @return True, if it is only surrounded by stones of the same color or empty tiles
      */
     private boolean isSurrounded(int row, int col, Stone stone) {
-        boolean isSurrounded = true;
-        isSurrounded &= checkNeighbours(row + 1, col, stone);
+        boolean isSurrounded;
+        isSurrounded = checkNeighbours(row + 1, col, stone);
         isSurrounded &= checkNeighbours(row - 1, col, stone);
         isSurrounded &= checkNeighbours(row, col + 1, stone);
         isSurrounded &= checkNeighbours(row, col - 1, stone);
@@ -711,10 +717,10 @@ public class GoBoardModel {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 switch (fields[row][col].getStone()) {
-                    case BLACK -> System.out.print("\033[1;30m" + "B " + "\033[0m");
-                    case WHITE -> System.out.print("\033[1;33m" + "W " + "\033[0m");
-                    case PRESET -> System.out.print("\033[0;35m" + "P " + "\033[0m");
-                    case NONE -> System.out.print("\033[0;32m" + "N " + "\033[0m");
+                    case BLACK -> System.out.print("\033[1;30m" + "B " + PRINT_MODEL);
+                    case WHITE -> System.out.print("\033[1;33m" + "W " + PRINT_MODEL);
+                    case PRESET -> System.out.print("\033[0;35m" + "P " + PRINT_MODEL);
+                    case NONE -> System.out.print("\033[0;32m" + "N " + PRINT_MODEL);
                 }
             }
             System.out.println();

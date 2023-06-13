@@ -21,10 +21,6 @@
     -fx-padding: 8 10;
 }
 
-.toggle-button:selected{
-    -fx-background-color: #80ce80;
-}
-
 .label, .check-box, .radio-button {
     -fx-font-size: 14 px;
 }
@@ -40,10 +36,6 @@
 .spinner {
     -fx-body-color: -fx-color1, -fx-color1;
     -fx-border-color: -fx-color1;
-}
-
-.spinner:focused {
-    -fx-background-color: -fx-color1;
 }
 
 .popup {

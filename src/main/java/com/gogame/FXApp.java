@@ -27,7 +27,7 @@ public class FXApp extends Application {
 
         GameScreenView gameScreenView = new GameScreenView(GoBoardModel.getDefaultModel());
         Scene scene = new Scene(gameScreenView.getPane());
-        scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Stylesheet.css")).toExternalForm());
         stage.setScene(scene);
 
         BorderPane root = (BorderPane) stage.getScene().getRoot();

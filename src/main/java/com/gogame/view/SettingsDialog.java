@@ -31,16 +31,16 @@ public class SettingsDialog extends Alert {
         this.controller = controller;
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
-        stage.getScene().getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+        stage.getScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Stylesheet.css")).toExternalForm());
 
         setHeaderText(null);
         setGraphic(null);
         setTitle("Game Settings");
 
-        BorderPane AlertPane = new BorderPane();
+        BorderPane alertPane = new BorderPane();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
-        AlertPane.setCenter(vBox);
+        alertPane.setCenter(vBox);
 
         // Set field size
         ToggleGroup boardSizeButtonGroup = new ToggleGroup();
@@ -102,7 +102,7 @@ public class SettingsDialog extends Alert {
         vBoxHandicap.setAlignment(Pos.CENTER);
         vBox.getChildren().add(vBoxHandicap);
 
-        getDialogPane().setContent(AlertPane);
+        getDialogPane().setContent(alertPane);
     }
 
     /**

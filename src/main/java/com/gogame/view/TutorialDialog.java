@@ -37,7 +37,7 @@ public class TutorialDialog extends Alert {
 
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
-        stage.getScene().getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+        stage.getScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Stylesheet.css")).toExternalForm());
 
         setHeaderText(null);
         setGraphic(null);
@@ -60,9 +60,7 @@ public class TutorialDialog extends Alert {
             flowPane.getChildren().add(button);
         }
 
-        tutorialGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> {
-            selectedTutorial = tutorials.get(tutorialGroup.getSelectedToggle().toString().split("'")[1]);
-        });
+        tutorialGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> selectedTutorial = tutorials.get(tutorialGroup.getSelectedToggle().toString().split("'")[1]));
 
         getDialogPane().setContent(pane);
     }
@@ -72,21 +70,21 @@ public class TutorialDialog extends Alert {
      * where the tutorial name is the key and the tutorial file is the value.
      */
     private void getTutorials() {
-        Map<String, File> tutorials = new HashMap<>();
+        Map<String, File> tempTutorials = new HashMap<>();
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(TUTORIAL_DIRECTORY))) {
             for (Path path : stream) {
                 if (!Files.isDirectory(path)) {
                     String fileName = path.getFileName().toString();
                     String tutorialName = fileName.substring(0, fileName.length() - 4);
-                    tutorials.put(tutorialName,path.toFile());
+                    tempTutorials.put(tutorialName,path.toFile());
                 }
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        this.tutorials = tutorials;
+        this.tutorials = tempTutorials;
     }
 
     /**

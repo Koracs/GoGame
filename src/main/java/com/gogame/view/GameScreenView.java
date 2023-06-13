@@ -67,6 +67,7 @@ public class GameScreenView extends View {
                     break;
                 case E, M:
                     goBoardView.setMarkingKeyboard();
+                    // fallthrough
                 default:
                     goBoardView.moveHoverKeyboard(keyEvent);
             }

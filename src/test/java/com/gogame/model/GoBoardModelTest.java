@@ -4,13 +4,10 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
 import com.gogame.savegame.MoveHistory;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,9 +81,9 @@ class GoBoardModelTest {
     void testGetFields() {
         GoField[][] fields = goBoardModel19x0x0.getFields();
 
-        for (int i = 0; i < fields.length; i++) {
-            for (int j = 0; j < fields[i].length; j++) {
-                assertNotNull(fields[i][j]);
+        for (GoField[] field : fields) {
+            for (GoField goField : field) {
+                assertNotNull(goField);
             }
         }
     }
