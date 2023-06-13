@@ -579,6 +579,9 @@ public class GoBoardModel {
         pointsBlack += capturedByBlack;
         pointsWhite += capturedByWhite;
 
+        //add Komi to points of white
+        pointsWhite += komi;
+
         // Add points for the stones on the field
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {

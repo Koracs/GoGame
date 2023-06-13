@@ -4,6 +4,7 @@ import com.gogame.controller.GameScreenController;
 import com.gogame.controller.GoBoardController;
 import com.gogame.model.GoBoardModel;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -101,15 +102,18 @@ public class GameScreenView extends View {
         Button passButton = new Button("Pass");
         passButton.setFocusTraversable(false);
         passButton.setOnMouseClicked(e -> goBoardController.passPlayer());
+        passButton.setMaxWidth(Double.MAX_VALUE);
 
         Button resignButton = new Button("Resign");
         resignButton.setFocusTraversable(false);
         resignButton.setOnMouseClicked(e -> goBoardController.resign());
+        resignButton.setMaxWidth(Double.MAX_VALUE);
 
         gameplayButtons.setPadding(new Insets(30));
         gameplayButtons.setHgap(10);
         gameplayButtons.setVgap(10);
         gameplayButtons.setAlignment(Pos.CENTER);
+        gameplayButtons.setColumnHalignment(HPos.CENTER);
         gameplayButtons.getChildren().add(passButton);
         gameplayButtons.getChildren().add(resignButton);
     }
