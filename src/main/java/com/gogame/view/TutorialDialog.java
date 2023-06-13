@@ -22,7 +22,7 @@ import java.util.*;
  * method.
  */
 public class TutorialDialog extends Alert {
-    private static final String TUTORIAL_DIRECTORY = "src/main/resources/tutorials/";
+    private static final String TUTORIAL_DIRECTORY = "tutorials/";
     private Map<String, File> tutorials;
 
     private File selectedTutorial;

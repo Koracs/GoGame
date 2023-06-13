@@ -111,7 +111,6 @@ public class SettingsDialog extends Alert {
      */
     private void changeHandicapSpinner() {
         int maxHandicap = controller.getBoardSize() == 9 ? 5 : 9;
-        System.out.println(maxHandicap);
         handicapSetting.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, maxHandicap, controller.getHandicap()));
     }
 }
