@@ -19,10 +19,12 @@ import java.util.Objects;
  * The WinScreenDialog displays the Result of a game of go. It shows the points of each player after the game has ended.
  */
 public class WinScreenDialog extends Alert {
-    private final Font LABEL_FONT = Font.font("Verdana", 15);
-    private final Font LABEL_FONT_BOLD = Font.font("Verdana", FontWeight.BOLD, 15);
-    private final Font TEXT_FONT = Font.font("Verdana", 18);
-    private final Font TEXT_FONT_BOLD = Font.font("Verdana", FontWeight.BOLD, 18);
+    // Constants
+    private static final String FONT_TYPE = "Verdana";
+    private final Font labelFONT = Font.font(FONT_TYPE, 15);
+    private final Font labelFontBOLD = Font.font(FONT_TYPE, FontWeight.BOLD, 15);
+    private final Font textFONT = Font.font(FONT_TYPE, 18);
+    private final Font textFontBOLD = Font.font(FONT_TYPE, FontWeight.BOLD, 18);
 
     /**
      * Constructs a WinScreenDialog for the corresponding model.
@@ -32,7 +34,7 @@ public class WinScreenDialog extends Alert {
         super(AlertType.INFORMATION);
         Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/icon.png"))));
-        stage.getScene().getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+        stage.getScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Stylesheet.css")).toExternalForm());
 
         setHeaderText(null);
         setGraphic(null);
@@ -46,7 +48,7 @@ public class WinScreenDialog extends Alert {
         BorderPane winScreenPane = new BorderPane();
 
         Text winText = new Text(model.getGameState().toString());
-        winText.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
+        winText.setFont(Font.font(FONT_TYPE, FontWeight.BOLD, 40));
         DropShadow ds = new DropShadow();
         ds.setOffsetY(3.0f);
         ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
@@ -60,67 +62,67 @@ public class WinScreenDialog extends Alert {
         gridPane.setVgap(10);
 
         Label capturePoints = new Label("Capture points:");
-        capturePoints.setFont(LABEL_FONT);
+        capturePoints.setFont(labelFONT);
         GridPane.setHalignment(capturePoints, HPos.RIGHT);
         gridPane.add(capturePoints, 0, 1);
 
         Label territoryPoints = new Label("Territory points:");
-        territoryPoints.setFont(LABEL_FONT);
+        territoryPoints.setFont(labelFONT);
         GridPane.setHalignment(territoryPoints, HPos.RIGHT);
         gridPane.add(territoryPoints, 0, 2);
 
         Label komi = new Label("Komi:");
-        komi.setFont(LABEL_FONT);
+        komi.setFont(labelFONT);
         GridPane.setHalignment(komi, HPos.RIGHT);
         gridPane.add(komi, 0, 3);
 
         Label score = new Label("Score:");
-        score.setFont(LABEL_FONT_BOLD);
+        score.setFont(labelFontBOLD);
         GridPane.setHalignment(score, HPos.RIGHT);
         gridPane.add(score, 0, 4);
 
         Text white = new Text("White");
-        white.setFont(TEXT_FONT);
+        white.setFont(textFONT);
         gridPane.add(white, 1, 0);
         Text black = new Text("Black");
-        black.setFont(TEXT_FONT);
+        black.setFont(textFONT);
         gridPane.add(black, 2, 0);
 
 
         Text capturedByWhite = new Text(String.valueOf(model.getCapturedByWhite()));
         GridPane.setHalignment(capturedByWhite, HPos.CENTER);
-        capturedByWhite.setFont(TEXT_FONT);
+        capturedByWhite.setFont(textFONT);
         gridPane.add(capturedByWhite, 1, 1);
         Text capturedByBlack = new Text(String.valueOf(model.getCapturedByBlack()));
         GridPane.setHalignment(capturedByBlack, HPos.CENTER);
-        capturedByBlack.setFont(TEXT_FONT);
+        capturedByBlack.setFont(textFONT);
         gridPane.add(capturedByBlack, 2, 1);
 
         Text territoryByWhite = new Text(String.valueOf(model.getPointsWhite() - model.getCapturedByWhite() - model.getKomi()));
         GridPane.setHalignment(territoryByWhite, HPos.CENTER);
-        territoryByWhite.setFont(TEXT_FONT);
+        territoryByWhite.setFont(textFONT);
         gridPane.add(territoryByWhite, 1, 2);
         Text territoryByBlack = new Text(String.valueOf(model.getPointsBlack() - model.getCapturedByBlack()));
         GridPane.setHalignment(territoryByBlack, HPos.CENTER);
-        territoryByBlack.setFont(TEXT_FONT);
+        territoryByBlack.setFont(textFONT);
         gridPane.add(territoryByBlack, 2, 2);
 
         Text komiWhite = new Text(String.valueOf(model.getKomi()));
         GridPane.setHalignment(komiWhite, HPos.CENTER);
-        komiWhite.setFont(TEXT_FONT);
+        komiWhite.setFont(textFONT);
         gridPane.add(komiWhite, 1, 3);
         Text komiBlack = new Text("0");
         GridPane.setHalignment(komiBlack, HPos.CENTER);
-        komiBlack.setFont(TEXT_FONT);
+        komiBlack.setFont(textFONT);
         gridPane.add(komiBlack, 2, 3);
 
         Text scoreWhite = new Text(String.valueOf(model.getPointsWhite()));
         GridPane.setHalignment(scoreWhite, HPos.CENTER);
-        scoreWhite.setFont(TEXT_FONT_BOLD);
+        scoreWhite.setFont(textFontBOLD);
         gridPane.add(scoreWhite, 1, 4);
         Text scoreBlack = new Text(String.valueOf(model.getPointsBlack()));
         GridPane.setHalignment(scoreBlack, HPos.CENTER);
-        scoreBlack.setFont(TEXT_FONT_BOLD);
+        scoreBlack.setFont(textFontBOLD);
         gridPane.add(scoreBlack, 2, 4);
 
 

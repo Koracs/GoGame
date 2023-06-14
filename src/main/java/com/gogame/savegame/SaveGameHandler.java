@@ -14,10 +14,10 @@ import java.util.regex.Pattern;
  */
 public class SaveGameHandler {
     //region Constants
-    private final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";
-    private final String PASS_REGEX = "(Black|White) passed.";
-    private final String MOVE_REGEX = "\\d(\\d)?;\\d(\\d)?- (White)|(Black)";
-    private final String HANDICAP_REGEX = "\\d(\\d)?;\\d(\\d)?- Place handicap stones.";
+    private static final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";
+    private static final String PASS_REGEX = "(Black|White) passed.";
+    private static final String MOVE_REGEX = "\\d(\\d)?;\\d(\\d)?- (White)|(Black)";
+    private static final String HANDICAP_REGEX = "\\d(\\d)?;\\d(\\d)?- Place handicap stones.";
     private final File file;
     //endregion
 
@@ -85,32 +85,31 @@ public class SaveGameHandler {
         Pattern passPattern = Pattern.compile(PASS_REGEX);
         Pattern movePattern = Pattern.compile(MOVE_REGEX);
         Pattern handicapPattern = Pattern.compile(HANDICAP_REGEX);
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line = reader.readLine();
+        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line = reader.readLine();
 
-        if (!metaFataPattern.matcher(line).matches()) {
-            throw new IOException("Could not read file. MetaData does not match!");
-        }
-
-        String[] metaData2 = line.split(";");
-        size = Integer.parseInt(metaData2[0]);
-        handicap = Integer.parseInt(metaData2[1]);
-        komi = Double.parseDouble(metaData2[2]);
-
-        line = reader.readLine();
-
-        while (line != null) {
-            if (movePattern.matcher(line).find() ||
-                passPattern.matcher(line).matches() ||
-                handicapPattern.matcher(line).matches()) {
-                moveLines.add(line);
-            } else {
-                throw new IOException("Could not read line. Line does not match!");
+            if (!metaFataPattern.matcher(line).matches()) {
+                throw new IOException("Could not read file. MetaData does not match!");
             }
-            line = reader.readLine();
-        }
 
-        reader.close();
+            String[] metaData2 = line.split(";");
+            size = Integer.parseInt(metaData2[0]);
+            handicap = Integer.parseInt(metaData2[1]);
+            komi = Double.parseDouble(metaData2[2]);
+
+            line = reader.readLine();
+
+            while (line != null) {
+                if (movePattern.matcher(line).find() ||
+                        passPattern.matcher(line).matches() ||
+                        handicapPattern.matcher(line).matches()) {
+                    moveLines.add(line);
+                } else {
+                    throw new IOException("Could not read line. Line does not match!");
+                }
+                line = reader.readLine();
+            }
+        }
     }
 
     /**
@@ -183,23 +182,23 @@ public class SaveGameHandler {
      * @throws IllegalArgumentException If the model or the file is null
      * @throws FileNotFoundException If the file path is invalid for a file
      */
-    public static void createSaveFile(GoBoardModel model, File file) throws IOException, FileNotFoundException {
+    public static void createSaveFile(GoBoardModel model, File file) throws IOException {
         if(model == null) throw new IllegalArgumentException("Model must not be null.");
         if(file == null) throw new IllegalArgumentException("File must not be null.");
 
         List<GameEvent> moves = model.getHistory().getEvents();
-        FileWriter fileWriter = new FileWriter(file);
-        fileWriter.write(model.getSize() + ";" + model.getHandicap() + ";" + model.getKomi() + System.lineSeparator());
-        for (GameEvent event : moves) {
-            String move;
-            if (event.getState() == GameState.BLACK_PASSED || event.getState() == GameState.WHITE_PASSED)
-                move = event.getState().toString();
-            else
-                move = event.getRow() + ";" + event.getCol() + "- " + event.getState();
+        try(FileWriter fileWriter = new FileWriter(file)) {
+            fileWriter.write(model.getSize() + ";" + model.getHandicap() + ";" + model.getKomi() + System.lineSeparator());
+            for (GameEvent event : moves) {
+                String move;
+                if (event.getState() == GameState.BLACK_PASSED || event.getState() == GameState.WHITE_PASSED)
+                    move = event.getState().toString();
+                else
+                    move = event.getRow() + ";" + event.getCol() + "- " + event.getState();
 
-            fileWriter.write(move + System.lineSeparator());
+                fileWriter.write(move + System.lineSeparator());
+            }
         }
-        fileWriter.close();
     }
 
 }

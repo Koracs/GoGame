@@ -20,5 +20,6 @@ public enum GameState {
 
     GameState(String message){ this.message = message;}
 
+    @Override
     public String toString(){return message;}
 }

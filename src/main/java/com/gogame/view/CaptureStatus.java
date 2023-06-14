@@ -53,13 +53,11 @@ public class CaptureStatus extends FlowPane implements GameListener {
 
     @Override
     public void playerPassed(GameEvent event) {
-
+        // Do nothing - does not affect capture count
     }
 
     @Override
     public void gameEnded(GameEvent event) {
-
+        // Do nothing - does not affect capture count
     }
-    //Buttons for capture status
-
 }

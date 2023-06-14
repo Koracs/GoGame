@@ -52,5 +52,6 @@ public class MoveHistory implements GameListener {
 
     @Override
     public void gameEnded(GameEvent event) {
+        // Do nothing - has no effect on the move history
     }
 }

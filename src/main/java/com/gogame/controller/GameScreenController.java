@@ -13,6 +13,7 @@ import javafx.stage.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * The GameScreenController handles interactions between the user / view and the go board model
@@ -191,7 +192,7 @@ public class GameScreenController implements GameListener {
         Window w = s.getWindow();
         if (w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Stylesheet.css")).toExternalForm());
             stage.setScene(scene);
             if(file == null) stage.setTitle("Go Game");
             else stage.setTitle("Go Game - " + file.getName());
@@ -214,7 +215,7 @@ public class GameScreenController implements GameListener {
         Window w = s.getWindow();
         if (w instanceof Stage stage) {
             Scene scene = new Scene(nextView.getPane(), s.getWidth(), s.getHeight());
-            scene.getStylesheets().add(getClass().getResource("/Stylesheet.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Stylesheet.css")).toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Go Game Tutorial - " + currentFile.getName());
 
@@ -252,6 +253,7 @@ public class GameScreenController implements GameListener {
 
     @Override
     public void playerPassed(GameEvent event) {
+        // Do nothing - has no effect on save file
     }
 
     @Override

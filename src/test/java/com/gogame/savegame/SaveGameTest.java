@@ -1,8 +1,6 @@
 package com.gogame.savegame;
 
 import com.gogame.model.GoBoardModel;
-import com.gogame.savegame.MoveHistory;
-import com.gogame.savegame.SaveGameHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,7 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SaveGameTest {
+class SaveGameTest {
     private SaveGameHandler saveGameHandler;
     private MoveHistory moveHistory;
     private GoBoardModel model;

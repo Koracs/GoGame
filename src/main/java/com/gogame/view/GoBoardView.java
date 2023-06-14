@@ -117,7 +117,7 @@ public class GoBoardView extends Pane implements GameListener{
 
     @Override
     public void playerPassed(GameEvent event) {
-
+        // Do nothing - has no effect on the go board
     }
 
     /**
@@ -154,6 +154,7 @@ public class GoBoardView extends Pane implements GameListener{
 
             drawHover();
         } catch (ArrayIndexOutOfBoundsException ignore) {
+            // Do nothing
         }
     }
 
@@ -175,6 +176,9 @@ public class GoBoardView extends Pane implements GameListener{
             }
             case D, RIGHT -> {
                 if (currentCol < (boardSize - 1)) currentCol += 1;
+            }
+            default -> {
+                // do nothing
             }
         }
 

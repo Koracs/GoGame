@@ -4,13 +4,10 @@ import com.gogame.listener.GameEvent;
 import com.gogame.listener.GameListener;
 import com.gogame.listener.GameState;
 import com.gogame.savegame.MoveHistory;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,9 +81,9 @@ class GoBoardModelTest {
     void testGetFields() {
         GoField[][] fields = goBoardModel19x0x0.getFields();
 
-        for (int i = 0; i < fields.length; i++) {
-            for (int j = 0; j < fields[i].length; j++) {
-                assertNotNull(fields[i][j]);
+        for (GoField[] field : fields) {
+            for (GoField goField : field) {
+                assertNotNull(goField);
             }
         }
     }
@@ -378,29 +375,30 @@ class GoBoardModelTest {
         GameListener gameListener = new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
+                assertEquals(GameState.WHITE_TURN,event.getState());
             }
 
             @Override
             public void resetGame(GameEvent event) {
+                assertEquals(GameState.RESET,event.getState());
             }
 
             @Override
             public void playerPassed(GameEvent event) {
+                assertEquals(GameState.WHITE_PASSED,event.getState());
             }
 
             @Override
             public void gameEnded(GameEvent event) {
+                assertEquals(GameState.WHITE_WON,event.getState());
             }
         };
 
-        goBoardModel19x05x3.addGameListener(gameListener);
-        goBoardModel19x05x3.makeMove(3,3);
-        goBoardModel19x05x3.makeMove(3,9);
-        goBoardModel19x05x3.makeMove(3,15);
-        goBoardModel19x05x3.makeMove(1,1);
-        goBoardModel19x05x3.pass();
-        goBoardModel19x05x3.reset();
-        goBoardModel19x05x3.playerResigned();
+        goBoardModel9x0x0.addGameListener(gameListener);
+        goBoardModel9x0x0.makeMove(3,3);
+        goBoardModel9x0x0.pass();
+        goBoardModel9x0x0.reset();
+        goBoardModel9x0x0.playerResigned(); //Black Resigns
 
     }
 

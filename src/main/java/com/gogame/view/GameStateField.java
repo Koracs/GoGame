@@ -13,6 +13,9 @@ import javafx.scene.control.TextField;
  * and update the game state information accordingly.
  */
 public class GameStateField extends TextField implements GameListener {
+    // Constants
+    private static final String BLACK = "Black";
+    private static final String WHITE = "White";
 
     /**
      * Constructs a GameStateField for the specified GoBoardModel and adds itself to the models listeners.
@@ -29,8 +32,8 @@ public class GameStateField extends TextField implements GameListener {
     public void moveCompleted(GameEvent event) {
         GoBoardModel model = (GoBoardModel) event.getSource();
         String lastPlayer;
-        if(model.getGameState() == GameState.PLACE_HANDICAP) lastPlayer = "Black";
-        else lastPlayer = model.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
+        if(model.getGameState() == GameState.PLACE_HANDICAP) lastPlayer = BLACK;
+        else lastPlayer = model.getCurrentPlayer() == Stone.BLACK? WHITE : BLACK;
 
         this.setText(lastPlayer + " placed at: " + event.getColLetter()
                           + " " + event.getRowLetter() + ". " + event.getState().toString());
@@ -44,7 +47,7 @@ public class GameStateField extends TextField implements GameListener {
     @Override
     public void playerPassed(GameEvent event) {
         GoBoardModel model = (GoBoardModel) event.getSource();
-        String player = model.getCurrentPlayer() == Stone.BLACK? "White" : "Black";
+        String player = model.getCurrentPlayer() == Stone.BLACK? WHITE : BLACK;
 
         this.setText(event.getState().toString() + " " + player + "'s turn.");
     }

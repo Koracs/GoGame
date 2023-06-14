@@ -18,6 +18,7 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -52,9 +53,10 @@ public class TutorialView extends View {
 
         //eventHandler for keyboard interaction
         goBoardView.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
-            switch (keyEvent.getCode()) {
-                case A, LEFT -> tutorialController.lastMove();
-                case D, RIGHT -> tutorialController.nextMove();
+            if(keyEvent.getCode() == KeyCode.A || keyEvent.getCode() == KeyCode.LEFT) {
+                tutorialController.lastMove();
+            } else if(keyEvent.getCode() == KeyCode.D || keyEvent.getCode() == KeyCode.RIGHT) {
+                tutorialController.nextMove();
             }
         });
 
@@ -87,7 +89,7 @@ public class TutorialView extends View {
 
         // Buttons for tutorial interaction
         Button backButton = new Button("");
-        Image image = new Image(getClass().getResourceAsStream("/pictures/left-arrow.png"));
+        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/left-arrow.png")));
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(35);
         imageView.setFitHeight(35);
@@ -95,7 +97,7 @@ public class TutorialView extends View {
         backButton.setOnMouseClicked(e -> tutorialController.lastMove());
         backButton.setFocusTraversable(false);
         Button forwardButton = new Button("");
-        image = new Image(getClass().getResourceAsStream("/pictures/right-arrow.png"));
+        image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pictures/right-arrow.png")));
         imageView = new ImageView(image);
         imageView.setFitWidth(35);
         imageView.setFitHeight(35);
