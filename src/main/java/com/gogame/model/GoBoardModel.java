@@ -15,9 +15,6 @@ import java.util.List;
  * It stores information about the game settings and handles the logic of the game
  */
 public class GoBoardModel {
-    // Constants
-    private static final String PRINT_MODEL = "\033[0m";
-
     //region Fields
     private static final int[] sizes = new int[]{9, 13, 19};
     private final double komi;
@@ -714,13 +711,14 @@ public class GoBoardModel {
      * Function to display the game field on the console
      */
     public void printModel() {
+        final String defaultTextColor = "\033[0m";
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 switch (fields[row][col].getStone()) {
-                    case BLACK -> System.out.print("\033[1;30m" + "B " + PRINT_MODEL);
-                    case WHITE -> System.out.print("\033[1;33m" + "W " + PRINT_MODEL);
-                    case PRESET -> System.out.print("\033[0;35m" + "P " + PRINT_MODEL);
-                    case NONE -> System.out.print("\033[0;32m" + "N " + PRINT_MODEL);
+                    case BLACK -> System.out.print("\033[1;30m" + "B " + defaultTextColor);
+                    case WHITE -> System.out.print("\033[1;33m" + "W " + defaultTextColor);
+                    case PRESET -> System.out.print("\033[0;35m" + "P " + defaultTextColor);
+                    case NONE -> System.out.print("\033[0;32m" + "N " + defaultTextColor);
                 }
             }
             System.out.println();
