@@ -375,29 +375,30 @@ class GoBoardModelTest {
         GameListener gameListener = new GameListener() {
             @Override
             public void moveCompleted(GameEvent event) {
+                assertEquals(GameState.WHITE_TURN,event.getState());
             }
 
             @Override
             public void resetGame(GameEvent event) {
+                assertEquals(GameState.RESET,event.getState());
             }
 
             @Override
             public void playerPassed(GameEvent event) {
+                assertEquals(GameState.WHITE_PASSED,event.getState());
             }
 
             @Override
             public void gameEnded(GameEvent event) {
+                assertEquals(GameState.WHITE_WON,event.getState());
             }
         };
 
-        goBoardModel19x05x3.addGameListener(gameListener);
-        goBoardModel19x05x3.makeMove(3,3);
-        goBoardModel19x05x3.makeMove(3,9);
-        goBoardModel19x05x3.makeMove(3,15);
-        goBoardModel19x05x3.makeMove(1,1);
-        goBoardModel19x05x3.pass();
-        goBoardModel19x05x3.reset();
-        goBoardModel19x05x3.playerResigned();
+        goBoardModel9x0x0.addGameListener(gameListener);
+        goBoardModel9x0x0.makeMove(3,3);
+        goBoardModel9x0x0.pass();
+        goBoardModel9x0x0.reset();
+        goBoardModel9x0x0.playerResigned(); //Black Resigns
 
     }
 
