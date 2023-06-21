@@ -22,7 +22,7 @@ import java.util.*;
  * method.
  */
 public class TutorialDialog extends Alert {
-    private static final String TUTORIAL_DIRECTORY = "tutorials/";
+    private static final String TUTORIAL_DIRECTORY = "./tutorials/";
     private Map<String, File> tutorials;
 
     private File selectedTutorial;
@@ -60,7 +60,10 @@ public class TutorialDialog extends Alert {
             flowPane.getChildren().add(button);
         }
 
-        tutorialGroup.selectedToggleProperty().addListener((observableValue, toggle, t1) -> selectedTutorial = tutorials.get(tutorialGroup.getSelectedToggle().toString().split("'")[1]));
+        tutorialGroup.selectedToggleProperty().addListener((observableValue, oldVal, newVal) -> {
+            if(newVal == null) oldVal.setSelected(true);
+            selectedTutorial = tutorials.get(tutorialGroup.getSelectedToggle().toString().split("'")[1]);
+        });
 
         getDialogPane().setContent(pane);
     }
