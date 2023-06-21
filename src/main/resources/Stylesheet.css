@@ -21,6 +21,12 @@
     -fx-padding: 8 10;
 }
 
+.toggle-button:selected{
+    -fx-background-color: #80ce80;
+}
+
+
+
 .label, .check-box, .radio-button {
     -fx-font-size: 14 px;
 }
