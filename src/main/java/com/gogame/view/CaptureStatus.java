@@ -19,6 +19,8 @@ public class CaptureStatus extends FlowPane implements GameListener {
     private final Text capturedByWhite = new Text("0");
     private final Text capturedByBlack = new Text("0");
 
+    private static final String FONT_STYLE = "-fx-font: 24 arial;";
+
 
     /**
      * Constructs a CaptureStatus object for the specified GoBoardModel and adds itself to the models listeners.
@@ -29,8 +31,8 @@ public class CaptureStatus extends FlowPane implements GameListener {
         this.setPadding(new Insets(30,0,30,30));
         this.setHgap(10);
         this.setVgap(10);
-        capturedByWhite.setStyle("-fx-font: 24 arial;");
-        capturedByBlack.setStyle("-fx-font: 24 arial;");
+        capturedByWhite.setStyle(FONT_STYLE);
+        capturedByBlack.setStyle(FONT_STYLE);
         this.getChildren().add(labelWhite);
         this.getChildren().add(capturedByWhite);
         this.getChildren().add(labelBlack);

@@ -1,19 +1,18 @@
 package com.gogame.view;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileFilter;
 import java.util.*;
 
 /**
@@ -22,7 +21,7 @@ import java.util.*;
  * method.
  */
 public class TutorialDialog extends Alert {
-    private static final String TUTORIAL_DIRECTORY = "./tutorials/";
+    private static final String TUTORIAL_DIRECTORY = "./tutorials";
     private Map<String, File> tutorials;
 
     private File selectedTutorial;
@@ -30,6 +29,7 @@ public class TutorialDialog extends Alert {
     /**
      * Constructs a new TutorialDialog. The dialog displays a list of available tutorials as toggle buttons.
      * The selected tutorial file can be retrieved using the `getSelectedTutorial()` method.
+     * If no tutorials are present, a file can be chosen by the user.
      */
     public TutorialDialog() {
         super(AlertType.CONFIRMATION);
@@ -53,18 +53,38 @@ public class TutorialDialog extends Alert {
 
         ToggleGroup tutorialGroup = new ToggleGroup();
 
-        for (String tutorial : tutorials.keySet()) {
-            ToggleButton button = new ToggleButton(tutorial);
-            button.setToggleGroup(tutorialGroup);
+        if (tutorials == null || tutorials.isEmpty()) {
+            flowPane.setOrientation(Orientation.VERTICAL);
+            flowPane.setMaxHeight(200);
+            Text missingTutorials = new Text("Tutorial directory not found!");
+            flowPane.getChildren().add(missingTutorials);
 
-            flowPane.getChildren().add(button);
+            Button openTutorial = new Button("Open tutorial");
+            openTutorial.setAlignment(Pos.CENTER);
+            flowPane.getChildren().add(openTutorial);
+            openTutorial.setOnAction(e ->{
+                FileChooser fileChooser = new FileChooser();
+                FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+                fileChooser.getExtensionFilters().add(extensionFilter);
+                File selectedFile = fileChooser.showOpenDialog(getDialogPane().getScene().getWindow());
+                if (selectedFile != null) {
+                    selectedTutorial = selectedFile;
+                    Text tutorialName = new Text("Selected file: " + selectedFile.getName());
+                    flowPane.getChildren().add(tutorialName);
+                }
+            });
+        } else {
+            for (String tutorial : tutorials.keySet()) {
+                ToggleButton button = new ToggleButton(tutorial);
+                button.setToggleGroup(tutorialGroup);
+                flowPane.getChildren().add(button);
+            }
+
+            tutorialGroup.selectedToggleProperty().addListener((observableValue, oldVal, newVal) -> {
+                if (newVal == null) oldVal.setSelected(true);
+                selectedTutorial = tutorials.get(tutorialGroup.getSelectedToggle().toString().split("'")[1]);
+            });
         }
-
-        tutorialGroup.selectedToggleProperty().addListener((observableValue, oldVal, newVal) -> {
-            if(newVal == null) oldVal.setSelected(true);
-            selectedTutorial = tutorials.get(tutorialGroup.getSelectedToggle().toString().split("'")[1]);
-        });
-
         getDialogPane().setContent(pane);
     }
 
@@ -75,18 +95,19 @@ public class TutorialDialog extends Alert {
     private void getTutorials() {
         Map<String, File> tempTutorials = new HashMap<>();
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(TUTORIAL_DIRECTORY))) {
-            for (Path path : stream) {
-                if (!Files.isDirectory(path)) {
-                    String fileName = path.getFileName().toString();
-                    String tutorialName = fileName.substring(0, fileName.length() - 4);
-                    tempTutorials.put(tutorialName,path.toFile());
-                }
-            }
+        File tutorialDirectory = new File(TUTORIAL_DIRECTORY);
+        FileFilter fileFilter = pathname -> pathname.getName().toLowerCase().endsWith(".txt");
+        File[] tutorials = tutorialDirectory.listFiles(fileFilter);
+        if (tutorials == null) return;
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        for (File tutorial : tutorials) {
+            if (tutorial.isFile()) {
+                String fileName = tutorial.getName();
+                String tutorialName = fileName.substring(0, fileName.length() - 4);
+                tempTutorials.put(tutorialName, tutorial);
+            }
         }
+
         this.tutorials = tempTutorials;
     }
 
