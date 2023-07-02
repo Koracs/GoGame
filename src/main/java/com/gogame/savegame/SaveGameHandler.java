@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class SaveGameHandler {
     //region Constants
-    private static final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.0|5";
+    private static final String METADATA_REGEX = "\\d(\\d)?;\\d;[0-7]\\.(0|5)";
     private static final String PASS_REGEX = "(Black|White) passed.";
     private static final String MOVE_REGEX = "\\d(\\d)?;\\d(\\d)?- (White)|(Black)";
     private static final String HANDICAP_REGEX = "\\d(\\d)?;\\d(\\d)?- Place handicap stones.";
